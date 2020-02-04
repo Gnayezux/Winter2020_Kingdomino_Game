@@ -1,0 +1,123 @@
+class dominoTile
+{
+  int numCrown;
+tileSquare square1;
+tileSquare square2;
+int tileNumber;
+1 -- 2 tileSquare;
+public void flipSelf(){
+
+}
+}
+
+class dominoStack
+{
+  int tileRemaining;
+  tempStack tileList1;
+  tempStack tileList2;
+  1 -- 1..2 tempStack;
+public void gameStart(){
+
+}
+public dominoTile pop(dominoTile tile){
+
+}
+}
+
+class tempStack {
+  dominoTile[] tileList;
+  int numTiles;
+public void pop(){
+
+}
+public void add(){
+
+}
+}
+class player
+{
+  int score;
+  dominoTile[] tileDrawn;
+  kingColor;
+  2..4 -- 1..2 tempStack;
+public dominoTile selectTile(dominoTiles tile){
+
+}
+public dominoTile placeTile(dominoTile tile){
+
+}
+public dominoTile discardTile(dominoTile arg0){
+
+}
+public void calculateScore(){
+
+}
+}
+association {
+    0..1 dominoStack d <@>- 0..48 dominoTile dT;
+}
+class playArea {
+  char[] board; //An array of size 81 to represent 9*9 theoratical maximum play area
+  1 -- 24..48 tileSquare;
+  1 -- 1 player;
+public void putTile(){
+
+}
+public void boardScore(){
+
+}
+}
+class tileSquare {
+   type;
+  int numCrown;
+}class castleBlock
+{
+  player player_;
+  1 -- 1 player;
+}
+
+//$?[End_of_model]$?
+
+namespace -;
+
+
+class dominoTile
+{
+  position 2 30 156 146;
+  position.association dominoTile__tileSquare 54,146 7,0;
+}
+
+class dominoStack
+{
+  position 265 48 233 146;
+  position.association dominoStack__tempStack 234,1 0,10;
+}
+
+class tempStack
+{
+  position 692 22 164 128;
+}
+
+class player
+{
+  position 654 233 280 180;
+  position.association player__tempStack 0,0 104,128;
+}
+
+class playArea
+{
+  position 113 543 135 94;
+  position.association playArea__player 30,0 26,92;
+  position.association playArea__tileSquare 30,0 21,75;
+}
+
+class tileSquare
+{
+  position 33 266 124 94;
+}
+
+class castleBlock
+{
+  position 584 537 125 77;
+  position.association castleBlock__player 56,0 95,92;
+}
