@@ -1,0 +1,97 @@
+class Kingdomino {
+  1 <@>- 1 Game currentGame;
+  1 <@>- * Profile profiles;
+}
+
+class Game {
+  int numPlayers;
+  int numTurns;
+  1 game <@>- 2..4 Player players;
+}
+
+class Player {
+  1 player --1 Profile selectedProfile;
+  1 player <@>- 1..2 King selectedKing;
+  1 player <@>- 1 Kingdom personalKingdom;
+}
+
+class Profile {
+  username;
+  1 player <@>- 1 StatisticSheet statSheet;
+}
+
+class StatisticSheet{
+  int wins;
+  int gamesPlayed;
+  int losses;
+  int highscore;
+  int totalPoints;
+  int ties;
+}
+
+class Domino {
+  int number;
+  Direction direction;
+  int xPosition;
+  int yPosition;
+  Boolean isSelected;
+  Boolean isRevealed;
+ 
+  24..48 dominos -<@> 1 Deck gameDeck;
+  1 dominoInHand -- 1 Player;
+  1 domino<@>- 2 DominoTile tilesOnDomino;
+  3 dominosInDraft-- 1 Draft draft;
+  }
+
+class Kingdom {
+  int score;
+  int currentWidth;
+  int currentHeight;
+  int maxHeight;
+  int maxWidth;
+  
+  1 <@>- * Region;
+}
+
+class Deck {
+  Domino[] inGameDominos;
+  int size;
+  1 deck -<@>1 Game currentGame;
+}
+
+class CastleTile {
+  int xPosition;
+  int yPosition;
+  1 castle -<@> 1 Kingdom kingdom;
+}
+
+class DominoTile {
+  Landscape landscape;
+  numOfCrowns;
+  Boolean isCenter;
+  int xPosition;
+  int yPosition;
+  * -- 1 Region;
+}
+
+class King{
+  Color color;
+}
+
+class Draft{
+  Domino top;
+  Domino middle;
+  Domino bottom;
+  * drafts -<@> 1 Deck;
+  1..2 draftsOnBoard-- 1 Game currentGame;
+}
+
+class Region{
+  Landscape landscape;
+  int size;
+  int numCrowns;
+}
+
+enum Color { Blue, Red, Green, Yellow}
+enum Direction { Top, Bottom, Left, Right}
+enum Landscape { Forest, meadows, water, deserts, mines, wastelands}
