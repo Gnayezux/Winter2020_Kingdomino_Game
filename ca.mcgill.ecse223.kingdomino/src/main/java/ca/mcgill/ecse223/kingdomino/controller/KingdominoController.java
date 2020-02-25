@@ -24,7 +24,7 @@ public class KingdominoController {
 			}
 			players.set(j+1, currentPlayer);
 			players.get(i-1).setCurrentRanking(i);
-		}
+		}//hi
 	}
 	
 }
