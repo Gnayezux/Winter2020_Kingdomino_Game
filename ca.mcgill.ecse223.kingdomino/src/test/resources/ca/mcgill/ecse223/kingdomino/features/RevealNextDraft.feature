@@ -7,14 +7,14 @@ Feature: Reveal Next Draft
 	
   Scenario Outline: Revealing the next draft when there are dominoes still in the pile
     Given the top 5 dominoes in my pile have IDs id9, id10, id11, id12, id13
-    Given There has been "<draftnum>" drafts
+    Given there has been "<draftnum>" drafts
     Given there is a current draft
     Given there is an existing next draft with IDs id4, id5, id6, id7
     When reveal next draft is initiated
     Then dominoes "<list_of_ids>" are revealed to the players
     Then a new draft is created with "<list_of_ids>"
     Then the next draft is now the revealed one "<list_of_ids>"
-    Then the dominoes are face down
+    Then the dominoes are face up
     Then the top domino of the pile is ID "<topId>"
 
     Examples: 
@@ -25,11 +25,12 @@ Feature: Reveal Next Draft
     Given this is a "<num_players>" game
     Given there has been "<draftnum>" drafts
     When reveal next draft is initiated
-    Then The game is over
+    Then the pile is empty
+    Then there is no new draft
 
     Examples: 
       | num_players | draftnum |
-      |           2 |        6 |
-      |           3 |        9 |
+#      |           2 |        6 |
+#      |           3 |       12 |
       |           4 |       12 |
 
