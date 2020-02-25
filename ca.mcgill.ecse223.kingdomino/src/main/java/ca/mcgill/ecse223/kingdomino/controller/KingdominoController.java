@@ -11,8 +11,8 @@ public class KingdominoController {
 	}
 	
 	// Calculating the ranking of the players in the game
-	public static void calculateRanking() {
-		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+	public static void calculateRanking(Kingdomino kingdomino) {
+		//Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		List <Player> players = kingdomino.getCurrentGame().getPlayers();
 
 		for (int i = 1; i < players.size(); i++) {
@@ -26,4 +26,5 @@ public class KingdominoController {
 			players.get(i-1).setCurrentRanking(i);
 		}
 	}
+	
 }
