@@ -8,9 +8,9 @@ Feature: Choose next domino
   #The selection variable represents what players have kings on which dominoes in the draft respectively
   Scenario Outline: Player choses a free domino
     Given the next draft is sorted with dominoes "<nextdraft>"
-    Given players domino selection"<selection>"
+    Given player's domino selection "<selection>"
     Given the current player is "<currentplayer>"
-    When current player chooses to place king on "<chosendominoid>"
+    When current player chooses to place king on "<chosendomino>"
     Then current player king now is on "<chosendomino>"
     Then the selection for next draft is now equal to "<newselection>"
 
@@ -23,9 +23,9 @@ Feature: Choose next domino
 
   Scenario Outline: Player choses an occupied domino
     Given the next draft is sorted with dominoes "<nextdraft>"
-    Given players domino selection"<selection>"
-    Given the  current player is "<currentplayer>"
-    When current player chooses to place king on "<chosendominoid>"
+    Given player's domino selection "<selection>"
+    Given the current player is "<currentplayer>"
+    When current player chooses to place king on "<chosendomino>"
     Then the selection for the next draft selection is still "<selection>"
 
     Examples: 
