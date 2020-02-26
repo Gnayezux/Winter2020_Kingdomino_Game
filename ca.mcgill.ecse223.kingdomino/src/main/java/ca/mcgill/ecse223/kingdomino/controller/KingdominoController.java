@@ -24,7 +24,49 @@ public class KingdominoController {
 			}
 			players.set(j+1, currentPlayer);
 			players.get(i-1).setCurrentRanking(i);
-		}//hi
+		}
+	}
+	
+	
+	//Starting a New Game
+	//As a Kingdomino player, I want to start a new game of Kingdomino against some opponents
+	//with my castle placed on my territory with the current settings of the game. 
+	//The initial order of player should be randomly determined.
+
+	public static void startNewGame(Kingdomino kingdomino) {
+		//should kingdomino be an input or initialized in method
+		Boolean kingdominoIsValid = !kingdomino.equals(null);
+
+		if (!kingdominoIsValid) {
+			throw new IllegalArgumentException("This Kingdomino already contains a game, or the Kingdomino is null");
+		}
+		
+		Game newGame = new Game(48, kingdomino);
+		
+		if(kingdomino.getUsers().size() < 2) {
+			throw new RuntimeException("There needs to be at least 2 users.");
+		}
+		
+		newGame.setNumberOfPlayers(4);					
+		kingdomino.setCurrentGame(newGame);
+		
+		//add players and dominos and castle
+		Player player1 = newGame.getPlayer(0);
+		Player player2 = newGame.getPlayer(1);
+		Player player3 = newGame.getPlayer(2);
+		Player player4 = newGame.getPlayer(3);
+		
+		newGame.setNextPlayer(player1);//should be randomly determined
+		newGame.setNextPlayer(player2);
+		newGame.setNextPlayer(player3);
+		newGame.setNextPlayer(player4);
+		
+		Castle castle1 = new Castle(0, 0, player1.getKingdom(), player1);
+		Castle castle2 = new Castle(0, 0, player2.getKingdom(), player2);
+		Castle castle3 = new Castle(0, 0, player3.getKingdom(), player3);
+		Castle castle4 = new Castle(0, 0, player4.getKingdom(), player4);//check which coordonates this corresponds to
+		
+		KingdominoApplication.setKingdomino(kingdomino);
 	}
 	
 }
