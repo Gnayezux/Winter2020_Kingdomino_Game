@@ -79,15 +79,24 @@ public class KingdominoController {
 	//******END FEATURE 3******
 	
 	//*******BEGIN FEATURE 5*****
-	public static void shuffleDominos() {
+	public static List<Domino> shuffleDominos(List<Domino> dominos) {
 		//based on number of players in game, number of dominos differ
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game newGame = new Game(48, kingdomino);
 		
-		List<Domino> dominos;
-		if (newGame.getNumberOfPlayers() == 2) {
-			
+		dominos = newGame.getAllDominos();
+		
+		Random r = new Random();
+		for (int i=0; i<dominos.size(); i++) {
+		    int randomPosition = r.nextInt(dominos.size());
+		    Domino d = dominos.get(i);
+		    Domino temp = dominos.get(randomPosition);
+		    dominos.set(randomPosition, d);
+		    dominos.set(i, temp);		    
 		}
+		
+		
+		return dominos;
 	}
 	
 }
