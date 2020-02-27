@@ -9,67 +9,75 @@ public class KingdominoController {
 	public KingdominoController() {
 		
 	}
-	public static void main(String[] args) {
-		SetGameOptions(4,true,true);
-//		System.out.print(createUser("Shap"));
-		//hello world
+	public static void main(String[] args) throws Exception {
+
+		Kingdomino kingdomino = new Kingdomino();
+		Game game = new Game(48, kingdomino);
+		game.setNumberOfPlayers(4);
+		kingdomino.setCurrentGame(game);
+
+		SetGameOptions(3, kingdomino);
+	
+
+		SetGameOptions("is not", kingdomino, "isUsingHarmony");
+		
+		
+		
+		System.out.print(game.getSelectedBonusOptions());
+
 	}
 	
-//	public static boolean createUser(String name) {
-//		Kingdomino currKingdomino = KingdominoApplication.getKingdomino();
-//		//isletterordigit??
-//		User newUser = new User(name,currKingdomino);
-//		User dd = new User("ha",currKingdomino);
-//		for(User user : currKingdomino.getUsers()) {
-//			System.out.print(user.getName());
-//		}
-//		
-//		//adduserat
-//		return true;
-//
-//	}
+
+	//set bonus options that are available
+	public static void SetGameOptions(Kingdomino kingdomino) {
 	
-//	public static boolean initializeGame() {
-//		Kingdomino currKingdomino = KingdominoApplication.getKingdomino();
-//		Game newGame = new Game(48, currKingdomino);
-//		currKingdomino.setCurrentGame(newGame);
-//		return true;
-//	}
-	
-	public static Boolean SetGameOptions(int players,boolean harmony, boolean middlekingdom) {
-		Kingdomino currKingdomino = KingdominoApplication.getKingdomino();
-		int numPlayers = players;
-		if(harmony==true) {
-			BonusOption isUsingHarmony= new BonusOption("Harmony", currKingdomino);
-			currKingdomino.addBonusOption(isUsingHarmony);
-		}
-		if(middlekingdom==true) {
-			BonusOption isUsingMiddleKingdom= new BonusOption("Middle Kingdom", currKingdomino);
-			currKingdomino.addBonusOption(isUsingMiddleKingdom);
-		}
-		
-		int pileSize = 48;
-		
-		if(numPlayers==3) {
-			pileSize = 36;
-		}else if(numPlayers==2) {
-			pileSize =24;
-		}
-		
-		Game newGame = new Game(pileSize, currKingdomino);
-		
-		newGame.setNumberOfPlayers(numPlayers);
-		
-		for(BonusOption option : currKingdomino.getBonusOptions()) {
-			newGame.addSelectedBonusOption(option);
-		}
-		
-		currKingdomino.setCurrentGame(newGame);
-		
-		return true;
 	}
 	
 	
+	public static void SetGameOptions(int num, Kingdomino kingdomino) throws Exception {
+		if(num<2||num>4) {
+			
+			throw new Exception("Number of players has to be between 2 and 4");
+		}
+		
+		Game game = kingdomino.getCurrentGame();
+		game.setNumberOfPlayers(num);
+	}
+	
+
+	
+	public static void SetGameOptions(String string, Kingdomino kingdomino, String bonus) {
+		Game game = kingdomino.getCurrentGame();
+		if(bonus.equals("isUsingHarmony")) {
+			BonusOption isUsingHarmony= new BonusOption(bonus, kingdomino);
+			if(string.equals("is")) {
+				game.addSelectedBonusOption(isUsingHarmony);
+			}else {
+				BonusOption toRemove = null;
+				for(BonusOption temp : game.getSelectedBonusOptions()) {
+					if(bonus.equals(temp.getOptionName())) {
+						toRemove = temp;
+					}
+				}
+				game.removeSelectedBonusOption(toRemove);
+			}
+		} else if(bonus.equals("isUsingMiddleKingdom")) {
+			BonusOption isUsingMiddleKingdom= new BonusOption(bonus, kingdomino);
+			if(string.equals("is")) {
+				game.addSelectedBonusOption(isUsingMiddleKingdom);
+			}else {
+				BonusOption toRemove = null;
+				for(BonusOption temp : game.getSelectedBonusOptions()) {
+					if(bonus.equals(temp.getOptionName())) {
+						toRemove = temp;
+					}
+				}
+				game.removeSelectedBonusOption(toRemove);
+			}
+		}
+	}
+	
+
 	
 	// Calculating the ranking of the players in the game
 	public static void calculateRanking(Kingdomino kingdomino) {
