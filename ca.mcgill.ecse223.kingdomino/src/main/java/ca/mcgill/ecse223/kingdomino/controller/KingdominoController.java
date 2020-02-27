@@ -61,10 +61,17 @@ public class KingdominoController {
 		newGame.setNextPlayer(player3);
 		newGame.setNextPlayer(player4);
 		
-		Castle castle1 = new Castle(0, 0, player1.getKingdom(), player1);
-		Castle castle2 = new Castle(0, 0, player2.getKingdom(), player2);
-		Castle castle3 = new Castle(0, 0, player3.getKingdom(), player3);
-		Castle castle4 = new Castle(0, 0, player4.getKingdom(), player4);//check which coordonates this corresponds to
+		Kingdom kingdom1 = new Kingdom(player1);
+		Kingdom kingdom2 = new Kingdom(player2);
+		Kingdom kingdom3 = new Kingdom(player3);
+		Kingdom kingdom4 = new Kingdom(player4);
+		
+		Castle castle1 = new Castle(0, 0, kingdom1, player1);
+		Castle castle2 = new Castle(0, 0, kingdom2, player2);
+		Castle castle3 = new Castle(0, 0, kingdom3, player3);
+		Castle castle4 = new Castle(0, 0, kingdom4, player4);//check which coordonates this corresponds to
+		
+		//current settings of the game
 		
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
