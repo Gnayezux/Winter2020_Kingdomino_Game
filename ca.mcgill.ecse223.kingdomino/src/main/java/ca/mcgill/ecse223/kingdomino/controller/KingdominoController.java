@@ -27,16 +27,15 @@ public class KingdominoController {
 
 	}
 	
-
-	//set bonus options that are available
-	public static void SetGameOptions(Kingdomino kingdomino) {
-	
-	}
-	
-	
+	/**
+	 * SetGameOptions method that set the number of players of the game with param num
+	 * @param num
+	 * @param kingdomino
+	 * @throws Exception
+	 * @author Abdallah Shapsough
+	 */
 	public static void SetGameOptions(int num, Kingdomino kingdomino) throws Exception {
 		if(num<2||num>4) {
-			
 			throw new Exception("Number of players has to be between 2 and 4");
 		}
 		
@@ -45,13 +44,26 @@ public class KingdominoController {
 	}
 	
 
-	
+	/**
+	 * SetGameOptions method that takes in different parameters and is responsible for adding or removing the 
+	 * selected bonus options from the current game
+	 * string: must be equal to either "is" or "is not"
+	 * bonus: must be equal to either "isUsingHarmony" or "isUsingMiddleKingdom"
+	 * kingdomino: must be equal to Kingdomino kingdomino
+	 * @param string
+	 * @param kingdomino
+	 * @param bonus
+	 * @author Abdallah Shapsough
+	 */
 	public static void SetGameOptions(String string, Kingdomino kingdomino, String bonus) {
+		
+		//get current game of kingdomino
 		Game game = kingdomino.getCurrentGame();
-		if(bonus.equals("isUsingHarmony")) {
-			BonusOption isUsingHarmony= new BonusOption(bonus, kingdomino);
+		
+		//either add selected bonus option if string = "is" or find and remove selected bonus option if string = "is not"
+			BonusOption bonusOption= new BonusOption(bonus, kingdomino);
 			if(string.equals("is")) {
-				game.addSelectedBonusOption(isUsingHarmony);
+				game.addSelectedBonusOption(bonusOption);
 			}else {
 				BonusOption toRemove = null;
 				for(BonusOption temp : game.getSelectedBonusOptions()) {
@@ -61,20 +73,6 @@ public class KingdominoController {
 				}
 				game.removeSelectedBonusOption(toRemove);
 			}
-		} else if(bonus.equals("isUsingMiddleKingdom")) {
-			BonusOption isUsingMiddleKingdom= new BonusOption(bonus, kingdomino);
-			if(string.equals("is")) {
-				game.addSelectedBonusOption(isUsingMiddleKingdom);
-			}else {
-				BonusOption toRemove = null;
-				for(BonusOption temp : game.getSelectedBonusOptions()) {
-					if(bonus.equals(temp.getOptionName())) {
-						toRemove = temp;
-					}
-				}
-				game.removeSelectedBonusOption(toRemove);
-			}
-		}
 	}
 	
 
