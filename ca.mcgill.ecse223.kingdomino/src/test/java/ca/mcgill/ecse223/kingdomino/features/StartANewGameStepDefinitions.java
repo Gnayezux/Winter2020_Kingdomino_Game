@@ -11,23 +11,26 @@ import io.cucumber.java.en.When;
 
 
 public class StartANewGameStepDefinitions {
+	
+	Kingdomino kingdomino;
 	@Given("the program is started and ready for starting a new game")
 	public void the_program_is_started_and_ready_for_starting_a_new_game() {
 	    // Write code here that turns the phrase above into concrete actions
-		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-		User user = kingdomino.addUser("User1");
-	    throw new cucumber.api.PendingException();
+		kingdomino = KingdominoApplication.getKingdomino();
+		//User user = kingdomino.addUser("User1");
+	    //throw new cucumber.api.PendingException();
 	}
 
 	@Given("there are four selected players")
 	public void there_are_four_selected_players() {
 	    
 		// Write code here that turns the phrase above into concrete actions
-		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+//		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game newGame = new Game(48,kingdomino);
 		newGame.setNumberOfPlayers(4);
+		kingdomino.setCurrentGame(newGame);
 		//kingdomino.setCurrentGame(newGame);
-	    throw new cucumber.api.PendingException();
+	    //throw new cucumber.api.PendingException();
 	}
 
 	@Given("bonus options Harmony and MiddleKingdom are selected")
