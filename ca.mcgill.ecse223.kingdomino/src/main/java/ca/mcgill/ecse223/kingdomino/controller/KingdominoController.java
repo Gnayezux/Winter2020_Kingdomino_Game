@@ -27,7 +27,7 @@ public class KingdominoController {
 		}
 	}
 	
-	
+	//****BEGIN FEATURE 3***
 	//Starting a New Game
 	//As a Kingdomino player, I want to start a new game of Kingdomino against some opponents
 	//with my castle placed on my territory with the current settings of the game. 
@@ -35,6 +35,7 @@ public class KingdominoController {
 
 	public static void startNewGame(Kingdomino kingdomino) {
 		//should kingdomino be an input or initialized in method
+		
 		Boolean kingdominoIsValid = !kingdomino.equals(null);
 
 		if (!kingdominoIsValid) {
@@ -74,6 +75,19 @@ public class KingdominoController {
 		//current settings of the game
 		
 		KingdominoApplication.setKingdomino(kingdomino);
+	}
+	//******END FEATURE 3******
+	
+	//*******BEGIN FEATURE 5*****
+	public static void shuffleDominos() {
+		//based on number of players in game, number of dominos differ
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Game newGame = new Game(48, kingdomino);
+		
+		List<Domino> dominos;
+		if (newGame.getNumberOfPlayers() == 2) {
+			
+		}
 	}
 	
 }
