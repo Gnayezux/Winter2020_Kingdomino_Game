@@ -4,10 +4,61 @@ import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import java.util.*;
 
+
 public class KingdominoController {
 	
 	public KingdominoController() {
 		
+	}
+	
+	public static void main(String args[]) {
+		Kingdomino kingdomino = new Kingdomino();
+		Game game = new Game(48, kingdomino);
+		game.setNumberOfPlayers(4);
+		kingdomino.setCurrentGame(game);
+		try {
+			ProvideUserProfile("a",kingdomino);
+			ProvideUserProfile("d",kingdomino);
+			ProvideUserProfile("b",kingdomino);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.print(ProvideUserProfile(kingdomino));
+		
+	}
+	
+	public static void ProvideUserProfile(String userName, Kingdomino kingdomino) throws Exception {
+	
+//		System.out.print(userName);
+		if(userName == null) {
+		throw new Exception("username cannot be null");
+		}
+		if(userName.isEmpty()) {
+			throw new Exception("username cannot be empty");
+		}
+		if(userName.trim().length()==0) {
+			throw new Exception("username must have characters");
+		}
+		int length = userName.length();
+	      for (int i = 0; i < length; i++) {
+	         // checks whether the character is neither a letter nor a digit
+	         // if it is neither a letter nor a digit then it will return false
+	         if ((Character.isLetterOrDigit(userName.charAt(i)) == false)) {
+	            throw new Exception("username can only contain numbers and letters");
+	         }
+	      }
+//	    for(User user : )
+	      
+		kingdomino.addUser(userName.trim().toLowerCase());
+
+	}
+	
+	
+	public static ArrayList<User> ProvideUserProfile(Kingdomino kingdomino) {
+		ArrayList<User> users = new ArrayList<User>(kingdomino.getUsers());
+		Collections.sort(users, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
+		return users;
 	}
 	
 	// Calculating the ranking of the players in the game
