@@ -30,7 +30,6 @@ public class KingdominoController {
 	
 	public static void ProvideUserProfile(String userName, Kingdomino kingdomino) throws Exception {
 	
-//		System.out.print(userName);
 		if(userName == null) {
 		throw new Exception("username cannot be null");
 		}
@@ -48,7 +47,7 @@ public class KingdominoController {
 	            throw new Exception("username can only contain numbers and letters");
 	         }
 	      }
-//	    for(User user : )
+
 	      
 		kingdomino.addUser(userName.trim().toLowerCase());
 
