@@ -12,19 +12,6 @@ public class KingdominoController {
 	}
 	
 	public static void main(String args[]) {
-		Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		game.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(game);
-		try {
-			ProvideUserProfile("a",kingdomino);
-			ProvideUserProfile("d",kingdomino);
-			ProvideUserProfile("b",kingdomino);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.print(ProvideUserProfile(kingdomino));
 		
 	}
 	
