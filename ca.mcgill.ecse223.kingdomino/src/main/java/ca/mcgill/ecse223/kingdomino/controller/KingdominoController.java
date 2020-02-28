@@ -40,6 +40,13 @@ public class KingdominoController {
 
 	}
 	
+	public static void ProvideUserProfile(String userName, int number, String string) {
+		if(string.equals("playedGames")) {
+			User.getWithName(userName).setPlayedGames(number);
+		}else if(string.equals("wonGames")) {
+			User.getWithName(userName).setWonGames(number);
+		}
+	}
 	
 	public static ArrayList<User> ProvideUserProfile(Kingdomino kingdomino) {
 		ArrayList<User> users = new ArrayList<User>(kingdomino.getUsers());

@@ -125,21 +125,20 @@ public void the_following_users_exist_with_their_game_statistics(io.cucumber.dat
 	
 	List<Map<String, String>> valueMaps = dataTable.asMaps();
 	for (Map<String, String> map : valueMaps) {
-		if(User.getWithName(map.get("name")) != null) {
-			User.getWithName(map.get("name")).delete();
+		String name = map.get("name");
+		if(User.getWithName(name) != null) {
+			User.getWithName(name).delete();
 		}
 		try {
-			KingdominoController.ProvideUserProfile(map.get("name"), kingdomino);
+			KingdominoController.ProvideUserProfile(name, kingdomino);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 
 		}
-		User user = User.getWithName(map.get("name"));
-		user.setPlayedGames(Integer.parseInt(map.get("playedGames")));
-		user.setWonGames(Integer.parseInt(map.get("wonGames")));
-		
+		KingdominoController.ProvideUserProfile(name, Integer.parseInt(map.get("playedGames")), "playedGames");
+		KingdominoController.ProvideUserProfile(name, Integer.parseInt(map.get("wonGames")), "wonGames");
 	}
 	
 
