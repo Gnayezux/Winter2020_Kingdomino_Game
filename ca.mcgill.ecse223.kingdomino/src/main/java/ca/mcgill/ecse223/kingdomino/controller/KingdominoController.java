@@ -27,4 +27,24 @@ public class KingdominoController {
 		}
 	}
 	
+	public Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom){
+		
+		
+		Property[] myProperties= new Property[playedDominoes.length];
+		for(int i=0; i<playedDominoes.length; i++) {
+			Property aProperty = new Property(aKingdom);
+			for(int j=i+1; j<playedDominoes.length; j++) {
+				if(playedDominoes[i].getX()==playedDominoes[j].getX()+1) {
+					
+				}
+			
+			aProperty.setLeftTile(playedDominoes[i].getDomino().getLeftTile());
+			aProperty.addIncludedDomino(playedDominoes[i].getDomino());
+			myProperties[i] = aProperty;
+			}
+		}
+		return myProperties;
+		
+	}
+	
 }
