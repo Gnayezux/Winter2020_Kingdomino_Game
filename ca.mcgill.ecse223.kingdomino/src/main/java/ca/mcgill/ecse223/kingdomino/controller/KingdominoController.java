@@ -27,6 +27,7 @@ public class KingdominoController {
 		}
 	}
 	
+
 	public Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom){
 		
 		
@@ -40,11 +41,58 @@ public class KingdominoController {
 			
 			aProperty.setLeftTile(playedDominoes[i].getDomino().getLeftTile());
 			aProperty.addIncludedDomino(playedDominoes[i].getDomino());
+			aProperty.setKingdom(aKingdom);
 			myProperties[i] = aProperty;
 			}
 		}
 		return myProperties;
 		
 	}
+	
+	public void CalculatePropertyAttributes(Property aProperty){
+		int numCrowns=0;
+		int size =0;
+		for (int i=0; i< aProperty.numberOfIncludedDominos(); i++) {
+			if(aProperty.getLeftTile()== aProperty.getIncludedDomino(i).getLeftTile()) {
+				numCrowns += aProperty.getIncludedDomino(i).getLeftCrown();
+			}
+			else if (aProperty.getLeftTile()== aProperty.getIncludedDomino(i).getRightTile()){
+				numCrowns += aProperty.getIncludedDomino(i).getRightCrown();
+			}
+			
+			size++;
+		}
+		aProperty.setCrowns(numCrowns);
+		aProperty.setSize(size);
+	}
+	
+	public int CalculateBonusScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom) {
+		int bonus = 0;
+		if (playedDominoes.length ==12) {
+			bonus +=5;
+		}
+		
+			
+		return bonus;
+		
+	}
+	
+	public int CalculatePlayerScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom) {
+		int score =0;
+		int pscore =0;
+		int bonuscore =0;
+		Property[] myProp = IdentifyKingdomProperties(playedDominoes,aKingdom);
+		for(int i=0; i< myProp.length; i++) {
+			if (myProp[i]!=null) {
+				pscore = myProp[i].getCrowns()*myProp[i].getSize();
+				score+=pscore;
+			}
+			
+		}
+		bonuscore = CalculateBonusScore(playedDominoes, aKingdom);
+		score += bonuscore;
+		return score;
+	}
+	
 	
 }
