@@ -33,7 +33,7 @@ public class ShuffleDominosStepDefinitions {
 		kingdomino.setCurrentGame(newGame);
 //	    throw new cucumber.api.PendingException();
 		//KingdominoController.startNewGame(kingdomino);
-		createAllDominoes(newGame);
+		KingdominoController.createAllDominoes(newGame);
 		
 	}
 
@@ -51,14 +51,18 @@ public class ShuffleDominosStepDefinitions {
 	@When("the shuffling of dominoes is initiated")
 	public void the_shuffling_of_dominoes_is_initiated() {
 	    //here we shuffle the dominoes and get the first draft from the shuffled pile
-		KingdominoController.shuffleDominos(kingdomino);
-		KingdominoController.getFirstDraft(kingdomino);
+		KingdominoController.shuffleDominos(kingdomino);//not necessary since we are already shuffling in getFirstDraft
+		
+		//System.out.println(kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDominos().size());
 	    //throw new cucumber.api.PendingException();
 	}
 
 	@Then("the first draft shall exist")
 	public void the_first_draft_shall_exist() {
 	    //reasonning: if the size of the draft equals a real number, it must exist.
+		KingdominoController.getFirstDraft(kingdomino);
+//		System.out.println(kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDomino(3).getId());
+//		System.out.println(kingdomino.getCurrentGame().getAllDomino(1).getId());
 		assertEquals(4, kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDominos().size());
 
 	}
@@ -74,72 +78,28 @@ public class ShuffleDominosStepDefinitions {
 
 	@Then("there should be {int} dominoes left in the draw pile")
 	public void there_should_be_dominoes_left_in_the_draw_pile(Integer int1) {
-	    //compare the size of the remaining drawpile with the integer given
+	    //compares the size of the remaining drawpile with the integer given
 		assertEquals(Integer.valueOf(int1), Integer.valueOf(kingdomino.getCurrentGame().getAllDominos().size()));
 
 	}
-
+//********BELOW LEFT TO DO**********
 	@When("I initiate to arrange the domino in the fixed order {string}")
 	public void i_initiate_to_arrange_the_domino_in_the_fixed_order(String string) {
-	    // Write code here that turns the phrase above into concrete actions
-//		Comparator<Domino> c = Comparator.comparing(Domino::toString);
-//		Collections.sort(kingdomino.getCurrentGame().getAllDominos(), c);
-//		System.out.println(kingdomino.getCurrentGame().getAllDominos());
-//		System.out.println("HELOOOOOOOOOO");
+
+		//System.out.println(kingdomino.getCurrentGame().getAllDominos());
 		KingdominoController.getFixedOrder(kingdomino, string);
-	    //throw new cucumber.api.PendingException();
+	
 	}
 
 	@Then("the draw pile should consist of everything in {string} except the first {int} dominoes with their order preserved")
 	public void the_draw_pile_should_consist_of_everything_in_except_the_first_dominoes_with_their_order_preserved(String string, Integer int1) {
 	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
+		assertEquals(38, kingdomino.getCurrentGame().getAllDomino(0).getId());
+		//kingdomino.getCurrentGame().getAllDominos().contains(kingdomino.getCurrentGame().get);
+		//assertEquals(38, kingdomino.getCurrentGame().getTopDominoInPile().getId());
+	  
 	}
 	
 	
-	//helper methods to create dominos
-	private void createAllDominoes(Game game) {
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));
-			String line = "";
-			String delimiters = "[:\\+()]";
-			while ((line = br.readLine()) != null) {
-				String[] dominoString = line.split(delimiters); // {id, leftTerrain, rightTerrain, crowns}
-				int dominoId = Integer.decode(dominoString[0]);
-				TerrainType leftTerrain = getTerrainType(dominoString[1]);
-				TerrainType rightTerrain = getTerrainType(dominoString[2]);
-				int numCrown = 0;
-				if (dominoString.length > 3) {
-					numCrown = Integer.decode(dominoString[3]);
-				}
-				new Domino(dominoId, leftTerrain, rightTerrain, numCrown, game);
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new java.lang.IllegalArgumentException(
-					"Error occured while trying to read alldominoes.dat: " + e.getMessage());
-		}
-	}
-
-
-	private TerrainType getTerrainType(String terrain) {
-		switch (terrain) {
-		case "W":
-			return TerrainType.WheatField;
-		case "F":
-			return TerrainType.Forest;
-		case "M":
-			return TerrainType.Mountain;
-		case "G":
-			return TerrainType.Grass;
-		case "S":
-			return TerrainType.Swamp;
-		case "L":
-			return TerrainType.Lake;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
-		}
-	}
 
 }

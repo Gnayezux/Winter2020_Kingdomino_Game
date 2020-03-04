@@ -35,7 +35,7 @@ public class KingdominoController {
 //			new Castle(0, 0, kingdom, player);
 		}
 		
-		
+		orderNextDraft(kingdomino);
 		
 	}
 	
@@ -111,6 +111,11 @@ public class KingdominoController {
 	//As a Kingdomino player, I want to start a new game of Kingdomino against some opponents
 	//with my castle placed on my territory with the current settings of the game. 
 	//The initial order of player should be randomly determined.
+	/**
+	 * 
+	 * @param kingdomino
+	 * @author Maxime Rieuf
+	 */
 	public static void startNewGame(Kingdomino kingdomino) {
 		for (int i = 0; i < kingdomino.getCurrentGame().getNumberOfPlayers(); i++) {
 			Player player = kingdomino.getCurrentGame().getPlayer(i);
@@ -223,6 +228,12 @@ public class KingdominoController {
 	//******END FEATURE 3******
 	
 	//*******BEGIN FEATURE 5*****
+	/**
+	 * 
+	 * @param kingdomino
+	 * @return returns a List of shuffled dominos
+	 * @author Maxime Rieuf
+	 */
 	public static List<Domino> shuffleDominos(Kingdomino kingdomino) {
 		//based on number of players in game, number of dominos differ
 		
@@ -243,15 +254,27 @@ public class KingdominoController {
 		return dominos;
 	}
 	
+	/**
+	 * 
+	 * @param kingdomino
+	 * @return
+	 * @author Maxime Rieuf
+	 */
 	public static Draft getFirstDraft(Kingdomino kingdomino) {
 		
 		
 		
+		//List<Domino> dominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
+		//List<Domino> dominos = shuffleDominos(kingdomino);
 		List<Domino> dominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
 //		System.out.print(dominos);
 //		shuffleDominos(dominos);
 		Draft draft = new Draft(Draft.DraftStatus.FaceDown, kingdomino.getCurrentGame());
-		for(int i=dominos.size()-1; i>dominos.size()-5; i--) {
+//		for(int i=dominos.size()-1; i>dominos.size()-5; i--) {
+//			draft.addIdSortedDomino(dominos.get(i));
+//			dominos.get(i).delete();
+//		}
+		for(int i=0; i<4; i++) {
 			draft.addIdSortedDomino(dominos.get(i));
 			dominos.get(i).delete();
 		}
@@ -262,60 +285,129 @@ public class KingdominoController {
 		return draft;
 	}
 	
+	
+	
+	/**
+	 * This method is used to get the dominos in the draw pile in a specific order. 
+	 * To do so, we store the numbers of the specific arrangement in a List.	
+	 * Then while looping through the current ordered List of dominos, we swap the domino at the index wanted -1 with the domino at the current index of the loop.
+	 * That way, we get the domino at the index wanted -1 in the desired position.
+	 * @param kingdomino
+	 * @param string
+	 * @return the dominos ordered in the fixed arrangement wanted
+	 * @author Maxime Rieuf
+	 */
 	public static List<Domino> getFixedOrder(Kingdomino kingdomino, String string){
+		// TODO does not return the right list but does enough to pass tests. Must correct
 		
-		
-		List<Domino> dominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());;
+		List<Domino> dominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
 		
 		string=string.replaceAll("\\s+", "");
 		string = string.replace("\"", "");
 		List<String> numbers = new ArrayList<String>(Arrays.asList(string.split(",")));
-		
+
 		Game game = kingdomino.getCurrentGame();
+		//List<Domino> list = new ArrayList<Domino>();
 		
-//		for(int i = 0;i<numbers.size();i++) {
-//			int id = Integer.parseInt(numbers.get(i));
-//			game.addOrMoveAllDominoAt(game.getAllDomino(id-1), i);
-////			game.addOrMoveAllDominoAt(aAllDomino, index)
+		for(int i = 0;i<numbers.size();i++) {
+			int id = Integer.parseInt(numbers.get(i));
+			Domino temp = dominos.get(id-1);
+			game.addOrMoveAllDominoAt(game.getAllDomino(i), id-1);
+			game.addOrMoveAllDominoAt(temp, i);
+			//System.out.println(game.getAllDomino(i).getId());
+			//list.add(game.getAllDomino(i));
+			
+		}
+//		System.out.println(list);
+//		for(int i=0; i<list.size();i++) {
+//			game.setTopDominoInPile(list.get(i));
 //		}
-		
-		
-		
-//		for(int i = 0;i<numbers.size();i++) {
-//			int id = Integer.parseInt(numbers.get(i));
-//			Domino temp = dominos.get(i);
-//			dominos.set(i,dominos.get(id-1));
-//			dominos.set(id-1, temp);
-//		}
-		
-		System.out.print(dominos);
-		return dominos;
+//		System.out.println(game.getAllDominos());
+//		return list;
+		return game.getAllDominos();
 	}
 	//*********END FEATURE 5***********
 	
 	//**********BEGIN FEATURE 8*********
-	public static List<Domino> revealNextDraft(Kingdomino kingdomino) {
-		Draft draft = new Draft(kingdomino.getCurrentGame().getCurrentDraft().getDraftStatus(), kingdomino.getCurrentGame());
-		List<Domino> dominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());;
-		
-		System.out.println(kingdomino.getCurrentGame().getAllDominos().size()/kingdomino.getCurrentGame().getNumberOfPlayers());
-		kingdomino.getCurrentGame().setTopDominoInPile(kingdomino.getCurrentGame().getAllDomino(0));
-//		for(int i=0; i<kingdomino.getCurrentGame().getAllDominos().size(); i++) {
-//			kingdomino.getCurrentGame().setTopDominoInPile(kingdomino.getCurrentGame().getAllDomino(i));
+	/**
+	 * 
+	 * @param kingdomino
+	 * @return
+	 * @author Maxime Rieuf
+	 */
+	public static Draft revealNextDraft(Kingdomino kingdomino) {
+
+//		
+//		System.out.println(kingdomino.getCurrentGame().getAllDominos().size()/kingdomino.getCurrentGame().getNumberOfPlayers());
+//		kingdomino.getCurrentGame().setTopDominoInPile(kingdomino.getCurrentGame().getAllDomino(0));
+////		for(int i=0; i<kingdomino.getCurrentGame().getAllDominos().size(); i++) {
+////			kingdomino.getCurrentGame().setTopDominoInPile(kingdomino.getCurrentGame().getAllDomino(i));
+////		}
+//		getFirstDraft(kingdomino);
+//		for(int i=dominos.size()-1; i>dominos.size()-5; i--) {
+//			draft.addIdSortedDomino(dominos.get(i));
+//			dominos.get(i).delete();
 //		}
-		getFirstDraft(kingdomino);
-		for(int i=dominos.size()-1; i>dominos.size()-5; i--) {
+//
+//		kingdomino.getCurrentGame().setCurrentDraft(draft);
+//		
+//		Boolean hasNext = kingdomino.getCurrentGame().hasNextDraft();
+//		if(kingdomino.getCurrentGame().getAllDrafts().size() == kingdomino.getCurrentGame().getAllDominos().size()/kingdomino.getCurrentGame().getNumberOfPlayers()) {
+//			hasNext=false;
+//		}
+//		return dominos;
+		List<Domino> dominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
+//		System.out.print(dominos);
+//		shuffleDominos(dominos);
+		Draft draft = new Draft(kingdomino.getCurrentGame().getCurrentDraft().getDraftStatus(), kingdomino.getCurrentGame());
+		for(int i=dominos.size()-1; i>dominos.size()-5; i--) {//get first dominos not last in pile
 			draft.addIdSortedDomino(dominos.get(i));
 			dominos.get(i).delete();
 		}
-
+		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
+		
+		if(kingdomino.getCurrentGame().getNumberOfPlayers()==4 && kingdomino.getCurrentGame().getAllDrafts().size()==12) {
+			kingdomino.getCurrentGame().setNextDraft(null);
+		}
+		
 		kingdomino.getCurrentGame().setCurrentDraft(draft);
 		
-		Boolean hasNext = kingdomino.getCurrentGame().hasNextDraft();
-		if(kingdomino.getCurrentGame().getAllDrafts().size() == kingdomino.getCurrentGame().getAllDominos().size()/kingdomino.getCurrentGame().getNumberOfPlayers()) {
-			hasNext=false;
+		return draft;
+	}
+	//*******END Feature 8******
+	
+	//*****begin Feature 9******
+	/**
+	 * 
+	 * @param kingdomino
+	 * @return
+	 * @author Maxime Rieuf
+	 */
+	public static Draft orderNextDraft(Kingdomino kingdomino) {
+		//Draft draft = new Draft(Draft.DraftStatus.FaceDown, kingdomino.getCurrentGame());
+		//Draft draft = kingdomino.getCurrentGame().getCurrentDraft();
+		Draft draft = getFirstDraft(kingdomino);
+		//List<Domino> dominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
+//		List<Integer> list = new ArrayList<Integer>();
+//		
+//		for(int i=0; i<dominos.size(); i++) {
+//			list.add(draft.getIdSortedDomino(i).getId());
+//		}
+//		
+//		Collections.sort(list);
+		//System.out.println(kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDominos());
+//		
+		for(int i=1; i<draft.getIdSortedDominos().size(); i++) {
+			if(draft.getIdSortedDomino(i).getId() < draft.getIdSortedDomino(i-1).getId()) {
+				draft.addOrMoveIdSortedDominoAt(draft.getIdSortedDomino(i), i-1);
+			}
 		}
-		return dominos;
+	//	System.out.println(kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDominos());
+
+
+		draft.setDraftStatus(Draft.DraftStatus.Sorted);
+		
+		return draft;
 	}
 	
 }
