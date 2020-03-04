@@ -84,6 +84,7 @@ public class KingdominoController {
 		Property[] myProp = IdentifyKingdomProperties(playedDominoes,aKingdom);
 		for(int i=0; i< myProp.length; i++) {
 			if (myProp[i]!=null) {
+				CalculatePropertyAttributes(myProp[i]);
 				pscore = myProp[i].getCrowns()*myProp[i].getSize();
 				score+=pscore;
 			}
