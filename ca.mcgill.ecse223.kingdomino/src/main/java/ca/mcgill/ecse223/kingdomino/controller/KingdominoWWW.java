@@ -1,29 +1,22 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
-import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
-import ca.mcgill.ecse223.kingdomino.model.*;
+import ca.mcgill.ecse223.kingdomino.controller.KingdominoController.coord;
+import ca.mcgill.ecse223.kingdomino.model.Castle;
+import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
-
-import java.util.*;
-
-public class KingdominoController {
-	
-	public KingdominoController() {
-		
+class coord {
+	public int x;
+	public int y;
+	public coord(int x,int y) {
+		this.x = x;
+		this.y = y;
 	}
-	
-	public static boolean VerifyCastleAdjacency (int x, int y, DirectionKind aDirection) {
-		class coord {
-			public int x;
-			public int y;
-			public coord(int x,int y) {
-				this.x = x;
-				this.y = y;
-			}
-			public boolean equalsTo(coord aCoord) {
-				return (this.x == aCoord.x && this.y == aCoord.y);
-			}
-		}
+	public boolean equalsTo(coord aCoord) {
+		return (this.x == aCoord.x && this.y == aCoord.y);
+	}
+}
+public class KingdominoWWW {
+	public boolean VerifyCastleAdjacency (int x, int y, DirectionKind aDirection, Castle aCastle) {
 		int x1 = 0, y1 = 0;
 		switch (aDirection) {
 		case Up:
@@ -54,9 +47,7 @@ public class KingdominoController {
 			return true;
 		}
 		return false;
-		
-	}
-
-
 	
+
+	}
 }
