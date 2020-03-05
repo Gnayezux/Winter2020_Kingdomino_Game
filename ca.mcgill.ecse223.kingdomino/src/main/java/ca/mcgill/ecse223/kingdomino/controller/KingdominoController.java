@@ -2,6 +2,8 @@ package ca.mcgill.ecse223.kingdomino.controller;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.*;
+import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
+
 import java.util.*;
 
 public class KingdominoController {
@@ -9,22 +11,103 @@ public class KingdominoController {
 	public KingdominoController() {
 		
 	}
-	
-	// Calculating the ranking of the players in the game
-	public static void calculateRanking(Kingdomino kingdomino) {
-		//Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-		List <Player> players = kingdomino.getCurrentGame().getPlayers();
-
-		for (int i = 1; i < players.size(); i++) {
-			Player currentPlayer = players.get(i);
-			int j = i - 1;
-			while (j>=0 && currentPlayer.getTotalScore() < players.get(j).getTotalScore()) {
-				players.set(j+1, players.get(j));
-				j--;
+	public static boolean VerifyNeighbourAdjacency(Kingdom aKingdom,Domino aDomino, int x, int y, DirectionKind aDirection) {
+		class coord {
+			public int x;
+			public int y;
+			public coord(int x,int y) {
+				this.x = x;
+				this.y = y;
 			}
-			players.set(j+1, currentPlayer);
-			players.get(i-1).setCurrentRanking(i);
+			public boolean equalsTo(coord aCoord) {
+				return (this.x == aCoord.x && this.y == aCoord.y);
+			}
+			public boolean adJacentTo(coord aCoord) {
+				return ((this.x == aCoord.x && this.y+1 == aCoord.y) || (this.x == aCoord.x && this.y-1 == aCoord.y) || (this.x+1 == aCoord.x && this.y == aCoord.y)|| (this.x-1 == aCoord.x && this.y == aCoord.y));
+			}
 		}
+		int counter = 0;
+		int x1 = 0, y1 = 0;
+		switch (aDirection) {
+		case Up:
+			y1 = y+1;
+			x1 = x;
+		case Left:
+			x1 = x-1;
+			y1 = y;
+		case Right:
+			x1 = x+1;
+			y1 = y;
+		case Down:
+			x1 = x;
+			y1 = y-1;
+			
+		}
+		coord tileOne = new coord(x,y);
+		coord tileTwo = new coord(x1,y1);
+		for (KingdomTerritory d: aKingdom.getTerritories()) {
+			if (d.getClass().toString() == "DominoInKingdom") {
+				coord temp = new coord(d.getX(),d.getY());
+				if (temp.adJacentTo(tileOne) || temp.adJacentTo(tileTwo)) {
+					DominoInKingdom dik = (DominoInKingdom) d;
+					int x2 = 0,y2 = 0;
+					switch (dik.getDirection()) {
+					case Up:
+						y2 = dik.getY()+1;
+						x2 = dik.getX();
+					case Left:
+						x2 = dik.getX()-1;
+						y2 = dik.getY();
+					case Right:
+						x2 = dik.getX()+1;
+						y2 = dik.getY();
+					case Down:
+						x2 = dik.getX();
+						y2 = dik.getY()-1;
+						
+					}
+					coord leftcoord, rightcoord;
+					leftcoord = new coord(dik.getX(),dik.getY());
+					rightcoord = new coord(x2,y2);
+					if (leftcoord.adJacentTo(tileOne)) {
+						if (dik.getDomino().getLeftTile().equals(aDomino.getLeftTile())){
+							counter +=1;
+						} else {
+							return false;
+						}
+					}
+					
+					if (leftcoord.adJacentTo(tileTwo)) {
+						if (dik.getDomino().getLeftTile().equals(aDomino.getRightTile())){
+							counter +=1;
+						} else {
+							return false;
+						}
+					}
+					
+					if (rightcoord.adJacentTo(tileOne)) {
+						if (dik.getDomino().getRightTile().equals(aDomino.getLeftTile())){
+							counter +=1;
+						} else {
+							return false;
+						}
+					}
+					
+					if (rightcoord.adJacentTo(tileTwo)) {
+						if (dik.getDomino().getRightTile().equals(aDomino.getRightTile())){
+							counter +=1;
+						} else {
+							return false;
+						}
+					}
+					
+				}
+			}
+		}
+		if (counter!=0) {
+			return true;
+		}
+		return false;
 	}
 	
 }
