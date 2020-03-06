@@ -33,7 +33,7 @@ public class CalculateRankingStepDefinition {
 	public void the_players_have_the_following_two_dominoes_in_their_respective_kingdoms(
 			io.cucumber.datatable.DataTable dataTable) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		
+		createAllDominoes(game);
 		String[] userNames = { "User1", "User2", "User3", "User4" };
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
 		int i = 0;
