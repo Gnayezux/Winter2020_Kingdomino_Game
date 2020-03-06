@@ -140,7 +140,7 @@ public class KingdominoController {
 		
 	}
 	
-	public int CalculatePlayerScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom) {
+	public int CalculatePlayerScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle aCastle) {
 		int score =0;
 		int pscore =0;
 		int bonuscore =0;
@@ -153,7 +153,7 @@ public class KingdominoController {
 			}
 			
 		}
-		bonuscore = CalculateBonusScore(playedDominoes, aKingdom);
+		bonuscore = CalculateBonusScore(playedDominoes, aKingdom, aCastle);
 		score += bonuscore;
 		return score;
 	}
