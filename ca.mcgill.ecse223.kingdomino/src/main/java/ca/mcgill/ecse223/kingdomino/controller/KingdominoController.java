@@ -9,6 +9,7 @@ import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -185,8 +186,18 @@ public class KingdominoController {
 		Collections.sort(allDominos, (a, b) -> a.getId()-b.getId());
 		return allDominos.get(id-1);
 	}
-	
-	
+
+	public static boolean VerifyCastleAdjacency (int x, int y, DirectionKind aDirection) {
+		class coord {
+			public int x;
+			public int y;
+			public coord(int x,int y) {
+				this.x = x;
+				this.y = y;
+			}
+			public boolean equalsTo(coord aCoord) {
+				return (this.x == aCoord.x && this.y == aCoord.y);
+      }}
 	//completed ordered browse domino pile
 	public static ArrayList<Domino> BrowseDominoPile(Kingdomino kingdomino) {
 		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
@@ -206,10 +217,41 @@ public class KingdominoController {
 				players.set(j+1, players.get(j));
 				j--;
 			}
-			players.set(j+1, currentPlayer);
-			players.get(i-1).setCurrentRanking(i);
 		}
+		int x1 = 0, y1 = 0;
+		switch (aDirection) {
+		case Up:
+			y1 = y+1;
+			x1 = x;
+		case Left:
+			x1 = x-1;
+			y1 = y;
+		case Right:
+			x1 = x+1;
+			y1 = y;
+		case Down:
+			x1 = x;
+			y1 = y-1;
+			
+		}
+		coord tileOne = new coord(x,y);
+		coord tileTwo = new coord(x1,y1);
+		coord origin = new coord(0,0);
+		coord up = new coord(0,1);
+		coord right = new coord(1,0);
+		coord left = new coord(-1,0);
+		coord down = new coord(0,-1);
+		if ((tileOne.equalsTo(up) ||tileOne.equalsTo(right)||tileOne.equalsTo(left)||tileOne.equalsTo(down)) && !tileTwo.equalsTo(origin)) {
+			return true;
+		}
+		if ((tileTwo.equalsTo(up) ||tileTwo.equalsTo(right)||tileTwo.equalsTo(left)||tileTwo.equalsTo(down)) && !tileOne.equalsTo(origin)) {
+			return true;
+		}
+		return false;
+		
 	}
+
+
 	
 	//****BEGIN FEATURE 3***
 	//Starting a New Game
