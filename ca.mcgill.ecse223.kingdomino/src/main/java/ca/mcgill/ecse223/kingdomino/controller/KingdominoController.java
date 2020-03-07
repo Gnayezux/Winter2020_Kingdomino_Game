@@ -2,11 +2,14 @@ package ca.mcgill.ecse223.kingdomino.controller;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.*;
+import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
+import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,6 +18,23 @@ public class KingdominoController {
 	
 	public KingdominoController() {
 		
+  }
+	public static void ChooseNextDomino(Player curPlayer, Kingdomino kingdomino, String chosen) {
+		Game game = kingdomino.getCurrentGame();
+		Draft draft = game.getCurrentDraft();
+		
+		for(int i =0;i<draft.getIdSortedDominos().size();i++) {
+			if(Integer.parseInt(chosen)==draft.getIdSortedDomino(i).getId()) {
+				try {
+					draft.addSelection(curPlayer, draft.getIdSortedDomino(i));
+					
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+			}
+		}
+//		System.out.print(draft.getSelections().get(2).getPlayer());
 	}
 
 	public static void main(String[] args){
@@ -150,14 +170,25 @@ public class KingdominoController {
 		Collections.sort(allDominos, (a, b) -> a.getId()-b.getId());
 		return allDominos.get(id-1);
 	}
-	
-	
+
+	public static boolean VerifyCastleAdjacency (int x, int y, DirectionKind aDirection) {
+		class coord {
+			public int x;
+			public int y;
+			public coord(int x,int y) {
+				this.x = x;
+				this.y = y;
+			}
+			public boolean equalsTo(coord aCoord) {
+				return (this.x == aCoord.x && this.y == aCoord.y);
+      }}
 	//completed ordered browse domino pile
 	public static ArrayList<Domino> BrowseDominoPile(Kingdomino kingdomino) {
 		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
 		Collections.sort(allDominos, (a, b) -> a.getId()-b.getId());
 		return allDominos;
 	}
+
 	// Calculating the ranking of the players in the game
 	public static void calculateRanking(Kingdomino kingdomino) {
 		//Kingdomino kingdomino = KingdominoApplication.getKingdomino();
@@ -170,10 +201,41 @@ public class KingdominoController {
 				players.set(j+1, players.get(j));
 				j--;
 			}
-			players.set(j+1, currentPlayer);
-			players.get(i-1).setCurrentRanking(i);
 		}
+		int x1 = 0, y1 = 0;
+		switch (aDirection) {
+		case Up:
+			y1 = y+1;
+			x1 = x;
+		case Left:
+			x1 = x-1;
+			y1 = y;
+		case Right:
+			x1 = x+1;
+			y1 = y;
+		case Down:
+			x1 = x;
+			y1 = y-1;
+			
+		}
+		coord tileOne = new coord(x,y);
+		coord tileTwo = new coord(x1,y1);
+		coord origin = new coord(0,0);
+		coord up = new coord(0,1);
+		coord right = new coord(1,0);
+		coord left = new coord(-1,0);
+		coord down = new coord(0,-1);
+		if ((tileOne.equalsTo(up) ||tileOne.equalsTo(right)||tileOne.equalsTo(left)||tileOne.equalsTo(down)) && !tileTwo.equalsTo(origin)) {
+			return true;
+		}
+		if ((tileTwo.equalsTo(up) ||tileTwo.equalsTo(right)||tileTwo.equalsTo(left)||tileTwo.equalsTo(down)) && !tileOne.equalsTo(origin)) {
+			return true;
+		}
+		return false;
+		
 	}
+
+
 	
 	//****BEGIN FEATURE 3***
 	//Starting a New Game
@@ -478,5 +540,135 @@ public class KingdominoController {
 		
 		return draft;
 	}
+
+
+	public DominoInKingdom rightTile (DominoInKingdom leftTile) {
+		DominoInKingdom rightTile = new DominoInKingdom(leftTile.getX(), leftTile.getY(), leftTile.getKingdom(), leftTile.getDomino());
+		TerrainType terr = leftTile.getDomino().getRightTile();
+		if(leftTile.getDirection()==DirectionKind.Up) {
+			rightTile.setY(leftTile.getY()+1);
+		}
+		else if (leftTile.getDirection() == DirectionKind.Down) {
+			rightTile.setY(leftTile.getY()-1);
+		}
+		else if (leftTile.getDirection() == DirectionKind.Left) {
+			rightTile.setX(leftTile.getX()-1);
+		}
+		else {
+			rightTile.setX(leftTile.getX()+1);
+		}
+		
+		return rightTile;
+	}
+	
+	public boolean isConnected(DominoInKingdom d1, DominoInKingdom d2) {
+		if (d1.getX()==d2.getX()&&d1.getY()==d2.getY()-1) {
+			return true;
+		}
+		else if (d1.getX()==d2.getX()&&d1.getY()==d2.getY()+1) {
+			return true;
+		}
+		else if (d1.getY()==d2.getY()&&d1.getX()==d2.getX()-1) {
+			return true;
+		}
+		else if (d1.getY()==d2.getY()&&d1.getX()==d2.getX()+1) {
+			return true;
+		}
+		
+		return false;	
+	}
+	
+	public Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom){
+		
+		
+		Property[] myProperties= new Property[playedDominoes.length];
+		for(int i=0; i<playedDominoes.length; i++) {
+			Property aProperty = new Property(aKingdom);
+			for(int j=0; j<playedDominoes.length; j++) {
+				if(isConnected(playedDominoes[i],playedDominoes[j])) {
+					if(playedDominoes[i].getDomino().getLeftTile()==playedDominoes[j].getDomino().getLeftTile()) {
+						
+					}
+				}
+			
+			aProperty.setLeftTile(playedDominoes[i].getDomino().getLeftTile());
+			aProperty.addIncludedDomino(playedDominoes[i].getDomino());
+			aProperty.setKingdom(aKingdom);
+			myProperties[i] = aProperty;
+			}
+		}
+		return myProperties;
+		
+	}
+	
+	public void CalculatePropertyAttributes(Property aProperty){
+		int numCrowns=0;
+		int size =0;
+		for (int i=0; i< aProperty.numberOfIncludedDominos(); i++) {
+			if(aProperty.getLeftTile()== aProperty.getIncludedDomino(i).getLeftTile()) {
+				numCrowns += aProperty.getIncludedDomino(i).getLeftCrown();
+			}
+			else if (aProperty.getLeftTile()== aProperty.getIncludedDomino(i).getRightTile()){
+				numCrowns += aProperty.getIncludedDomino(i).getRightCrown();
+			}
+			
+			size++;
+		}
+		aProperty.setCrowns(numCrowns);
+		aProperty.setSize(size);
+	}
+	
+	public int CalculateBonusScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle castle) {
+		int bonus = 0;
+		boolean middlexl = false;
+		boolean middlexr = false;
+		boolean middleyt = false;
+		boolean middleyb = false;
+		if (playedDominoes.length ==12) {
+			bonus +=5;
+		}
+		
+		for (int i=0; i<playedDominoes.length; i++) {
+			if(playedDominoes[i].getX()==castle.getX()-2) {
+				middlexl = true;
+				}
+			if (playedDominoes[i].getX()==castle.getX()+2) {
+				middlexr = true;
+			}
+			if (playedDominoes[i].getY()==castle.getY()-2) {
+				middleyb = true;
+			}
+			if (playedDominoes[i].getY()==castle.getY()+2) {
+				middleyt = true;
+			}
+			
+		}
+		if(middlexl&&middlexr&&middleyb&&middleyt) {
+			bonus+=10;
+		}
+		
+			
+		return bonus;
+		
+	}
+	
+	public int CalculatePlayerScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle aCastle) {
+		int score =0;
+		int pscore =0;
+		int bonuscore =0;
+		Property[] myProp = IdentifyKingdomProperties(playedDominoes,aKingdom);
+		for(int i=0; i< myProp.length; i++) {
+			if (myProp[i]!=null) {
+				CalculatePropertyAttributes(myProp[i]);
+				pscore = myProp[i].getCrowns()*myProp[i].getSize();
+				score+=pscore;
+			}
+			
+		}
+		bonuscore = CalculateBonusScore(playedDominoes, aKingdom, aCastle);
+		score += bonuscore;
+		return score;
+	}
+	
 	
 }
