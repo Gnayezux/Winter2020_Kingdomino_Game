@@ -31,14 +31,18 @@ public class KingdominoController {
 
 	
 	public static Domino BrowseDomino(int id, Kingdomino kingdomino) {
+
 //		createAllDominoes(kingdomino.getCurrentGame());
+
 		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
 		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
 		return allDominos.get(id - 1);
 	}
 
 	public static List<Domino> BrowseFilteredDominos(String terrain, Kingdomino kingdomino) {
+
 //		createAllDominoes(kingdomino.getCurrentGame());
+
 		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
 		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
 		List<Domino> filteredList = (allDominos.stream()
@@ -813,74 +817,94 @@ public class KingdominoController {
 	}
 
 	//TODO
-	public Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom) {
-		Property[] myProperties = new Property[playedDominoes.length];
-		for (int i = 0; i < playedDominoes.length; i++) {
-			Property aProperty = new Property(aKingdom);
-			for (int j = 0; j < playedDominoes.length; j++) {
-				if (isConnected(playedDominoes[i], playedDominoes[j])) {
-					if (playedDominoes[i].getDomino().getLeftTile() == playedDominoes[j].getDomino().getLeftTile()) {
 
+	public Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom){
+		
+
+		Property[] myProperties= new Property[playedDominoes.length];
+		for(int i=0; i<playedDominoes.length; i++) {
+
+			Property aProperty = new Property(aKingdom);
+			if(aProperty.getIncludedDominos()==null) {
+				aProperty.addIncludedDomino(playedDominoes[i].getDomino());
+				
+			}
+				for(int j=i+1; j<playedDominoes.length; j++) {
+					if(isConnected(playedDominoes[j], playedDominoes[i])) {
+						if (playedDominoes[j].getDomino().getLeftTile()==playedDominoes[i].getDomino().getLeftTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
+					}
+					else if(isConnected(playedDominoes[j], rightTile(playedDominoes[i]))) {
+						if (playedDominoes[j].getDomino().getLeftTile()==playedDominoes[i].getDomino().getRightTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
+					}
+					else if(isConnected(rightTile(playedDominoes[j]), playedDominoes[i])) {
+						if (playedDominoes[j].getDomino().getRightTile()==playedDominoes[i].getDomino().getLeftTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
+					}
+					else if(isConnected(rightTile(playedDominoes[j]), rightTile(playedDominoes[i]))) {
+						if (playedDominoes[j].getDomino().getRightTile()==playedDominoes[i].getDomino().getRightTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
 					}
 				}
-
-				aProperty.setLeftTile(playedDominoes[i].getDomino().getLeftTile());
-				aProperty.addIncludedDomino(playedDominoes[i].getDomino());
-				aProperty.setKingdom(aKingdom);
-				myProperties[i] = aProperty;
-			}
 		}
 		return myProperties;
-
+		
 	}
-
-	public void CalculatePropertyAttributes(Property aProperty) {
-		int numCrowns = 0;
-		int size = 0;
-		for (int i = 0; i < aProperty.numberOfIncludedDominos(); i++) {
-			if (aProperty.getLeftTile() == aProperty.getIncludedDomino(i).getLeftTile()) {
+	
+	public void CalculatePropertyAttributes(Property aProperty){
+		int numCrowns=0;
+		int size =0;
+		for (int i=0; i< aProperty.numberOfIncludedDominos(); i++) {
+			if(aProperty.getLeftTile()== aProperty.getIncludedDomino(i).getLeftTile()) {
 				numCrowns += aProperty.getIncludedDomino(i).getLeftCrown();
-			} else if (aProperty.getLeftTile() == aProperty.getIncludedDomino(i).getRightTile()) {
+			}
+			else if (aProperty.getLeftTile()== aProperty.getIncludedDomino(i).getRightTile()){
 				numCrowns += aProperty.getIncludedDomino(i).getRightCrown();
 			}
-
+			
 			size++;
 		}
 		aProperty.setCrowns(numCrowns);
 		aProperty.setSize(size);
 	}
-
+	
 	public int CalculateBonusScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle castle) {
 		int bonus = 0;
 		boolean middlexl = false;
 		boolean middlexr = false;
 		boolean middleyt = false;
 		boolean middleyb = false;
-		if (playedDominoes.length == 12) {
-			bonus += 5;
+		if (playedDominoes.length ==12) {
+			bonus +=5;
 		}
-
-		for (int i = 0; i < playedDominoes.length; i++) {
-			if (playedDominoes[i].getX() == castle.getX() - 2) {
+		
+		for (int i=0; i<playedDominoes.length; i++) {
+			if ((playedDominoes[i].getX()==castle.getX()-2)||(rightTile(playedDominoes[i]).getX()== castle.getX()-2)) {
 				middlexl = true;
-			}
-			if (playedDominoes[i].getX() == castle.getX() + 2) {
+				}
+			if ((playedDominoes[i].getX()==castle.getX()+2)||(rightTile(playedDominoes[i]).getX()== castle.getX()+2)) {
 				middlexr = true;
 			}
-			if (playedDominoes[i].getY() == castle.getY() - 2) {
+			if ((playedDominoes[i].getY()==castle.getY()-2)||(rightTile(playedDominoes[i]).getY()== castle.getY()-2)) {
 				middleyb = true;
 			}
-			if (playedDominoes[i].getY() == castle.getY() + 2) {
+			if ((playedDominoes[i].getY()==castle.getY()+2)||(rightTile(playedDominoes[i]).getY()== castle.getY()+2)) {
 				middleyt = true;
 			}
-
+			
 		}
-		if (middlexl && middlexr && middleyb && middleyt) {
-			bonus += 10;
+		if(middlexl&&middlexr&&middleyb&&middleyt) {
+			bonus+=10;
 		}
-
+		
+			
 		return bonus;
-
+		
 	}
 
 	public int CalculatePlayerScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle aCastle) {
@@ -1088,9 +1112,8 @@ public class KingdominoController {
 					}
 				}
 			}
-
-		}}
-
+		}
+	}
 
 	// Feature 18, discardDomino
 	public static void discardDomino(DominoInKingdom currentDomino) {
