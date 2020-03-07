@@ -10,23 +10,23 @@ public class KingdominoController {
 	public KingdominoController() {
 		
 	}
-	public static void main(String[] args) throws Exception {
-
-		Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		game.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(game);
-
-		SetGameOptions(3, kingdomino);
-	
-
-		SetGameOptions("is not", kingdomino, "isUsingHarmony");
-		
-		
-		
-		System.out.print(game.getSelectedBonusOptions());
-
-	}
+//	public static void main(String[] args) throws Exception {
+//
+//		Kingdomino kingdomino = new Kingdomino();
+//		Game game = new Game(48, kingdomino);
+//		game.setNumberOfPlayers(4);
+//		kingdomino.setCurrentGame(game);
+//
+//		SetGameOptions(3, kingdomino);
+//	
+//
+//		SetGameOptions("is not", kingdomino, "isUsingHarmony");
+//		
+//		
+//		
+//		System.out.print(game.getSelectedBonusOptions());
+//
+//	}
 	
 	/**
 	 * SetGameOptions method that set the number of players of the game with param num
