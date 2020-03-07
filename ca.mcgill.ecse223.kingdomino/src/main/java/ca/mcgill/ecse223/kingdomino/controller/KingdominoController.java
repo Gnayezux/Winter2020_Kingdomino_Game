@@ -659,16 +659,16 @@ public class KingdominoController {
 		}
 		
 		for (int i=0; i<playedDominoes.length; i++) {
-			if(playedDominoes[i].getX()==castle.getX()-2) {
+			if ((playedDominoes[i].getX()==castle.getX()-2)||(rightTile(playedDominoes[i]).getX()== castle.getX()-2)) {
 				middlexl = true;
 				}
-			if (playedDominoes[i].getX()==castle.getX()+2) {
+			if ((playedDominoes[i].getX()==castle.getX()+2)||(rightTile(playedDominoes[i]).getX()== castle.getX()+2)) {
 				middlexr = true;
 			}
-			if (playedDominoes[i].getY()==castle.getY()-2) {
+			if ((playedDominoes[i].getY()==castle.getY()-2)||(rightTile(playedDominoes[i]).getY()== castle.getY()-2)) {
 				middleyb = true;
 			}
-			if (playedDominoes[i].getY()==castle.getY()+2) {
+			if ((playedDominoes[i].getY()==castle.getY()+2)||(rightTile(playedDominoes[i]).getY()== castle.getY()+2)) {
 				middleyt = true;
 			}
 			
