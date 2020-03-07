@@ -158,6 +158,15 @@ public class KingdominoController {
 		return false;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public static ArrayList<Domino> BrowseDominoPile(Kingdomino kingdomino) {
 		createAllDominoes(kingdomino.getCurrentGame());
 		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
