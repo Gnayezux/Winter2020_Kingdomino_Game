@@ -9,6 +9,73 @@ public class KingdominoController {
 	public KingdominoController() {
 		
 	}
+	public static void main(String[] args) throws Exception {
+
+		Kingdomino kingdomino = new Kingdomino();
+		Game game = new Game(48, kingdomino);
+		game.setNumberOfPlayers(4);
+		kingdomino.setCurrentGame(game);
+
+		SetGameOptions(3, kingdomino);
+	
+
+		SetGameOptions("is not", kingdomino, "isUsingHarmony");
+		
+		
+		
+		System.out.print(game.getSelectedBonusOptions());
+
+	}
+	
+	/**
+	 * SetGameOptions method that set the number of players of the game with param num
+	 * @param num
+	 * @param kingdomino
+	 * @throws Exception
+	 * @author Abdallah Shapsough
+	 */
+	public static void SetGameOptions(int num, Kingdomino kingdomino) throws Exception {
+		if(num<2||num>4) {
+			throw new Exception("Number of players has to be between 2 and 4");
+		}
+		
+		Game game = kingdomino.getCurrentGame();
+		game.setNumberOfPlayers(num);
+	}
+	
+
+	/**
+	 * SetGameOptions method that takes in different parameters and is responsible for adding or removing the 
+	 * selected bonus options from the current game
+	 * string: must be equal to either "is" or "is not"
+	 * bonus: must be equal to either "isUsingHarmony" or "isUsingMiddleKingdom"
+	 * kingdomino: must be equal to Kingdomino kingdomino
+	 * @param string
+	 * @param kingdomino
+	 * @param bonus
+	 * @author Abdallah Shapsough
+	 */
+	public static void SetGameOptions(String string, Kingdomino kingdomino, String bonus) {
+		
+		//get current game of kingdomino
+		Game game = kingdomino.getCurrentGame();
+		
+		//either add selected bonus option if string = "is" or find and remove selected bonus option if string = "is not"
+			BonusOption bonusOption= new BonusOption(bonus, kingdomino);
+			if(string.equals("is")) {
+				game.addSelectedBonusOption(bonusOption);
+			}else {
+				BonusOption toRemove = null;
+				for(BonusOption temp : game.getSelectedBonusOptions()) {
+					if(bonus.equals(temp.getOptionName())) {
+						toRemove = temp;
+					}
+				}
+				game.removeSelectedBonusOption(toRemove);
+			}
+	}
+	
+
 	
 	// Calculating the ranking of the players in the game
 	public static void calculateRanking(Kingdomino kingdomino) {
