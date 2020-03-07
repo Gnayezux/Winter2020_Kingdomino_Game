@@ -596,22 +596,36 @@ public class KingdominoController {
 	
 	public Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom){
 		
-		
+
 		Property[] myProperties= new Property[playedDominoes.length];
 		for(int i=0; i<playedDominoes.length; i++) {
 			Property aProperty = new Property(aKingdom);
-			for(int j=0; j<playedDominoes.length; j++) {
-				if(isConnected(playedDominoes[i],playedDominoes[j])) {
-					if(playedDominoes[i].getDomino().getLeftTile()==playedDominoes[j].getDomino().getLeftTile()) {
-						
+			if(aProperty.getIncludedDominos()==null) {
+				aProperty.addIncludedDomino(playedDominoes[i].getDomino());
+				
+			}
+				for(int j=i+1; j<playedDominoes.length; j++) {
+					if(isConnected(playedDominoes[j], playedDominoes[i])) {
+						if (playedDominoes[j].getDomino().getLeftTile()==playedDominoes[i].getDomino().getLeftTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
+					}
+					else if(isConnected(playedDominoes[j], rightTile(playedDominoes[i]))) {
+						if (playedDominoes[j].getDomino().getLeftTile()==playedDominoes[i].getDomino().getRightTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
+					}
+					else if(isConnected(rightTile(playedDominoes[j]), playedDominoes[i])) {
+						if (playedDominoes[j].getDomino().getRightTile()==playedDominoes[i].getDomino().getLeftTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
+					}
+					else if(isConnected(rightTile(playedDominoes[j]), rightTile(playedDominoes[i]))) {
+						if (playedDominoes[j].getDomino().getRightTile()==playedDominoes[i].getDomino().getRightTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
 					}
 				}
-			
-			aProperty.setLeftTile(playedDominoes[i].getDomino().getLeftTile());
-			aProperty.addIncludedDomino(playedDominoes[i].getDomino());
-			aProperty.setKingdom(aKingdom);
-			myProperties[i] = aProperty;
-			}
 		}
 		return myProperties;
 		
