@@ -22,6 +22,37 @@ public class KingdominoController {
 
 	}
 
+	public static ArrayList<Domino> BrowseDominoPile(Kingdomino kingdomino) {
+		createAllDominoes(kingdomino.getCurrentGame());
+		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
+		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
+		return allDominos;
+	}
+
+	
+	public static Domino BrowseDomino(int id, Kingdomino kingdomino) {
+
+//		createAllDominoes(kingdomino.getCurrentGame());
+
+		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
+		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
+		return allDominos.get(id - 1);
+	}
+
+	public static List<Domino> BrowseFilteredDominos(String terrain, Kingdomino kingdomino) {
+
+//		createAllDominoes(kingdomino.getCurrentGame());
+
+		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
+		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
+		List<Domino> filteredList = (allDominos.stream()
+				.filter(domino -> domino.getLeftTile().equals(getTerrainTypeFilter(terrain))
+						|| domino.getRightTile().equals(getTerrainTypeFilter(terrain)))
+				.collect(Collectors.toList()));
+		return filteredList;
+	}
+
+	/// ABOVE IS GOOD
 	public static void ChooseNextDomino(Player curPlayer, Kingdomino kingdomino, String chosen) {
 		Game game = kingdomino.getCurrentGame();
 		Draft draft = game.getCurrentDraft();
@@ -258,13 +289,13 @@ public class KingdominoController {
 	}
 
 
-
-	//completed browse single domino
-	public static Domino BrowseDomino(int id,Kingdomino kingdomino) {
-		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
-		Collections.sort(allDominos, (a, b) -> a.getId()-b.getId());
-		return allDominos.get(id-1);
-	}
+//
+//	//completed browse single domino
+//	public static Domino BrowseDomino(int id,Kingdomino kingdomino) {
+//		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
+//		Collections.sort(allDominos, (a, b) -> a.getId()-b.getId());
+//		return allDominos.get(id-1);
+//	}
 
 	
 
@@ -273,10 +304,12 @@ public class KingdominoController {
 		class coord {
 			public int x;
 			public int y;
-			public coord(int x,int y) {
+
+			public coord(int x, int y) {
 				this.x = x;
 				this.y = y;
 			}
+
 			public boolean equalsTo(coord aCoord) {
 				return (this.x == aCoord.x && this.y == aCoord.y);
 			}
@@ -284,60 +317,49 @@ public class KingdominoController {
 		int x1 = 0, y1 = 0;
 		switch (aDirection) {
 		case Up:
-			y1 = y+1;
+			y1 = y + 1;
 			x1 = x;
 		case Left:
-			x1 = x-1;
+			x1 = x - 1;
 			y1 = y;
 		case Right:
-			x1 = x+1;
+			x1 = x + 1;
 			y1 = y;
 		case Down:
 			x1 = x;
-			y1 = y-1;
+			y1 = y - 1;
 		}
-		coord tileOne = new coord(x,y);
-		coord tileTwo = new coord(x1,y1);
-		for (KingdomTerritory d: aKingdom.getTerritories()) {
-			coord temp = new coord(d.getX(),d.getY());
+		coord tileOne = new coord(x, y);
+		coord tileTwo = new coord(x1, y1);
+		for (KingdomTerritory d : aKingdom.getTerritories()) {
+			coord temp = new coord(d.getX(), d.getY());
 			if (d.getClass().toString() == "DominoInKingdom") {
 				DominoInKingdom dik = (DominoInKingdom) d;
-				int x2 = 0,y2 = 0;
+				int x2 = 0, y2 = 0;
 				switch (dik.getDirection()) {
 				case Up:
-					y2 = dik.getY()+1;
+					y2 = dik.getY() + 1;
 					x2 = dik.getX();
 				case Left:
-					x2 = dik.getX()-1;
+					x2 = dik.getX() - 1;
 					y2 = dik.getY();
 				case Right:
-					x2 = dik.getX()+1;
+					x2 = dik.getX() + 1;
 					y2 = dik.getY();
 				case Down:
 					x2 = dik.getX();
-					y2 = dik.getY()-1;
-					}
+					y2 = dik.getY() - 1;
+				}
 				coord leftcoord, rightcoord;
-				leftcoord = new coord(dik.getX(),dik.getY());
-				rightcoord = new coord(x2,y2);
-				if (leftcoord.equalsTo(tileOne) || leftcoord.equals(tileTwo) || rightcoord.equalsTo(tileOne) || rightcoord.equalsTo(tileTwo)) {
+				leftcoord = new coord(dik.getX(), dik.getY());
+				rightcoord = new coord(x2, y2);
+				if (leftcoord.equalsTo(tileOne) || leftcoord.equals(tileTwo) || rightcoord.equalsTo(tileOne)
+						|| rightcoord.equalsTo(tileTwo)) {
 					return false;
 				}
 			}
 		}
 		return true;
-	}
-
-	// completed browse filtered domino with help of getTerrainTypeFilter method
-	public static List<Domino> BrowseFilteredDominos(String terrain, Kingdomino kingdomino) {
-		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
-		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
-		List<Domino> filteredList = (allDominos.stream()
-				.filter(domino -> domino.getLeftTile().equals(getTerrainTypeFilter(terrain))
-						|| domino.getRightTile().equals(getTerrainTypeFilter(terrain)))
-				.collect(Collectors.toList()));
-		return filteredList;
-
 	}
 
 	public static boolean VerifyGridSize(Kingdom aKingdom) {
@@ -395,7 +417,7 @@ public class KingdominoController {
 		return ((maxX - minX) < 5 && (maxY - minY) < 5);
 	}
 
-	
+
 
 	public static boolean VerifyCastleAdjacency(int x, int y, DirectionKind aDirection) {
 		class coord {
@@ -446,11 +468,6 @@ public class KingdominoController {
 	}
 
 	// completed ordered browse domino pile
-	public static ArrayList<Domino> BrowseDominoPile(Kingdomino kingdomino) {
-		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
-		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
-		return allDominos;
-	}
 
 	// ****BEGIN FEATURE 3***
 	// Starting a New Game
@@ -474,7 +491,6 @@ public class KingdominoController {
 
 		}
 		createAllDominoes(kingdomino.getCurrentGame());
-
 	}
 
 	public static void createAllDominoes(Game game) {
@@ -581,7 +597,7 @@ public class KingdominoController {
 	 * @return returns a List of shuffled dominos
 	 * @author Maxime Rieuf
 	 */
-	public static List<Domino> shuffleDominos(Kingdomino kingdomino) {
+	public static void shuffleDominos(Kingdomino kingdomino) {
 		// based on number of players in game, number of dominos differ
 
 //		Game newGame = new Game(48, kingdomino);
@@ -597,7 +613,12 @@ public class KingdominoController {
 			dominos.set(i, temp);
 		}
 
-		return dominos;
+		for(int i =0;i<dominos.size();i++) {
+			game.addOrMoveAllDominoAt(dominos.get(i), i);
+		}
+
+		getFirstDraft(kingdomino);
+		
 	}
 
 	/**
@@ -608,21 +629,16 @@ public class KingdominoController {
 	 */
 	public static Draft getFirstDraft(Kingdomino kingdomino) {
 
-		// List<Domino> dominos = new
-		// ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
-		// List<Domino> dominos = shuffleDominos(kingdomino);
+		
 		List<Domino> dominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
-//		System.out.print(dominos);
-//		shuffleDominos(dominos);
+
 		Draft draft = new Draft(Draft.DraftStatus.FaceDown, kingdomino.getCurrentGame());
-//		for(int i=dominos.size()-1; i>dominos.size()-5; i--) {
-//			draft.addIdSortedDomino(dominos.get(i));
-//			dominos.get(i).delete();
-//		}
+
 		for (int i = 0; i < 4; i++) {
 			draft.addIdSortedDomino(dominos.get(i));
 			dominos.get(i).delete();
 		}
+		
 
 		kingdomino.getCurrentGame().setCurrentDraft(draft);
 
@@ -641,35 +657,46 @@ public class KingdominoController {
 	 * @return the dominos ordered in the fixed arrangement wanted
 	 * @author Maxime Rieuf
 	 */
-	public static List<Domino> getFixedOrder(Kingdomino kingdomino, String string) {
+	public static void getFixedOrder(Kingdomino kingdomino, String string) {
 		// TODO does not return the right list but does enough to pass tests. Must
 		// correct
-
-		List<Domino> dominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
+		Game game = kingdomino.getCurrentGame();
+		List<Domino> dominos = new ArrayList<Domino>(game.getAllDominos());
 
 		string = string.replaceAll("\\s+", "");
 		string = string.replace("\"", "");
 		List<String> numbers = new ArrayList<String>(Arrays.asList(string.split(",")));
 
-		Game game = kingdomino.getCurrentGame();
-		// List<Domino> list = new ArrayList<Domino>();
+//		for(int i = 0;i<dominos.size();i++) {
+//			dominos.get(i).delete();
+//		}
 
-		for (int i = 0; i < numbers.size(); i++) {
-			int id = Integer.parseInt(numbers.get(i));
-			Domino temp = dominos.get(id - 1);
-			game.addOrMoveAllDominoAt(game.getAllDomino(i), id - 1);
-			game.addOrMoveAllDominoAt(temp, i);
-			// System.out.println(game.getAllDomino(i).getId());
-			// list.add(game.getAllDomino(i));
-
+		
+		for(int i = 0;i<dominos.size();i++) {
+			game.addOrMoveAllDominoAt(dominos.get(Integer.parseInt(numbers.get(i))-1), i);
+//			System.out.print(i);
+//			game.a
 		}
+		getFirstDraft(kingdomino);
+//		System.out.print(game.getAllDominos());
+		// List<Domino> list = new ArrayList<Domino>();
+		
+//		for (int i = 0; i < numbers.size(); i++) {
+//			int id = Integer.parseInt(numbers.get(i));
+//			Domino temp = dominos.get(id - 1);
+//			game.addOrMoveAllDominoAt(game.getAllDomino(i), id - 1);
+//			game.addOrMoveAllDominoAt(temp, i);
+//			// System.out.println(game.getAllDomino(i).getId());
+//			// list.add(game.getAllDomino(i));
+//
+//		}
 //		System.out.println(list);
 //		for(int i=0; i<list.size();i++) {
 //			game.setTopDominoInPile(list.get(i));
 //		}
 //		System.out.println(game.getAllDominos());
 //		return list;
-		return game.getAllDominos();
+	
 	}
 	// *********END FEATURE 5***********
 
@@ -789,75 +816,95 @@ public class KingdominoController {
 		return false;
 	}
 
-	public Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom) {
+	//TODO
 
-		Property[] myProperties = new Property[playedDominoes.length];
-		for (int i = 0; i < playedDominoes.length; i++) {
+	public Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom){
+		
+
+		Property[] myProperties= new Property[playedDominoes.length];
+		for(int i=0; i<playedDominoes.length; i++) {
+
 			Property aProperty = new Property(aKingdom);
-			for (int j = 0; j < playedDominoes.length; j++) {
-				if (isConnected(playedDominoes[i], playedDominoes[j])) {
-					if (playedDominoes[i].getDomino().getLeftTile() == playedDominoes[j].getDomino().getLeftTile()) {
-
+			if(aProperty.getIncludedDominos()==null) {
+				aProperty.addIncludedDomino(playedDominoes[i].getDomino());
+				
+			}
+				for(int j=i+1; j<playedDominoes.length; j++) {
+					if(isConnected(playedDominoes[j], playedDominoes[i])) {
+						if (playedDominoes[j].getDomino().getLeftTile()==playedDominoes[i].getDomino().getLeftTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
+					}
+					else if(isConnected(playedDominoes[j], rightTile(playedDominoes[i]))) {
+						if (playedDominoes[j].getDomino().getLeftTile()==playedDominoes[i].getDomino().getRightTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
+					}
+					else if(isConnected(rightTile(playedDominoes[j]), playedDominoes[i])) {
+						if (playedDominoes[j].getDomino().getRightTile()==playedDominoes[i].getDomino().getLeftTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
+					}
+					else if(isConnected(rightTile(playedDominoes[j]), rightTile(playedDominoes[i]))) {
+						if (playedDominoes[j].getDomino().getRightTile()==playedDominoes[i].getDomino().getRightTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
 					}
 				}
-
-				aProperty.setLeftTile(playedDominoes[i].getDomino().getLeftTile());
-				aProperty.addIncludedDomino(playedDominoes[i].getDomino());
-				aProperty.setKingdom(aKingdom);
-				myProperties[i] = aProperty;
-			}
 		}
 		return myProperties;
-
+		
 	}
-
-	public void CalculatePropertyAttributes(Property aProperty) {
-		int numCrowns = 0;
-		int size = 0;
-		for (int i = 0; i < aProperty.numberOfIncludedDominos(); i++) {
-			if (aProperty.getLeftTile() == aProperty.getIncludedDomino(i).getLeftTile()) {
+	
+	public void CalculatePropertyAttributes(Property aProperty){
+		int numCrowns=0;
+		int size =0;
+		for (int i=0; i< aProperty.numberOfIncludedDominos(); i++) {
+			if(aProperty.getLeftTile()== aProperty.getIncludedDomino(i).getLeftTile()) {
 				numCrowns += aProperty.getIncludedDomino(i).getLeftCrown();
-			} else if (aProperty.getLeftTile() == aProperty.getIncludedDomino(i).getRightTile()) {
+			}
+			else if (aProperty.getLeftTile()== aProperty.getIncludedDomino(i).getRightTile()){
 				numCrowns += aProperty.getIncludedDomino(i).getRightCrown();
 			}
-
+			
 			size++;
 		}
 		aProperty.setCrowns(numCrowns);
 		aProperty.setSize(size);
 	}
-
+	
 	public int CalculateBonusScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle castle) {
 		int bonus = 0;
 		boolean middlexl = false;
 		boolean middlexr = false;
 		boolean middleyt = false;
 		boolean middleyb = false;
-		if (playedDominoes.length == 12) {
-			bonus += 5;
+		if (playedDominoes.length ==12) {
+			bonus +=5;
 		}
-
-		for (int i = 0; i < playedDominoes.length; i++) {
-			if (playedDominoes[i].getX() == castle.getX() - 2) {
+		
+		for (int i=0; i<playedDominoes.length; i++) {
+			if ((playedDominoes[i].getX()==castle.getX()-2)||(rightTile(playedDominoes[i]).getX()== castle.getX()-2)) {
 				middlexl = true;
-			}
-			if (playedDominoes[i].getX() == castle.getX() + 2) {
+				}
+			if ((playedDominoes[i].getX()==castle.getX()+2)||(rightTile(playedDominoes[i]).getX()== castle.getX()+2)) {
 				middlexr = true;
 			}
-			if (playedDominoes[i].getY() == castle.getY() - 2) {
+			if ((playedDominoes[i].getY()==castle.getY()-2)||(rightTile(playedDominoes[i]).getY()== castle.getY()-2)) {
 				middleyb = true;
 			}
-			if (playedDominoes[i].getY() == castle.getY() + 2) {
+			if ((playedDominoes[i].getY()==castle.getY()+2)||(rightTile(playedDominoes[i]).getY()== castle.getY()+2)) {
 				middleyt = true;
 			}
-
+			
 		}
-		if (middlexl && middlexr && middleyb && middleyt) {
-			bonus += 10;
+		if(middlexl&&middlexr&&middleyb&&middleyt) {
+			bonus+=10;
 		}
-
+		
+			
 		return bonus;
-
+		
 	}
 
 	public int CalculatePlayerScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle aCastle) {
@@ -878,237 +925,233 @@ public class KingdominoController {
 		return score;
 	}
 
-	//Feature 11, moveCurrentDomino
+	// Feature 11, moveCurrentDomino
 	public static void moveCurrentDomino(DominoInKingdom currentDomino, DirectionKind newDirection) {
-		
+
 		Kingdom currentKD = currentDomino.getKingdom();
 		DominoStatus newCurrentDominoStatus;
 		int currentDominoX = currentDomino.getX();
 		int currentDominoY = currentDomino.getY();
 		boolean placementError = false;
-		
-		
-		if(newDirection == DirectionKind.Up) {
+
+		if (newDirection == DirectionKind.Up) {
 			currentDomino.setDirection(DirectionKind.Up);
 			currentDomino.setY(currentDominoY + 1);
-			currentDominoY ++;
-		}else if (newDirection == DirectionKind.Down) {
+			currentDominoY++;
+		} else if (newDirection == DirectionKind.Down) {
 			currentDomino.setDirection(DirectionKind.Down);
 			currentDomino.setY(currentDominoY - 1);
-			currentDominoY --;
-		}else if (newDirection == DirectionKind.Left) {
+			currentDominoY--;
+		} else if (newDirection == DirectionKind.Left) {
 			currentDomino.setDirection(DirectionKind.Left);
 			currentDomino.setX(currentDominoX - 1);
-			currentDominoX --;
-		}else {
+			currentDominoX--;
+		} else {
 			currentDomino.setDirection(DirectionKind.Right);
 			currentDomino.setX(currentDominoX + 1);
-			currentDominoX ++;
+			currentDominoX++;
 		}
-		
-		
-		
-		if(currentDominoX == 0 && currentDominoY == 0) {
+
+		if (currentDominoX == 0 && currentDominoY == 0) {
 			placementError = true;
-		}else if(currentDominoX < -9 || currentDominoX > 9) {
+		} else if (currentDominoX < -9 || currentDominoX > 9) {
 			placementError = true;
-		}else if(currentDominoY < -9 || currentDominoY > 9) {
+		} else if (currentDominoY < -9 || currentDominoY > 9) {
 			placementError = true;
-		}else {
+		} else {
 			placementError = false;
 		}
-		
-		for(int i = 0; i < currentKD.getTerritories().size(); i++) {
-			if(currentDomino.getX()==currentKD.getTerritory(i).getX() || currentDomino.getY()==currentKD.getTerritory(i).getY()){
+
+		for (int i = 0; i < currentKD.getTerritories().size(); i++) {
+			if (currentDomino.getX() == currentKD.getTerritory(i).getX()
+					|| currentDomino.getY() == currentKD.getTerritory(i).getY()) {
 				placementError = true;
 			}
 		}
-		
-		
-		
-		
-		
-		if(placementError = true) {
+
+		if (placementError = true) {
 			currentDomino.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
-		}else {
+		} else {
 			currentDomino.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
 		}
-		
-		
-		
-		
+
 	}
-	
-	//Feature 12, rotateCurrentDomino
-	public static void rotateCurrentDomino(Boolean isClockwise,DominoInKingdom currentDomino) {
-		
+
+	// Feature 12, rotateCurrentDomino
+	public static void rotateCurrentDomino(Boolean isClockwise, DominoInKingdom currentDomino) {
+
 		Kingdom currentKD = currentDomino.getKingdom();
-		
-		if(isClockwise == true) {
-			if(currentDomino.getDirection()== DirectionKind.Up) {
-				
+
+		if (isClockwise == true) {
+			if (currentDomino.getDirection() == DirectionKind.Up) {
+
 				currentDomino.setDirection(DirectionKind.Right);
 				currentDomino.setX(currentDomino.getX() + 1);
 				currentDomino.setY(currentDomino.getY() - 1);
-			
-			}else if(currentDomino.getDirection()== DirectionKind.Down) {
-				
+
+			} else if (currentDomino.getDirection() == DirectionKind.Down) {
+
 				currentDomino.setDirection(DirectionKind.Left);
 				currentDomino.setX(currentDomino.getX() - 1);
 				currentDomino.setY(currentDomino.getY() + 1);
-			
-			}else if(currentDomino.getDirection()== DirectionKind.Left) {
-				
+
+			} else if (currentDomino.getDirection() == DirectionKind.Left) {
+
 				currentDomino.setDirection(DirectionKind.Up);
 				currentDomino.setX(currentDomino.getX() + 1);
 				currentDomino.setY(currentDomino.getY() + 1);
-			
-			}else {
-				
+
+			} else {
+
 				currentDomino.setDirection(DirectionKind.Down);
 				currentDomino.setX(currentDomino.getX() - 1);
 				currentDomino.setY(currentDomino.getY() - 1);
 			}
-		
-		}else {
-			if(currentDomino.getDirection()== DirectionKind.Up) {
-				
+
+		} else {
+			if (currentDomino.getDirection() == DirectionKind.Up) {
+
 				currentDomino.setDirection(DirectionKind.Left);
 				currentDomino.setX(currentDomino.getX() - 1);
 				currentDomino.setY(currentDomino.getY() - 1);
-				
-			}else if(currentDomino.getDirection()== DirectionKind.Down) {
-				
+
+			} else if (currentDomino.getDirection() == DirectionKind.Down) {
+
 				currentDomino.setDirection(DirectionKind.Right);
 				currentDomino.setX(currentDomino.getX() + 1);
 				currentDomino.setY(currentDomino.getY() + 1);
-				
-			}else if(currentDomino.getDirection()== DirectionKind.Left) {
-				
+
+			} else if (currentDomino.getDirection() == DirectionKind.Left) {
+
 				currentDomino.setDirection(DirectionKind.Down);
 				currentDomino.setX(currentDomino.getX() + 1);
 				currentDomino.setY(currentDomino.getY() - 1);
-				
-			}else {
-				
+
+			} else {
+
 				currentDomino.setDirection(DirectionKind.Up);
 				currentDomino.setX(currentDomino.getX() - 1);
 				currentDomino.setY(currentDomino.getY() + 1);
-				
+
 			}
-			
-			
+
 		}
-		
+
 		int currentDominoX = currentDomino.getX();
 		int currentDominoY = currentDomino.getY();
 		boolean placementError = false;
-		
-		//myCourses
-		if(currentDominoX > 4 || currentDominoX < -4 || currentDominoY > 4 || currentDominoY < -4)  {
+
+		// myCourses
+		if (currentDominoX > 4 || currentDominoX < -4 || currentDominoY > 4 || currentDominoY < -4) {
 			placementError = true;
-		}else if(currentDominoX == 0 && currentDominoY == 0) {
+		} else if (currentDominoX == 0 && currentDominoY == 0) {
 			placementError = true;
-		}else if(currentDominoX < -9 || currentDominoX > 9) {
+		} else if (currentDominoX < -9 || currentDominoX > 9) {
 			placementError = true;
-		}else if(currentDominoY < -9 || currentDominoY > 9) {
+		} else if (currentDominoY < -9 || currentDominoY > 9) {
 			placementError = true;
-		}else {
+		} else {
 			placementError = false;
 		}
-		
-		for(int i = 0; i < currentKD.getTerritories().size(); i++) {
-			if(currentDomino.getX()==currentKD.getTerritory(i).getX() || currentDomino.getY()==currentKD.getTerritory(i).getY()){
+
+		for (int i = 0; i < currentKD.getTerritories().size(); i++) {
+			if (currentDomino.getX() == currentKD.getTerritory(i).getX()
+					|| currentDomino.getY() == currentKD.getTerritory(i).getY()) {
 				placementError = true;
 			}
 		}
-		
-		
-		if(placementError = true) {
+
+		if (placementError = true) {
 			currentDomino.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
-		}else {
+		} else {
 			currentDomino.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
 		}
-		
+
 	}
-	
-	
-	//Feature 13, placeCurrentDomino
+
+	// Feature 13, placeCurrentDomino
 	public static void placeCurrentDomino(DominoInKingdom currentDomino) {
-		
+
 		Kingdom currentKD = currentDomino.getKingdom();
-		
-		if(currentDomino.getDomino().getStatus() == DominoStatus.CorrectlyPreplaced) {
+
+		if (currentDomino.getDomino().getStatus() == DominoStatus.CorrectlyPreplaced) {
 			currentDomino.getDomino().setStatus(DominoStatus.PlacedInKingdom);
-			currentKD.addTerritory(currentDomino); //Don't know about this tbh
-			currentDomino = new DominoInKingdom(currentDomino.getX(), currentDomino.getY(), currentDomino.getKingdom(), currentDomino.getDomino());
-		
-		}else {
-			throw new RuntimeException("Can't place a domino that isn't correctly preplaced!"); 
+			currentKD.addTerritory(currentDomino); // Don't know about this tbh
+			currentDomino = new DominoInKingdom(currentDomino.getX(), currentDomino.getY(), currentDomino.getKingdom(),
+					currentDomino.getDomino());
+
+		} else {
+			throw new RuntimeException("Can't place a domino that isn't correctly preplaced!");
 		}
 	}
-	
+
 	// Calculating the ranking of the players in the game
 	public static void calculateRanking(Kingdomino kingdomino) {
-		List <Player> players = kingdomino.getCurrentGame().getPlayers();
+		List<Player> players = kingdomino.getCurrentGame().getPlayers();
 		Player currentPlayer;
 		Player tempPlayer;
-		for(int i = 0; i<players.size()-1; i++) {
+		for (int i = 0; i < players.size() - 1; i++) {
 			currentPlayer = players.get(i);
-			for (int j = i+1; j<players.size(); j++) {
+			for (int j = i + 1; j < players.size(); j++) {
 				tempPlayer = players.get(j);
-				if(tempPlayer.getTotalScore()>currentPlayer.getTotalScore()) {
+				if (tempPlayer.getTotalScore() > currentPlayer.getTotalScore()) {
 					players.set(i, tempPlayer);
 					players.set(j, currentPlayer);
 					currentPlayer = tempPlayer;
-				} else if (tempPlayer.getTotalScore()==currentPlayer.getTotalScore()) {
-					if(getLargestPropertySize(tempPlayer.getKingdom().getProperties()) > getLargestPropertySize(currentPlayer.getKingdom().getProperties())) {
+				} else if (tempPlayer.getTotalScore() == currentPlayer.getTotalScore()) {
+					if (getLargestPropertySize(tempPlayer.getKingdom().getProperties()) > getLargestPropertySize(
+							currentPlayer.getKingdom().getProperties())) {
 						players.set(i, tempPlayer);
 						players.set(j, currentPlayer);
 						currentPlayer = tempPlayer;
-					} else if (getNumberCrowns(tempPlayer.getKingdom().getProperties()) > getNumberCrowns(currentPlayer.getKingdom().getProperties())) {
+					} else if (getNumberCrowns(tempPlayer.getKingdom().getProperties()) > getNumberCrowns(
+							currentPlayer.getKingdom().getProperties())) {
 						players.set(i, tempPlayer);
 						players.set(j, currentPlayer);
 						currentPlayer = tempPlayer;
 					}
 				}
 			}
-		}}
-	//Feature 18, discardDomino
+		}
+	}
+
+	// Feature 18, discardDomino
 	public static void discardDomino(DominoInKingdom currentDomino) {
-		
-		if(currentDomino.getDomino().getStatus()==DominoStatus.ErroneouslyPreplaced) {
-			
-		}else {
+
+		if (currentDomino.getDomino().getStatus() == DominoStatus.ErroneouslyPreplaced) {
+
+		} else {
 			throw new RuntimeException("Can't discard a domino that is correctly preplaced!");
 		}
-//		for (int i = 0; i < players.size(); i++) {
-//			players.get(i).setCurrentRanking(i+1);
-//		}
+		/*
+		 * for (int i = 0; i < players.size(); i++) {
+		 * players.get(i).setCurrentRanking(i+1); }
+		 */
 	}
-	
+
 	private static int getLargestPropertySize(List<Property> properties) {
-		if(properties == null) {
+		if (properties == null) {
 			return 0;
 		}
 		Property largestProperty = properties.get(0);
-		if(properties.size()==1) {
+		if (properties.size() == 1) {
 			return largestProperty.getSize();
 		}
-		for(int i = 1; i<properties.size(); i++) {
-			if(properties.get(i).getSize()>largestProperty.getSize()) {
+		for (int i = 1; i < properties.size(); i++) {
+			if (properties.get(i).getSize() > largestProperty.getSize()) {
 				largestProperty = properties.get(i);
 			}
 		}
 		return largestProperty.getSize();
-		
+
 	}
+
 	private static int getNumberCrowns(List<Property> properties) {
-		int numCrowns=0;
-		for(Property property : properties) {
-			numCrowns+=property.getCrowns();
+		int numCrowns = 0;
+		for (Property property : properties) {
+			numCrowns += property.getCrowns();
 		}
 		return numCrowns;
 	}
-	
+
 }
