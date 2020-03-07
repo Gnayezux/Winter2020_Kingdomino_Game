@@ -157,6 +157,7 @@ public class KingdominoController {
 		}
 	}
 	public boolean VerifyNoOverlapping (Domino aDomino,Kingdom aKingdom, int x, int y, DirectionKind aDirection) {
+	}
 	//completed browse filtered domino with help of getTerrainTypeFilter method
 	public static List<Domino> BrowseFilteredDominos(String terrain,Kingdomino kingdomino) {
 		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
@@ -216,7 +217,9 @@ public class KingdominoController {
 				if (y2 > maxY) {
 					maxY = y2;
 				}
-	
+			}
+			}
+	}
 	//completed browse single domino
 	public static Domino BrowseDomino(int id,Kingdomino kingdomino) {
 		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
