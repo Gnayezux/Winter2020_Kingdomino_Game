@@ -14,12 +14,10 @@ public class KingdominoApplication {
 		if (kingdomino == null) {
 			kingdomino = new Kingdomino();
 		}
-
 		return kingdomino;
 	}
 
 	public static void setKingdomino(Kingdomino kd) {
 		kingdomino = kd;
-
 	}
 }
