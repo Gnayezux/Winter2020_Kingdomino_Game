@@ -1073,7 +1073,7 @@ public class KingdominoController {
 					}
 				}
 			}
-
+		}}
 	//Feature 18, discardDomino
 	public static void discardDomino(DominoInKingdom currentDomino) {
 		
@@ -1082,9 +1082,9 @@ public class KingdominoController {
 		}else {
 			throw new RuntimeException("Can't discard a domino that is correctly preplaced!");
 		}
-		for (int i = 0; i < players.size(); i++) {
-			players.get(i).setCurrentRanking(i+1);
-		}
+//		for (int i = 0; i < players.size(); i++) {
+//			players.get(i).setCurrentRanking(i+1);
+//		}
 	}
 	
 	private static int getLargestPropertySize(List<Property> properties) {
