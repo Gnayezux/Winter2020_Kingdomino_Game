@@ -41,6 +41,9 @@ public class KingdominoController {
 		
 	}
 
+
+	public static boolean VerifyNeighbourAdjacency(Kingdom aKingdom,Domino aDomino, int x, int y, DirectionKind aDirection) {
+
 	
 	/**
 	 * SetGameOptions method that set the number of players of the game with param num
@@ -181,6 +184,14 @@ public class KingdominoController {
 			}
 			public boolean equalsTo(coord aCoord) {
 				return (this.x == aCoord.x && this.y == aCoord.y);
+
+			}
+			public boolean adJacentTo(coord aCoord) {
+				return ((this.x == aCoord.x && this.y+1 == aCoord.y) || (this.x == aCoord.x && this.y-1 == aCoord.y) || (this.x+1 == aCoord.x && this.y == aCoord.y)|| (this.x-1 == aCoord.x && this.y == aCoord.y));
+			}
+		}
+		int counter = 0;
+
       }}
 	//completed ordered browse domino pile
 	public static ArrayList<Domino> BrowseDominoPile(Kingdomino kingdomino) {
@@ -220,6 +231,70 @@ public class KingdominoController {
 		}
 		coord tileOne = new coord(x,y);
 		coord tileTwo = new coord(x1,y1);
+
+		for (KingdomTerritory d: aKingdom.getTerritories()) {
+			if (d.getClass().toString() == "DominoInKingdom") {
+				coord temp = new coord(d.getX(),d.getY());
+				if (temp.adJacentTo(tileOne) || temp.adJacentTo(tileTwo)) {
+					DominoInKingdom dik = (DominoInKingdom) d;
+					int x2 = 0,y2 = 0;
+					switch (dik.getDirection()) {
+					case Up:
+						y2 = dik.getY()+1;
+						x2 = dik.getX();
+					case Left:
+						x2 = dik.getX()-1;
+						y2 = dik.getY();
+					case Right:
+						x2 = dik.getX()+1;
+						y2 = dik.getY();
+					case Down:
+						x2 = dik.getX();
+						y2 = dik.getY()-1;
+						
+					}
+					coord leftcoord, rightcoord;
+					leftcoord = new coord(dik.getX(),dik.getY());
+					rightcoord = new coord(x2,y2);
+					if (leftcoord.adJacentTo(tileOne)) {
+						if (dik.getDomino().getLeftTile().equals(aDomino.getLeftTile())){
+							counter +=1;
+						} else {
+							return false;
+						}
+					}
+					
+					if (leftcoord.adJacentTo(tileTwo)) {
+						if (dik.getDomino().getLeftTile().equals(aDomino.getRightTile())){
+							counter +=1;
+						} else {
+							return false;
+						}
+					}
+					
+					if (rightcoord.adJacentTo(tileOne)) {
+						if (dik.getDomino().getRightTile().equals(aDomino.getLeftTile())){
+							counter +=1;
+						} else {
+							return false;
+						}
+					}
+					
+					if (rightcoord.adJacentTo(tileTwo)) {
+						if (dik.getDomino().getRightTile().equals(aDomino.getRightTile())){
+							counter +=1;
+						} else {
+							return false;
+						}
+					}
+					
+				}
+			}
+		}
+		if (counter!=0) {
+			return true;
+		}
+		return false;
 		coord origin = new coord(0,0);
 		coord up = new coord(0,1);
 		coord right = new coord(1,0);
