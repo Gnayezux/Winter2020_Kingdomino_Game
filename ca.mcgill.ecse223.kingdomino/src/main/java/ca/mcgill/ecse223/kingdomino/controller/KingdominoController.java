@@ -22,93 +22,80 @@ public class KingdominoController {
 
 	}
 
-	public static ArrayList<Domino> BrowseDominoPile(Kingdomino kingdomino) {
-		createAllDominoes(kingdomino.getCurrentGame());
-		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
-		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
-		return allDominos;
-	}
+	// Feature 14: Verify castle adjacency
+	// As a player, I want the Kingdomino app to automatically check if my current
+	// domino is placed next to my castle.
+	public static boolean verifyCastleAdjacency(int x, int y, DirectionKind aDirection) {
+		int x1 = 0, y1 = 0;
 
-	
-	public static Domino BrowseDomino(int id, Kingdomino kingdomino) {
-		createAllDominoes(kingdomino.getCurrentGame());
-		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
-		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
-		return allDominos.get(id - 1);
-	}
-
-	public static List<Domino> BrowseFilteredDominos(String terrain, Kingdomino kingdomino) {
-		createAllDominoes(kingdomino.getCurrentGame());
-		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
-		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
-		List<Domino> filteredList = (allDominos.stream()
-				.filter(domino -> domino.getLeftTile().equals(getTerrainTypeFilter(terrain))
-						|| domino.getRightTile().equals(getTerrainTypeFilter(terrain)))
-				.collect(Collectors.toList()));
-		return filteredList;
-	}
-
-	/// ABOVE IS GOOD
-	public static void ChooseNextDomino(Player curPlayer, Kingdomino kingdomino, String chosen) {
-		Game game = kingdomino.getCurrentGame();
-		Draft draft = game.getCurrentDraft();
-
-		for (int i = 0; i < draft.getIdSortedDominos().size(); i++) {
-			if (Integer.parseInt(chosen) == draft.getIdSortedDomino(i).getId()) {
-				try {
-					draft.addSelection(curPlayer, draft.getIdSortedDomino(i));
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-			}
+		switch (aDirection) {
+		case Up:
+			y1 = y + 1;
+			x1 = x;
+			break;
+		case Left:
+			x1 = x - 1;
+			y1 = y;
+			break;
+		case Right:
+			x1 = x + 1;
+			y1 = y;
+			break;
+		case Down:
+			x1 = x;
+			y1 = y - 1;
+			break;
 		}
+
+		Coord tileOne = new Coord(x, y);
+		Coord tileTwo = new Coord(x1, y1);
+		Coord origin = new Coord(0, 0);
+		Coord up = new Coord(0, 1);
+		Coord right = new Coord(1, 0);
+		Coord left = new Coord(-1, 0);
+		Coord down = new Coord(0, -1);
+
+		if ((tileOne.equalsTo(up) || tileOne.equalsTo(right) || tileOne.equalsTo(left) || tileOne.equalsTo(down))
+				&& !tileTwo.equalsTo(origin)) {
+			return true;
+		} else if ((tileTwo.equalsTo(up) || tileTwo.equalsTo(right) || tileTwo.equalsTo(left) || tileTwo.equalsTo(down))
+				&& !tileOne.equalsTo(origin)) {
+			return true;
+		}
+		return false;
 	}
 
-	public static boolean VerifyNeighbourAdjacency(Kingdom aKingdom, Domino aDomino, int x, int y,
+	// Feature 15: Verify neighbor adjacency
+	// As a player, I want the Kingdomino app to automatically check if my current
+	// domino is placed to an adjacent territory.
+	public static boolean VerifyNeighborAdjacency(Kingdom aKingdom, Domino aDomino, int x, int y,
 			DirectionKind aDirection) {
-		class coord {
-			public int x;
-			public int y;
-
-			public coord(int x, int y) {
-				this.x = x;
-				this.y = y;
-			}
-
-			public boolean equalsTo(coord aCoord) {
-				return (this.x == aCoord.x && this.y == aCoord.y);
-			}
-
-			public boolean adJacentTo(coord aCoord) {
-				return ((this.x == aCoord.x && this.y + 1 == aCoord.y) || (this.x == aCoord.x && this.y - 1 == aCoord.y)
-						|| (this.x + 1 == aCoord.x && this.y == aCoord.y)
-						|| (this.x - 1 == aCoord.x && this.y == aCoord.y));
-			}
-		}
 		int counter = 0;
 		int x1 = 0, y1 = 0;
 		switch (aDirection) {
 		case Up:
 			y1 = y + 1;
 			x1 = x;
+			break;
 		case Left:
 			x1 = x - 1;
 			y1 = y;
+			break;
 		case Right:
 			x1 = x + 1;
 			y1 = y;
+			break;
 		case Down:
 			x1 = x;
 			y1 = y - 1;
+			break;
 
 		}
-		coord tileOne = new coord(x, y);
-		coord tileTwo = new coord(x1, y1);
+		Coord tileOne = new Coord(x, y);
+		Coord tileTwo = new Coord(x1, y1);
 		for (KingdomTerritory d : aKingdom.getTerritories()) {
 			if (d.getClass().toString() == "DominoInKingdom") {
-				coord temp = new coord(d.getX(), d.getY());
+				Coord temp = new Coord(d.getX(), d.getY());
 				if (temp.adJacentTo(tileOne) || temp.adJacentTo(tileTwo)) {
 					DominoInKingdom dik = (DominoInKingdom) d;
 					int x2 = 0, y2 = 0;
@@ -127,9 +114,9 @@ public class KingdominoController {
 						y2 = dik.getY() - 1;
 
 					}
-					coord leftcoord, rightcoord;
-					leftcoord = new coord(dik.getX(), dik.getY());
-					rightcoord = new coord(x2, y2);
+					Coord leftcoord, rightcoord;
+					leftcoord = new Coord(dik.getX(), dik.getY());
+					rightcoord = new Coord(x2, y2);
 					if (leftcoord.adJacentTo(tileOne)) {
 						if (dik.getDomino().getLeftTile().equals(aDomino.getLeftTile())) {
 							counter += 1;
@@ -169,6 +156,46 @@ public class KingdominoController {
 			return true;
 		}
 		return false;
+	}
+
+	public static ArrayList<Domino> BrowseDominoPile(Kingdomino kingdomino) {
+		createAllDominoes(kingdomino.getCurrentGame());
+		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
+		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
+		return allDominos;
+	}
+
+	public static Domino BrowseDomino(int id, Kingdomino kingdomino) {
+		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
+		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
+		return allDominos.get(id - 1);
+	}
+
+	public static List<Domino> BrowseFilteredDominos(String terrain, Kingdomino kingdomino) {
+		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
+		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
+		List<Domino> filteredList = (allDominos.stream()
+				.filter(domino -> domino.getLeftTile().equals(getTerrainTypeFilter(terrain))
+						|| domino.getRightTile().equals(getTerrainTypeFilter(terrain)))
+				.collect(Collectors.toList()));
+		return filteredList;
+	}
+
+	/// ABOVE IS GOOD
+	public static void ChooseNextDomino(Player curPlayer, Kingdomino kingdomino, String chosen) {
+		// Get the current draft of the game
+		Draft draft = kingdomino.getCurrentGame().getCurrentDraft();
+
+		for (int i = 0; i < draft.getIdSortedDominos().size(); i++) {
+			if (Integer.parseInt(chosen) == draft.getIdSortedDomino(i).getId()) {
+				try {
+					draft.addSelection(curPlayer, draft.getIdSortedDomino(i));
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	/**
@@ -402,54 +429,6 @@ public class KingdominoController {
 
 	// completed browse single domino
 
-	public static boolean VerifyCastleAdjacency(int x, int y, DirectionKind aDirection) {
-		class coord {
-			public int x;
-			public int y;
-
-			public coord(int x, int y) {
-				this.x = x;
-				this.y = y;
-			}
-
-			public boolean equalsTo(coord aCoord) {
-				return (this.x == aCoord.x && this.y == aCoord.y);
-			}
-		}
-		int x1 = 0, y1 = 0;
-		switch (aDirection) {
-		case Up:
-			y1 = y + 1;
-			x1 = x;
-		case Left:
-			x1 = x - 1;
-			y1 = y;
-		case Right:
-			x1 = x + 1;
-			y1 = y;
-		case Down:
-			x1 = x;
-			y1 = y - 1;
-
-		}
-		coord tileOne = new coord(x, y);
-		coord tileTwo = new coord(x1, y1);
-		coord origin = new coord(0, 0);
-		coord up = new coord(0, 1);
-		coord right = new coord(1, 0);
-		coord left = new coord(-1, 0);
-		coord down = new coord(0, -1);
-		if ((tileOne.equalsTo(up) || tileOne.equalsTo(right) || tileOne.equalsTo(left) || tileOne.equalsTo(down))
-				&& !tileTwo.equalsTo(origin)) {
-			return true;
-		}
-		if ((tileTwo.equalsTo(up) || tileTwo.equalsTo(right) || tileTwo.equalsTo(left) || tileTwo.equalsTo(down))
-				&& !tileOne.equalsTo(origin)) {
-			return true;
-		}
-		return false;
-	}
-
 	// completed ordered browse domino pile
 
 	// ****BEGIN FEATURE 3***
@@ -582,8 +561,6 @@ public class KingdominoController {
 	 */
 	public static List<Domino> shuffleDominos(Kingdomino kingdomino) {
 		// based on number of players in game, number of dominos differ
-
-//		Game newGame = new Game(48, kingdomino);
 		Game game = kingdomino.getCurrentGame();
 		List<Domino> dominos = new ArrayList<Domino>(game.getAllDominos());
 
@@ -788,7 +765,7 @@ public class KingdominoController {
 		return false;
 	}
 
-	//TODO
+	// TODO
 	public Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom) {
 		Property[] myProperties = new Property[playedDominoes.length];
 		for (int i = 0; i < playedDominoes.length; i++) {
