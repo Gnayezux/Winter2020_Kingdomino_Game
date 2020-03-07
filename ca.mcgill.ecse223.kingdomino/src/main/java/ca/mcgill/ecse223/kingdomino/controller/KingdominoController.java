@@ -9,20 +9,6 @@ public class KingdominoController {
 	public KingdominoController() {
 		
 	}
-<<<<<<< Updated upstream
-	
-	// Calculating the ranking of the players in the game
-	public static void calculateRanking(Kingdomino kingdomino) {
-		//Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-		List <Player> players = kingdomino.getCurrentGame().getPlayers();
-
-		for (int i = 1; i < players.size(); i++) {
-			Player currentPlayer = players.get(i);
-			int j = i - 1;
-			while (j>=0 && currentPlayer.getTotalScore() < players.get(j).getTotalScore()) {
-				players.set(j+1, players.get(j));
-				j--;
-=======
 	public static boolean VerifyGridSize(Kingdom aKingdom) {
 		int maxX = 0;
 		int maxY = 0;
@@ -73,16 +59,10 @@ public class KingdominoController {
 				if (y2 > maxY) {
 					maxY = y2;
 				}
->>>>>>> Stashed changes
+
 			}
-			players.set(j+1, currentPlayer);
-			players.get(i-1).setCurrentRanking(i);
-		}
-<<<<<<< Updated upstream
-=======
-		return ((maxX - minX) < 5 && (maxY - minY) < 5);
-		
->>>>>>> Stashed changes
-	}
 	
+		}
+		return ((maxX - minX) < 5 && (maxY - minY) < 5);
+	}
 }
