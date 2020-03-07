@@ -32,7 +32,6 @@ public class SetGameOptionsStepDefinition {
 	@When("set game options is initiated")
 	public void set_game_options_is_initiated() {
 		assertEquals(null, thrownException);
-
 	}
 
 	@When("the number of players is set to {int}")
