@@ -9,7 +9,6 @@ import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -172,7 +171,7 @@ public class KingdominoController {
 			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
 		}
 	}
-	
+	public boolean VerifyNoOverlapping (Domino aDomino,Kingdom aKingdom, int x, int y, DirectionKind aDirection) {
 	//completed browse filtered domino with help of getTerrainTypeFilter method
 	public static List<Domino> BrowseFilteredDominos(String terrain,Kingdomino kingdomino) {
 		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
@@ -199,7 +198,6 @@ public class KingdominoController {
 			}
 			public boolean equalsTo(coord aCoord) {
 				return (this.x == aCoord.x && this.y == aCoord.y);
-
 			}
 			public boolean adJacentTo(coord aCoord) {
 				return ((this.x == aCoord.x && this.y+1 == aCoord.y) || (this.x == aCoord.x && this.y-1 == aCoord.y) || (this.x+1 == aCoord.x && this.y == aCoord.y)|| (this.x-1 == aCoord.x && this.y == aCoord.y));
@@ -242,6 +240,38 @@ public class KingdominoController {
 		case Down:
 			x1 = x;
 			y1 = y-1;
+		}
+		coord tileOne = new coord(x,y);
+		coord tileTwo = new coord(x1,y1);
+		for (KingdomTerritory d: aKingdom.getTerritories()) {
+			coord temp = new coord(d.getX(),d.getY());
+			if (d.getClass().toString() == "DominoInKingdom") {
+				DominoInKingdom dik = (DominoInKingdom) d;
+				int x2 = 0,y2 = 0;
+				switch (dik.getDirection()) {
+				case Up:
+					y2 = dik.getY()+1;
+					x2 = dik.getX();
+				case Left:
+					x2 = dik.getX()-1;
+					y2 = dik.getY();
+				case Right:
+					x2 = dik.getX()+1;
+					y2 = dik.getY();
+				case Down:
+					x2 = dik.getX();
+					y2 = dik.getY()-1;
+					}
+				coord leftcoord, rightcoord;
+				leftcoord = new coord(dik.getX(),dik.getY());
+				rightcoord = new coord(x2,y2);
+				if (leftcoord.equalsTo(tileOne) || leftcoord.equals(tileTwo) || rightcoord.equalsTo(tileOne) || rightcoord.equalsTo(tileTwo)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 			
 		}
 		coord tileOne = new coord(x,y);
@@ -759,6 +789,5 @@ public class KingdominoController {
 		score += bonuscore;
 		return score;
 	}
-	
-	
+
 }
