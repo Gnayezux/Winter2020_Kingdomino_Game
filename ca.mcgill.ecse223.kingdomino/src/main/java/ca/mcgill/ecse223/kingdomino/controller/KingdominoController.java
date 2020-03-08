@@ -960,40 +960,38 @@ public class KingdominoController {
 		boolean placementError = false;
 
 		if (newDirection == DirectionKind.Up) {
-			currentDomino.setDirection(DirectionKind.Up);
 			currentDomino.setY(currentDominoY + 1);
 			currentDominoY++;
-		} else if (newDirection == DirectionKind.Down) {
-			currentDomino.setDirection(DirectionKind.Down);
+		} 
+		else if (newDirection == DirectionKind.Down) {
 			currentDomino.setY(currentDominoY - 1);
 			currentDominoY--;
-		} else if (newDirection == DirectionKind.Left) {
-			currentDomino.setDirection(DirectionKind.Left);
+		} 
+		else if (newDirection == DirectionKind.Left) {
 			currentDomino.setX(currentDominoX - 1);
 			currentDominoX--;
-		} else {
-			currentDomino.setDirection(DirectionKind.Right);
+		} 
+		else {
 			currentDomino.setX(currentDominoX + 1);
 			currentDominoX++;
 		}
 
 		if (currentDominoX == 0 && currentDominoY == 0) {
 			placementError = true;
-		} else if (currentDominoX < -9 || currentDominoX > 9) {
+		} else if (currentDominoX < - 2 || currentDominoX > 2) {
 			placementError = true;
-		} else if (currentDominoY < -9 || currentDominoY > 9) {
+		} else if (currentDominoY < -2 || currentDominoY > 2) {
 			placementError = true;
-		} else {
-			placementError = false;
-		}
+		} 
 
 		for (int i = 0; i < currentKD.getTerritories().size(); i++) {
-			if (currentDomino.getX() == currentKD.getTerritory(i).getX()
-					|| currentDomino.getY() == currentKD.getTerritory(i).getY()) {
+			if ((currentDomino.getX() == currentKD.getTerritory(i).getX()
+					&& currentDomino.getY() == currentKD.getTerritory(i).getY()) || (rightTile(currentDomino).getX() ==currentKD.getTerritory(i).getX() && rightTile(currentDomino).getY() ==currentKD.getTerritory(i).getY())) {
 				placementError = true;
 			}
 		}
 
+		
 		if (placementError = true) {
 			currentDomino.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
 		} else {
