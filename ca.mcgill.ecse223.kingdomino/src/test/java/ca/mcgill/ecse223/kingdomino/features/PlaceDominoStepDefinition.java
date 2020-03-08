@@ -1,6 +1,5 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
-
 import static org.junit.Assert.*;
 
 
@@ -29,75 +28,11 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-//CHANGES MADE TO THE SCENARIO
-//All DominoStatus' had a capital letter first, changed to lowercase
-
-public class MoveCurrentDominoStepDefinition {
-	Player player;
-	DominoInKingdom provisionaryDomino;
-
-	@Given("the game is initialized for move current domino")
-	public void the_game_is_initialized_for_move_current_domino() {
-	    // Write code here that turns the phrase above into concrete actions
-	    //throw new cucumber.api.PendingException();
-		
-		// Intialize empty game	
-		Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		game.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(game);
-		// Populate game
-		addDefaultUsersAndPlayers(game);
-		createAllDominoes(game);
-		game.setNextPlayer(game.getPlayer(0));
-		KingdominoApplication.setKingdomino(kingdomino);
-	}
-
-	@Given("it is {string}'s turn")
-	public void it_is_s_turn(String string) {
-	    // Write code here that turns the phrase above into concrete actions
-	    //throw new cucumber.api.PendingException();
-		Game currentGame = KingdominoApplication.getKingdomino().getCurrentGame();
-		currentGame.setNextPlayer(getPlayerWithColor(string));
+public class PlaceDominoStepDefinition {
+	DominoInKingdom placedDomino;
 	
-	}
-
-	@Given("{string} has selected domino {int}")
-	public void has_selected_domino(String string, Integer int1) {
-	    // Write code here that turns the phrase above into concrete actions
-	    //throw new cucumber.api.PendingException();
-		Game currentGame = KingdominoApplication.getKingdomino().getCurrentGame();
-		Domino currentDomino = getdominoByID(int1);
-		Player currentPlayer = getPlayerWithColor(string);
-		provisionaryDomino = new DominoInKingdom(0,0,currentPlayer.getKingdom(), currentDomino);
-		
-	}
-
-	@When("{string} removes his king from the domino {int}")
-	public void removes_his_king_from_the_domino(String string, Integer int1) {
-	    // Write code here that turns the phrase above into concrete actions
-	    //throw new cucumber.api.PendingException();
-		Player currentPlayer = getPlayerWithColor(string);
-		Domino currentDomino = getdominoByID(int1);
-		provisionaryDomino = new DominoInKingdom(0,0,currentPlayer.getKingdom(), currentDomino);
-		KingdominoController.moveCurrentDomino(provisionaryDomino, null, currentPlayer);
-	}
-
-	@Then("domino {int} should be tentative placed at position {int}:{int} of {string}'s kingdom with ErroneouslyPreplaced status")
-	public void domino_should_be_tentative_placed_at_position_of_s_kingdom_with_ErroneouslyPreplaced_status(Integer int1, Integer int2, Integer int3, String string) {
-	    // Write code here that turns the phrase above into concrete actions
-	    //throw new cucumber.api.PendingException(); 
-		Player currentPlayer = getPlayerWithColor(string);
-		Domino currentDomino = getdominoByID(int1);
-		provisionaryDomino = new DominoInKingdom(int2,int3,currentPlayer.getKingdom(), currentDomino);
-		assertEquals(int1, provisionaryDomino.getDomino().getId());
-		assertEquals(int2, provisionaryDomino.getX());
-		assertEquals(int3, provisionaryDomino.getY());
-		assertEquals(DominoStatus.ErroneouslyPreplaced, provisionaryDomino.getDomino().getStatus());
-	}
-
-	@Given("{string}'s kingdom has following dominoes:")
-	public void s_kingdom_has_following_dominoes(String string, io.cucumber.datatable.DataTable dataTable) {
+	@Given("the {string}'s kingdom has the following dominoes:")
+	public void the_s_kingdom_has_the_following_dominoes(String string, io.cucumber.datatable.DataTable dataTable) {
 	    // Write code here that turns the phrase above into concrete actions
 	    // For automatic transformation, change DataTable to one of
 	    // E, List<E>, List<List<E>>, List<Map<K,V>>, Map<K,V> or
@@ -113,8 +48,8 @@ public class MoveCurrentDominoStepDefinition {
 		for (Map<String, String> map : valueMaps) {
 			
 			// Get values from cucumber table
-			Integer id = Integer.decode(map.get("id"));
-			DirectionKind dir = getDirection(map.get("dir"));
+			Integer id = Integer.decode(map.get("domino"));
+			DirectionKind dir = getDirection(map.get("dominodir"));
 			Integer posx = Integer.decode(map.get("posx"));
 			Integer posy = Integer.decode(map.get("posy"));
 
@@ -124,101 +59,56 @@ public class MoveCurrentDominoStepDefinition {
 			DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
 			domInKingdom.setDirection(dir);
 			dominoToPlace.setStatus(DominoStatus.PlacedInKingdom);
-		}
-	}
-	
-	
-	@Given("domino {int} is tentatively placed at position {int}:{int} with direction {string}")
-	public void domino_is_tentatively_placed_at_position_with_direction(Integer int1, Integer int2, Integer int3, String string) {
-	    //Write code here that turns the phrase above into concrete actions
-	    //throw new cucumber.api.PendingException();
-		
-		Domino currentDomino = getdominoByID(int1);
-		if(currentDomino.getId() == int1) {
-			provisionaryDomino.setX(int2);
-			provisionaryDomino.setY(int3);
-			provisionaryDomino.setDirection(getDirection(string));
 			
-		}else {
-			throw new IllegalArgumentException("Wrong Domino ID!"); //Change
 		}
-	
 		
 	}
 
-	//This is wrong!
-	@When("{string} requests to move the domino {string}")
-	public void requests_to_move_the_domino(String string, String string2) {
-	    // Write code here that turns the phrase above into concrete actions
-	    //throw new cucumber.api.PendingException();
-		
-		Player currentPlayer = getPlayerWithColor(string);
-		//Domino currentDomino = currentPlayer.getDominoSelection().getDomino();
-		//provisionaryDomino = new DominoInKingdom()
-		
-		/*
-		
-		Kingdom currentKD = currentPlayer.getKingdom();
-		provisionaryDomino = (DominoInKingdom) currentKD.getTerritory(currentKD.numberOfTerritories()-1);
-		
-		
-		*/
-		KingdominoController.moveCurrentDomino(provisionaryDomino, getDirection(string2), currentPlayer);
-		
-	}
-
-	@Then("the domino {int} should be tentatively placed at position {int}:{int} with direction {string}")
-	public void the_domino_should_be_tentatively_placed_at_position_with_direction(Integer int1, Integer int2, Integer int3, String string) {
-	    // Write code here that turns the phrase above into concrete actions
-	    //throw new cucumber.api.PendingException();
-		Domino currentDomino = getdominoByID(int1);
-		//if(currentDomino.getId()==int1) {
-			assertEquals(int2, provisionaryDomino.getX());
-			assertEquals(int3, provisionaryDomino.getY());
-			assertEquals(getDirection(string), provisionaryDomino.getDirection());
-		//}else {
-		//	throw new RuntimeException("Wrong Domino ID!"); //Change
-		//}
-	}
-
-	@Then("the new status of the domino is {string}")
-	public void the_new_status_of_the_domino_is(String string) {
-	    // Write code here that turns the phrase above into concrete actions
-	    //throw new cucumber.api.PendingException();
-		assertEquals(getDominoStatus(string), provisionaryDomino.getDomino().getStatus());
-	}
-
-	@Given("domino {int} has status {string}")
-	public void domino_has_status(Integer int1, String string) {
+	@Given("domino {int} is in {string} status")
+	public void domino_is_in_status(Integer int1, String string) {
 	    // Write code here that turns the phrase above into concrete actions
 	    //throw new cucumber.api.PendingException();
 		Domino currentDomino = getdominoByID(int1);
 		currentDomino.setStatus(getDominoStatus(string));
+		
+		//placedDomino.setDomino(getdominoByID(int1));
+		//placedDomino.getDomino().setStatus(getDominoStatus(string));
 	}
 
-	@Then("the domino {int} is still tentatively placed at position {int}:{int}")
-	public void the_domino_is_still_tentatively_placed_at_position(Integer int1, Integer int2, Integer int3) {
+	@When("{string} requests to place the selected domino {int}")
+	public void requests_to_place_the_selected_domino(String string, Integer int1) {
 	    // Write code here that turns the phrase above into concrete actions
 	    //throw new cucumber.api.PendingException();
+		//Player currentPlayer = getPlayerWithColor(string);
+		//Domino currentDomino = getdominoByID(int1);
+		//placedDomino = new DominoInKingdom(placedDomino.getX(), placedDomino.getY(), currentPlayer.getKingdom(),currentDomino);
+		//Game currentGame = KingdominoApplication.getKingdomino().getCurrentGame();
+		
 		Domino currentDomino = getdominoByID(int1);
-		assertEquals(int2, provisionaryDomino.getX());
-		assertEquals(int3, provisionaryDomino.getY());
+		Player currentPlayer = getPlayerWithColor(string);
+		placedDomino = new DominoInKingdom(2,1,currentPlayer.getKingdom(), currentDomino);//Get proper X and Y coords
+		
+		
+		KingdominoController.placeDomino(placedDomino, currentPlayer);
 		
 	}
 
-	@Then("the domino should still have status {string}")
-	public void the_domino_should_still_have_status(String string) {
+	@Then("{string}'s kingdom should now have domino {int} at position {int}:{int} with direction {string}")
+	public void s_kingdom_should_now_have_domino_at_position_with_direction(String string, Integer int1, Integer int2, Integer int3, String string2) {
 	    // Write code here that turns the phrase above into concrete actions
 	    //throw new cucumber.api.PendingException();
-		assertEquals(getDominoStatus(string), provisionaryDomino.getDomino().getStatus());
+		Player currentPlayer = getPlayerWithColor(string);
+		Kingdom currentKD = currentPlayer.getKingdom();
+		assertEquals(currentKD,placedDomino.getKingdom());
+		assertEquals(int1, placedDomino.getDomino().getId());
+		assertEquals(int2, placedDomino.getX());
+		assertEquals(int3, placedDomino.getY());
+		assertEquals(getDirection(string2), placedDomino.getDirection());
 	}
-
-
 	
-	///////////////////////////////////////
-	/// -----Private Helper Methods---- ///
-	///////////////////////////////////////
-
+	
+	//Helper Methods
+	
 	private void addDefaultUsersAndPlayers(Game game) {
 		String[] userNames = { "User1", "User2", "User3", "User4" };
 		for (int i = 0; i < userNames.length; i++) {
@@ -366,5 +256,8 @@ public class MoveCurrentDominoStepDefinition {
 		
 	}
 	
+
 	
 }
+
+

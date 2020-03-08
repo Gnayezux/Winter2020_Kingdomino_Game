@@ -15,7 +15,7 @@ Feature: Place Domino
       |     21 | up        |   -1 |    1 |
     Given "<player>" has selected domino <id>
     Given domino <id> is tentatively placed at position <posx>:<posy> with direction "<dir>"
-    Given domino <id> is in "CorrectlyPreplaced" status
+    Given domino <id> is in "correctlyPreplaced" status
     When "<player>" requests to place the selected domino <id>
     Then "<player>"'s kingdom should now have domino <id> at position <posx>:<posy> with direction "<dir>"
 

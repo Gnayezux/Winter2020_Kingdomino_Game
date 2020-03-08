@@ -21,18 +21,18 @@ Feature: Rotate Current Domino
 
     Examples: 
       | player | id | posx | posy | dir   | rotation         | newDir | dstatus              |
-      | pink   | 48 |    1 |    1 | right | clockwise        | down   | ErroneouslyPreplaced |
-      | pink   | 48 |    1 |    1 | down  | clockwise        | left   | CorrectlyPreplaced   |
-      | pink   | 48 |    1 |    1 | left  | clockwise        | up     | CorrectlyPreplaced   |
-      | pink   | 48 |    1 |    1 | up    | clockwise        | right  | CorrectlyPreplaced   |
-      | yellow | 22 |   -2 |   -1 | up    | counterclockwise | left   | ErroneouslyPreplaced |
-      | yellow | 22 |   -2 |   -1 | left  | counterclockwise | down   | ErroneouslyPreplaced |
-      | yellow | 22 |   -2 |   -1 | down  | counterclockwise | right  | ErroneouslyPreplaced |
-      | yellow | 22 |   -2 |   -1 | right | counterclockwise | up     | ErroneouslyPreplaced |
-      | blue   |  8 |    2 |   -1 | up    | counterclockwise | left   | ErroneouslyPreplaced |
-      | blue   |  8 |    2 |   -1 | up    | clockwise        | right  | ErroneouslyPreplaced |
-      | green  | 10 |    0 |    2 | left  | counterclockwise | down   | CorrectlyPreplaced   |
-      | green  | 10 |    0 |    2 | down  | clockwise        | left   | CorrectlyPreplaced |
+      | pink   | 48 |    1 |    1 | right | clockwise        | down   | erroneouslyPreplaced |
+      | pink   | 48 |    1 |    1 | down  | clockwise        | left   | correctlyPreplaced   |
+      | pink   | 48 |    1 |    1 | left  | clockwise        | up     | correctlyPreplaced   |
+      | pink   | 48 |    1 |    1 | up    | clockwise        | right  | correctlyPreplaced   |
+      | yellow | 22 |   -2 |   -1 | up    | counterclockwise | left   | erroneouslyPreplaced |
+      | yellow | 22 |   -2 |   -1 | left  | counterclockwise | down   | erroneouslyPreplaced |
+      | yellow | 22 |   -2 |   -1 | down  | counterclockwise | right  | erroneouslyPreplaced |
+      | yellow | 22 |   -2 |   -1 | right | counterclockwise | up     | erroneouslyPreplaced |
+      | blue   |  8 |    2 |   -1 | up    | counterclockwise | left   | erroneouslyPreplaced |
+      | blue   |  8 |    2 |   -1 | up    | clockwise        | right  | erroneouslyPreplaced |
+      | green  | 10 |    0 |    2 | left  | counterclockwise | down   | correctlyPreplaced   |
+      | green  | 10 |    0 |    2 | down  | clockwise        | left   | correctlyPreplaced   |
 
   Scenario Outline: Player attempts to rotate the tentatively placed domino but fails due to board size restrictions
     Given it is "<player>"'s turn
@@ -52,12 +52,12 @@ Feature: Rotate Current Domino
 
     Examples: 
       | player | id | posx | posy | dir   | rotation         | dstatus              |
-      | pink   | 48 |   -4 |    0 | down  | clockwise        | ErroneouslyPreplaced |
-      | pink   | 48 |    0 |   -4 | right | clockwise        | ErroneouslyPreplaced |
-      | yellow |  4 |    4 |   -4 | up    | clockwise        | CorrectlyPreplaced   |
-      | pink   | 48 |    2 |    4 | left  | clockwise        | ErroneouslyPreplaced |
-      | yellow | 23 |   -4 |    0 | up    | counterclockwise | ErroneouslyPreplaced |
-      | yellow | 23 |    0 |   -4 | left  | counterclockwise | ErroneouslyPreplaced |
-      | blue   |  4 |    4 |   -3 | down  | counterclockwise | CorrectlyPreplaced   |
-      | blue   | 23 |   -2 |    4 | right | counterclockwise | ErroneouslyPreplaced |
+      | pink   | 48 |   -4 |    0 | down  | clockwise        | erroneouslyPreplaced |
+      | pink   | 48 |    0 |   -4 | right | clockwise        | erroneouslyPreplaced |
+      | yellow |  4 |    4 |   -4 | up    | clockwise        | correctlyPreplaced   |
+      | pink   | 48 |    2 |    4 | left  | clockwise        | erroneouslyPreplaced |
+      | yellow | 23 |   -4 |    0 | up    | counterclockwise | erroneouslyPreplaced |
+      | yellow | 23 |    0 |   -4 | left  | counterclockwise | erroneouslyPreplaced |
+      | blue   |  4 |    4 |   -3 | down  | counterclockwise | correctlyPreplaced   |
+      | blue   | 23 |   -2 |    4 | right | counterclockwise | erroneouslyPreplaced |
 

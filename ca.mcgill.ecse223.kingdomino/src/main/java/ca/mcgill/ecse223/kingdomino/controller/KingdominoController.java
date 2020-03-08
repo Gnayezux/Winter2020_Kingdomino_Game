@@ -979,50 +979,101 @@ public class KingdominoController {
 	}
 
 	// Feature 11, moveCurrentDomino
-	public static void moveCurrentDomino(DominoInKingdom currentDomino, DirectionKind newDirection) {
+	public static void moveCurrentDomino(DominoInKingdom currentDomino, DirectionKind newDirection, Player currentPlayer) {
 
-		Kingdom currentKD = currentDomino.getKingdom();
+		Kingdom currentKD = currentPlayer.getKingdom();
 		DominoStatus newCurrentDominoStatus;
+		DominoStatus oldDominoStatus = currentDomino.getDomino().getStatus();
+		int oldDominoX = currentDomino.getX();
+		int oldDominoY = currentDomino.getY();
 		int currentDominoX = currentDomino.getX();
 		int currentDominoY = currentDomino.getY();
 		boolean placementError = false;
+		boolean outOfBounds = false;
+		boolean modified = false;
 
 		if (newDirection == DirectionKind.Up) {
 			currentDomino.setY(currentDominoY + 1);
 			currentDominoY++;
+			modified = true;
+			//currentDomino.setDirection(newDirection);
 		} 
 		else if (newDirection == DirectionKind.Down) {
 			currentDomino.setY(currentDominoY - 1);
 			currentDominoY--;
+			modified = true;
+			//currentDomino.setDirection(newDirection);
 		} 
 		else if (newDirection == DirectionKind.Left) {
 			currentDomino.setX(currentDominoX - 1);
 			currentDominoX--;
+			modified = true;
+			//currentDomino.setDirection(newDirection);
 		} 
-		else {
+		else if(newDirection == DirectionKind.Right){
 			currentDomino.setX(currentDominoX + 1);
 			currentDominoX++;
+			modified = true;
+			//currentDomino.setDirection(newDirection);
+		}else {
+			currentDomino.setX(0);
+			currentDomino.setY(0);
+			//currentDomino.setDirection(currentDomino.getDirection());
 		}
+		
 
 		if (currentDominoX == 0 && currentDominoY == 0) {
 			placementError = true;
-		} else if (currentDominoX < - 2 || currentDominoX > 2) {
+		} else if (currentDominoX < - 4 || currentDominoX > 4) {
 			placementError = true;
-		} else if (currentDominoY < -2 || currentDominoY > 2) {
+		} else if (currentDominoY < -4 || currentDominoY > 4) {
 			placementError = true;
-		} 
+		}
 
 		for (int i = 0; i < currentKD.getTerritories().size(); i++) {
 			if ((currentDomino.getX() == currentKD.getTerritory(i).getX()
-					&& currentDomino.getY() == currentKD.getTerritory(i).getY()) || (rightTile(currentDomino).getX() ==currentKD.getTerritory(i).getX() && rightTile(currentDomino).getY() ==currentKD.getTerritory(i).getY())) {
+					|| currentDomino.getY() == currentKD.getTerritory(i).getY()) || (rightTile(currentDomino).getX() ==currentKD.getTerritory(i).getX() || rightTile(currentDomino).getY() ==currentKD.getTerritory(i).getY())) {
 				placementError = true;
+				//outOfBounds = true;
+			}else {
+				placementError = false;
 			}
 		}
+		
+		
+		/*for (int i = 0; i < currentKD.getTerritories().size(); i++) {
+			if ((currentDomino.getX() == currentKD.getTerritory(i).getX()
+					&& currentDomino.getY() == currentKD.getTerritory(i).getY()) || (rightTile(currentDomino).getX() ==currentKD.getTerritory(i).getX() && rightTile(currentDomino).getY() ==currentKD.getTerritory(i).getY())) {
+				placementError = true;
+			}else {
+				placementError = false;
+			}
+		}*/
+		
+		/*for(int i = 0; i < currentKD.getTerritories().size(); i++) {
+			if(currentDomino.getX()==currentKD.getTerritory(i).getX() || currentDomino.getY()==currentKD.getTerritory(i).getY()){
+				placementError = true;
+			}
+		}*/
 
 		
-		if (placementError = true) {
+		if (placementError == true) {
 			currentDomino.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
-		} else {
+			
+			/*if(outOfBounds == true) {
+				currentDomino.getDomino().setStatus(oldDominoStatus);
+				currentDomino.setX(oldDominoX);
+				currentDomino.setY(oldDominoY);
+			}*/
+			
+		} //else if(placementError == true && outOfBounds == true) {
+			//currentDomino.getDomino().setStatus(oldDominoStatus);
+			//currentDomino.setX(oldDominoX);
+			//currentDomino.setY(oldDominoY);
+		
+		//}
+	
+		else {
 			currentDomino.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
 		}
 
@@ -1114,22 +1165,24 @@ public class KingdominoController {
 
 		if (placementError = true) {
 			currentDomino.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
+			//If erroneouslyPlaces, then the domino keeps the same previous direction it once had and the same coordinates
 		} else {
 			currentDomino.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
 		}
 
 	}
 
-	// Feature 13, placeCurrentDomino
-	public static void placeCurrentDomino(DominoInKingdom currentDomino) {
+	// Feature 13, placeDomino
+	public static void placeDomino(DominoInKingdom currentDomino, Player currentPlayer) {
 
-		Kingdom currentKD = currentDomino.getKingdom();
+		Kingdom currentKD = currentPlayer.getKingdom();
+		int	currentDominoX = currentDomino.getX();
+		int	currentDominoY = currentDomino.getY();
 
 		if (currentDomino.getDomino().getStatus() == DominoStatus.CorrectlyPreplaced) {
 			currentDomino.getDomino().setStatus(DominoStatus.PlacedInKingdom);
 			currentKD.addTerritory(currentDomino); // Don't know about this tbh
-			currentDomino = new DominoInKingdom(currentDomino.getX(), currentDomino.getY(), currentDomino.getKingdom(),
-					currentDomino.getDomino());
+			currentDomino = new DominoInKingdom(currentDominoX,currentDominoY , currentKD, currentDomino.getDomino());
 
 		} else {
 			throw new RuntimeException("Can't place a domino that isn't correctly preplaced!");
