@@ -25,68 +25,60 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class ShuffleDominosStepDefinitions {
-	
-	Kingdomino kingdomino;
+
 	@Given("the game is initialized for shuffle dominoes")
 	public void the_game_is_initialized_for_shuffle_dominoes() {
-	    		kingdomino = new Kingdomino();
+	    Kingdomino kingdomino = new Kingdomino();
 		Game newGame = new Game(48, kingdomino);
-		newGame.setNumberOfPlayers(4);
 		kingdomino.setCurrentGame(newGame);
-		KingdominoController.createAllDominoes(newGame);
-		
+		KingdominoController.createAllDominos(newGame);
+		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
 	@Given("there are {int} players playing")
 	public void there_are_players_playing(Integer int1) {
-
-		Game game = kingdomino.getCurrentGame();
-		game.setNumberOfPlayers(int1);
-
+		KingdominoApplication.getKingdomino().getCurrentGame().setNumberOfPlayers(int1);
 	}
 
 	@When("the shuffling of dominoes is initiated")
 	public void the_shuffling_of_dominoes_is_initiated() {
-		KingdominoController.shuffleDominos(kingdomino);
-
+		KingdominoController.shuffleDominos(KingdominoApplication.getKingdomino());
 	}
 
 	@Then("the first draft shall exist")
 	public void the_first_draft_shall_exist() {
-	    //reasonning: if the size of the draft equals a real number, it must exist.
-		assertEquals(4, kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDominos().size());
-
+		assertEquals(true, KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft().hasIdSortedDominos());
 	}
 
 	@Then("the first draft should have {int} dominoes on the board face down")
 	public void the_first_draft_should_have_dominoes_on_the_board_face_down(Integer int1) {
-		//first assertEquals checks the number of dominoes in the draft
-		//second assertEquals checks that the status of the draft is face down
-		assertEquals(Integer.valueOf(int1), Integer.valueOf(kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDominos().size()));
-		assertEquals(Draft.DraftStatus.FaceDown, kingdomino.getCurrentGame().getCurrentDraft().getDraftStatus());
+		// first assertEquals checks the number of dominoes in the draft
+		// second assertEquals checks that the status of the draft is face down
+		assertEquals((int)int1,
+				(int)KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft().getIdSortedDominos().size());
+		assertEquals(Draft.DraftStatus.FaceDown, KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft().getDraftStatus());
 
 	}
 
 	@Then("there should be {int} dominoes left in the draw pile")
 	public void there_should_be_dominoes_left_in_the_draw_pile(Integer int1) {
-	    //compares the size of the remaining drawpile with the integer given
-		assertEquals(Integer.valueOf(int1), Integer.valueOf(kingdomino.getCurrentGame().getAllDominos().size()));
+		// compares the size of the remaining drawpile with the integer given
+		assertEquals(Integer.valueOf(int1), Integer.valueOf(KingdominoApplication.getKingdomino().getCurrentGame().getAllDominos().size()));
 	}
 
 	@When("I initiate to arrange the domino in the fixed order {string}")
 	public void i_initiate_to_arrange_the_domino_in_the_fixed_order(String string) {
-		KingdominoController.getFixedOrder(kingdomino, string);
-	
+		KingdominoController.getFixedOrder(KingdominoApplication.getKingdomino(), string);
 	}
 
 	@Then("the draw pile should consist of everything in {string} except the first {int} dominoes with their order preserved")
 	public void the_draw_pile_should_consist_of_everything_in_except_the_first_dominoes_with_their_order_preserved(String string, Integer int1) {
 
-		List<Domino> dominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
+		List<Domino> dominos = new ArrayList<Domino>(KingdominoApplication.getKingdomino().getCurrentGame().getAllDominos());
 		string = string.replaceAll("\\s+", "");
 		string = string.replace("\"", "");
 
-		Draft draft = kingdomino.getCurrentGame().getCurrentDraft();
+		Draft draft = KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft();
 		boolean sorted = false;
 		for(int i = 0;i<4;i++) {
 		
@@ -98,9 +90,6 @@ public class ShuffleDominosStepDefinitions {
 			}
 		}
 		assertEquals(true,sorted);
-
 	}
-	
-	
 
 }
