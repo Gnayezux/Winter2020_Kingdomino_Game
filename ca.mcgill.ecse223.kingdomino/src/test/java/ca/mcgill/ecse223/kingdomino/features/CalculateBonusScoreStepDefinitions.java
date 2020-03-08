@@ -87,6 +87,14 @@ public class CalculateBonusScoreStepDefinitions {
 
 	@Then("the bonus score should be {int}")
 	public void the_bonus_score_should_be(Integer int1) {
+		Player player = KingdominoApplication.getKingdomino().getUser(0).getPlayerInGame(0);
+		Kingdom kingdom = new Kingdom(player);
+		DominoInKingdom[] dominoinkingdom = new DominoInKingdom[0];
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
+		Castle castle = new Castle(0, 0, kingdom, player);
+
+		KingdominoController.CalculateBonusScore(dominoinkingdom, kingdom, castle, kingdomino);
 		// Write code here that turns the phrase above into concrete actions
 		//throw new cucumber.api.PendingException();
 	}

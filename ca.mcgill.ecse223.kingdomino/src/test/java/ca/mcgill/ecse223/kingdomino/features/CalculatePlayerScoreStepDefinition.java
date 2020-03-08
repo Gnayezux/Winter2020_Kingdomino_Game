@@ -41,15 +41,18 @@ public class CalculatePlayerScoreStepDefinition {
 		KingdominoApplication.setKingdomino(kingdomino);
 		
 	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
+	    //throw new cucumber.api.PendingException();
 	}
 
 	@Given("the game has {string} bonus option")
 	public void the_game_has_bonus_option(String string) {
 		
+		Kingdomino kingdomino = new Kingdomino(); 
+		
+		
 		
 	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
+	    //throw new cucumber.api.PendingException();
 	}
 
 	@When("calculate player score is initiated")
