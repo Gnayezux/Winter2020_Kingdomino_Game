@@ -126,8 +126,14 @@ public void current_player_chooses_to_place_king_on(Integer int1) {
     // Write code here that turns the phrase above into concrete actions
 //	System.out.print(int1);
 //    throw new cucumber.api.PendingException();
+//	System.out.print(kingdomino.getCurrentGame().getNextDraft().getSelections());
+	try {
+		
+	
 	KingdominoController.ChooseNextDomino(kingdomino.getCurrentGame().getNextPlayer(), kingdomino, Integer.valueOf(int1));
-
+	}catch(Exception e){
+//		System.out.print("hello world");
+	}
 }
 
 
@@ -177,7 +183,29 @@ public void the_selection_for_next_draft_is_now_equal_to(String string) {
 public void the_selection_for_the_next_draft_selection_is_still(String string) {
     // Write code here that turns the phrase above into concrete actions
 //    throw new cucumber.api.PendingException();
-	System.out.print(string);
+//	System.out.print(string);
+	Game game = kingdomino.getCurrentGame();
+	Draft draft = game.getNextDraft();
+	string=string.replaceAll("\\s+", "");
+	List<String> selection = new ArrayList<String>(Arrays.asList(string.split(",")));
+	boolean isThere = false;
+	int j =0;
+	for(int i =0;i<selection.size();i++) {
+		if(!selection.get(i).equals("none")) {
+			
+			if(draft.getSelection(i-j).getPlayer().getColor().toString().toLowerCase().equals(selection.get(i))) {
+				isThere = true;
+			}else {
+				isThere = false;
+			}
+			
+		}else {
+			j++;
+		}
+		
+	}
+	assertEquals(true,isThere);
+	
 }
 
 //HELPER METHODS
