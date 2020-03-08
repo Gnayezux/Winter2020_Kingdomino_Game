@@ -25,7 +25,6 @@ public class CalculateRankingStepDefinition {
 		Game game = new Game(48, kingdomino);
 		game.setNumberOfPlayers(4);
 		kingdomino.setCurrentGame(game);
-		createAllDominoes(game);
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
@@ -49,13 +48,13 @@ public class CalculateRankingStepDefinition {
 			int posx = Integer.decode(map.get("posx1"));
 			int posy = Integer.decode(map.get("posy1"));
 			int id = Integer.decode(map.get("domino1"));
-			DominoInKingdom dom = new DominoInKingdom(posx, posy,kingdom, getdominoByID(id));
+			DominoInKingdom dom = new DominoInKingdom(posx, posy,kingdom, getDominoByID(id));
 			dom.setDirection(getDirection(map.get("dominodir1")));
 			//Adding their second domino
 			posx = Integer.decode(map.get("posx2"));
 			posy = Integer.decode(map.get("posy2"));
 			id = Integer.decode(map.get("domino2"));
-			dom = new DominoInKingdom(posx, posy,kingdom, getdominoByID(id));
+			dom = new DominoInKingdom(posx, posy,kingdom, getDominoByID(id));
 			dom.setDirection(getDirection(map.get("dominodir2")));
 			i++;
 		}
@@ -156,7 +155,7 @@ public class CalculateRankingStepDefinition {
 		}
 	}
 
-	private Domino getdominoByID(int id) {
+	private Domino getDominoByID(int id) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		for (Domino domino : game.getAllDominos()) {
 			if (domino.getId() == id) {

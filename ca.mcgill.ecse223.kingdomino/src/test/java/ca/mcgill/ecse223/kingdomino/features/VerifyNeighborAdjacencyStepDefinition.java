@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
@@ -12,15 +14,16 @@ import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import io.cucumber.java.en.*;
 
-public class VerifyCastleAdjacencyStepDefinition {
+public class VerifyNeighborAdjacencyStepDefinition {
+	
 	int x;
 	int y;
 	int id;
 	DirectionKind direction;
-	Boolean validity;
-
-	@Given("the game is initialized for castle adjacency")
-	public void the_game_is_initialized_for_castle_adjacency() {
+	boolean validity;
+	
+	@Given("the game is initialized for neighbor adjacency")
+	public void the_game_is_initialized_for_neighbor_adjacency() {
 		Kingdomino kingdomino = new Kingdomino();
 		Game game = new Game(48, kingdomino);
 		game.setNumberOfPlayers(4);
@@ -32,34 +35,46 @@ public class VerifyCastleAdjacencyStepDefinition {
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
+	@Given("the following dominoes are present in a player's kingdom:")
+	public void the_following_dominoes_are_present_in_a_player_s_kingdom(io.cucumber.datatable.DataTable dataTable) {
+		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getPlayer(0);
+		Kingdom kingdom = new Kingdom(player);
+		new Castle(0, 0, kingdom, player);
+		List<Map<String, String>> valueMaps = dataTable.asMaps();
+		for (Map<String, String> map : valueMaps) {
+			int posx = Integer.decode(map.get("posx"));
+			int posy = Integer.decode(map.get("posy"));
+			DominoInKingdom dom = new DominoInKingdom(posx, posy,kingdom, getDominoByID(Integer.decode(map.get("id"))));
+			dom.setDirection(getDirection(map.get("dominodir")));
+		}
+	}
+
 	@Given("the current player preplaced the domino with ID {int} at position {int}:{int} and direction {string}")
 	public void the_current_player_preplaced_the_domino_with_ID_at_position_and_direction(Integer int1, Integer int2,
 			Integer int3, String string) {
-		Kingdom kingdom = KingdominoApplication.getKingdomino().getCurrentGame().getPlayer(0).getKingdom();
-		DominoInKingdom dom = new DominoInKingdom(int2, int3, kingdom, getDominoByID(int1));
-		kingdom.getPlayer().ge
 		x = int2;
 		y = int3;
 		direction = getDirection(string);
 		id = int1;
 		System.out.println("*******************");
 	}
-
-	@When("check castle adjacency is initiated")
-	public void check_castle_adjacency_is_initiated() {
-		validity = KingdominoController.verifyCastleAdjacency(x, y, direction);
+	
+	@When("check current preplaced domino adjacency is initiated")
+	public void check_current_preplaced_domino_adjacency_is_initiated() {
+		Kingdom kingdom = KingdominoApplication.getKingdomino().getCurrentGame().getPlayer(0).getKingdom();
+		System.out.println(x);
+		System.out.println(y);
+		System.out.println(direction);
+		validity = KingdominoController.VerifyNeighborAdjacency(kingdom, getDominoByID(1), x, y, direction);
 	}
 
-	@Then("the castle\\/domino adjacency is {string}")
-	public void the_castle_domino_adjacency_is(String string) {
+	@Then("the current-domino\\/existing-domino adjacency is {string}")
+	public void the_current_domino_existing_domino_adjacency_is(String string) {
 		assertEquals(getValidity(string), this.validity);
 	}
 
-	
-	
-	
-	
-	
+	// These are helper methods
+
 	private void createAllDominoes(Game game) {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));
@@ -112,7 +127,6 @@ public class VerifyCastleAdjacencyStepDefinition {
 		}
 		throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
 	}
-	
 	/**
 	 * This is a helper method to convert the string valid/invalid to a boolean for comparison
 	 * @param string this is the validity as a string
