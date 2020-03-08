@@ -32,19 +32,6 @@ public class VerifyCastleAdjacencyStepDefinition {
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
-	@Given("the current player preplaced the domino with ID {int} at position {int}:{int} and direction {string}")
-	public void the_current_player_preplaced_the_domino_with_ID_at_position_and_direction(Integer int1, Integer int2,
-			Integer int3, String string) {
-		Kingdom kingdom = KingdominoApplication.getKingdomino().getCurrentGame().getPlayer(0).getKingdom();
-		DominoInKingdom dom = new DominoInKingdom(int2, int3, kingdom, getDominoByID(int1));
-		kingdom.getPlayer().ge
-		x = int2;
-		y = int3;
-		direction = getDirection(string);
-		id = int1;
-		System.out.println("*******************");
-	}
-
 	@When("check castle adjacency is initiated")
 	public void check_castle_adjacency_is_initiated() {
 		validity = KingdominoController.verifyCastleAdjacency(x, y, direction);
