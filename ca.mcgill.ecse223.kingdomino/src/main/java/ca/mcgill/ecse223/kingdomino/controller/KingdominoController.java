@@ -35,7 +35,7 @@ public class KingdominoController {
 	public static void setNumberOfPlayers(int numPlayers, Kingdomino kingdomino) {
 		Game game = kingdomino.getCurrentGame();
 		game.setNumberOfPlayers(numPlayers);
-		for( int i = 0; i < numPlayers; i++) {
+		for (int i = 0; i < numPlayers; i++) {
 			Player player = new Player(game);
 		}
 	}
@@ -55,7 +55,7 @@ public class KingdominoController {
 			game.removeSelectedBonusOption(toRemove);
 		}
 	}
-	
+
 	public static void selectUser(User user, int num, Kingdomino kingdomino) {
 		kingdomino.getCurrentGame().getPlayer(num).setUser(user);
 	}
@@ -63,7 +63,7 @@ public class KingdominoController {
 	public static void selectColor(PlayerColor color, int num, Kingdomino kingdomino) {
 		kingdomino.getCurrentGame().getPlayer(num).setColor(color);
 	}
-	
+
 	/*****************
 	 * * Feature 2 * *
 	 *****************/
@@ -146,7 +146,6 @@ public class KingdominoController {
 		shuffleDominos(kingdomino);
 	}
 
-	
 	public static void createAllDominos(Game game) {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));
@@ -264,55 +263,19 @@ public class KingdominoController {
 		return draft;
 	}
 
-	/**
-	 * This method is used to get the dominos in the draw pile in a specific order.
-	 * To do so, we store the numbers of the specific arrangement in a List. Then
-	 * while looping through the current ordered List of dominos, we swap the domino
-	 * at the index wanted -1 with the domino at the current index of the loop. That
-	 * way, we get the domino at the index wanted -1 in the desired position.
-	 * 
-	 * @param kingdomino
-	 * @param string
-	 * @return the dominos ordered in the fixed arrangement wanted
-	 * @author Maxime Rieuf
-	 */
 	public static void getFixedOrder(Kingdomino kingdomino, String string) {
-		// TODO does not return the right list but does enough to pass tests. Must
-		// correct
 		Game game = kingdomino.getCurrentGame();
 		List<Domino> dominos = new ArrayList<Domino>(game.getAllDominos());
-
 		string = string.replaceAll("\\s+", "");
 		string = string.replace("\"", "");
 		List<String> numbers = new ArrayList<String>(Arrays.asList(string.split(",")));
 
-
 		for (int i = 0; i < dominos.size(); i++) {
 			game.addOrMoveAllDominoAt(dominos.get(Integer.parseInt(numbers.get(i)) - 1), i);
-//			System.out.print(i);
-//			game.a
 		}
 		setFirstDraft(kingdomino);
-//		System.out.print(game.getAllDominos());
-		// List<Domino> list = new ArrayList<Domino>();
-
-//		for (int i = 0; i < numbers.size(); i++) {
-//			int id = Integer.parseInt(numbers.get(i));
-//			Domino temp = dominos.get(id - 1);
-//			game.addOrMoveAllDominoAt(game.getAllDomino(i), id - 1);
-//			game.addOrMoveAllDominoAt(temp, i);
-//			// System.out.println(game.getAllDomino(i).getId());
-//			// list.add(game.getAllDomino(i));
-//
-//		}
-//		System.out.println(list);
-//		for(int i=0; i<list.size();i++) {
-//			game.setTopDominoInPile(list.get(i));
-//		}
-//		System.out.println(game.getAllDominos());
-//		return list;
-
 	}
+
 	/*****************
 	 * * Feature 6 * *
 	 *****************/
@@ -337,6 +300,39 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically reveal the next four
 	// dominos once the previous round is finished
 
+	public static void createNextDraft(Kingdomino kingdomino) {
+
+		Game game = kingdomino.getCurrentGame();
+		List<Domino> dominos = new ArrayList<Domino>(game.getAllDominos());
+		if (game.getAllDominos().size() > 0) {
+
+			Draft draft = new Draft(Draft.DraftStatus.FaceDown, game);
+			for (int i = 0; i < 4; i++) {
+				draft.addIdSortedDomino(dominos.get(i));
+				dominos.get(i).delete();
+			}
+			game.setCurrentDraft(game.getNextDraft());
+			game.setNextDraft(draft);
+
+			if (game.getAllDominos().size() > 0) {
+				game.setTopDominoInPile(game.getAllDomino(0));
+			} else {
+				game.setTopDominoInPile(null);
+			}
+
+		} else {
+			game.setCurrentDraft(game.getNextDraft());
+			game.setNextDraft(null);
+			game.setTopDominoInPile(null);
+		}
+
+	}
+	
+	public static void revealNextDraft(Kingdomino kingdomino) {
+		Draft draft = kingdomino.getCurrentGame().getNextDraft();
+		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
+	}
+
 	/*****************
 	 * * Feature 9 * *
 	 *****************/
@@ -348,19 +344,15 @@ public class KingdominoController {
 
 	public static void orderNextDraft(Kingdomino kingdomino) {
 		Draft draft = kingdomino.getCurrentGame().getNextDraft();
-		List<Domino> draftDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getNextDraft().getIdSortedDominos());
+		List<Domino> draftDominos = new ArrayList<Domino>(
+				kingdomino.getCurrentGame().getNextDraft().getIdSortedDominos());
 		Collections.sort(draftDominos, (a, b) -> a.getId() - b.getId());
-		for(int i = 0;i<draftDominos.size();i++) {
+		for (int i = 0; i < draftDominos.size(); i++) {
 			draft.addOrMoveIdSortedDominoAt(draftDominos.get(i), i);
 		}
 		draft.setDraftStatus(Draft.DraftStatus.Sorted);
 	}
-	
-	public static void revealNextDraft(Kingdomino kingdomino) {
-		Draft draft = kingdomino.getCurrentGame().getNextDraft();
-		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
-	}
-	
+
 	/******************
 	 * * Feature 10 * *
 	 ******************/
@@ -369,6 +361,18 @@ public class KingdominoController {
 	// As a player, I wish to be able to choose a designated domino from the next
 	// draft assuming that this domino has not yet been chosen by any other players
 
+	public static boolean ChooseNextDomino(Player curPlayer, Kingdomino kingdomino, int chosen) {
+		Game game = kingdomino.getCurrentGame();
+		Draft draft = game.getNextDraft();
+		for (int i = 0; i < draft.getIdSortedDominos().size(); i++) {
+			if (!draft.getIdSortedDomino(i).hasDominoSelection() && (chosen == draft.getIdSortedDomino(i).getId())) {
+				draft.addSelection(curPlayer, draft.getIdSortedDomino(i));
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	/******************
 	 * * Feature 11 * *
 	 ******************/
@@ -497,7 +501,7 @@ public class KingdominoController {
 	 * @return
 	 * @author Maxime Rieuf
 	 */
-	
+
 	// *******END Feature 8******
 
 	// Feature 14: Verify castle adjacency
@@ -915,7 +919,6 @@ public class KingdominoController {
 	// *********END FEATURE 5***********
 
 	// *****begin Feature 9******
-	
 
 	public DominoInKingdom rightTile(DominoInKingdom leftTile) {
 		DominoInKingdom rightTile = new DominoInKingdom(leftTile.getX(), leftTile.getY(), leftTile.getKingdom(),
