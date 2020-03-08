@@ -29,7 +29,7 @@ public class ShuffleDominosStepDefinitions {
 	Kingdomino kingdomino;
 	@Given("the game is initialized for shuffle dominoes")
 	public void the_game_is_initialized_for_shuffle_dominoes() {
-	    		kingdomino = new Kingdomino();
+	    kingdomino = new Kingdomino();
 		Game newGame = new Game(48, kingdomino);
 		newGame.setNumberOfPlayers(4);
 		kingdomino.setCurrentGame(newGame);
@@ -54,7 +54,7 @@ public class ShuffleDominosStepDefinitions {
 	@Then("the first draft shall exist")
 	public void the_first_draft_shall_exist() {
 	    //reasonning: if the size of the draft equals a real number, it must exist.
-		assertEquals(4, kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDominos().size());
+		assertEquals(4, kingdomino.getCurrentGame().getNextDraft().getIdSortedDominos().size());
 
 	}
 
@@ -62,8 +62,8 @@ public class ShuffleDominosStepDefinitions {
 	public void the_first_draft_should_have_dominoes_on_the_board_face_down(Integer int1) {
 		//first assertEquals checks the number of dominoes in the draft
 		//second assertEquals checks that the status of the draft is face down
-		assertEquals(Integer.valueOf(int1), Integer.valueOf(kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDominos().size()));
-		assertEquals(Draft.DraftStatus.FaceDown, kingdomino.getCurrentGame().getCurrentDraft().getDraftStatus());
+		assertEquals(Integer.valueOf(int1), Integer.valueOf(kingdomino.getCurrentGame().getNextDraft().getIdSortedDominos().size()));
+		assertEquals(Draft.DraftStatus.FaceDown, kingdomino.getCurrentGame().getNextDraft().getDraftStatus());
 
 	}
 
@@ -86,7 +86,7 @@ public class ShuffleDominosStepDefinitions {
 		string = string.replaceAll("\\s+", "");
 		string = string.replace("\"", "");
 
-		Draft draft = kingdomino.getCurrentGame().getCurrentDraft();
+		Draft draft = kingdomino.getCurrentGame().getNextDraft();
 		boolean sorted = false;
 		for(int i = 0;i<4;i++) {
 		

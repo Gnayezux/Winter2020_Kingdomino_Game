@@ -61,7 +61,7 @@ public class StartANewGameStepDefinitions {
 	public void reveal_first_draft_is_initiated() {
 	    // Write code here that turns the phrase above into concrete actions
 //		kingdomino.getCurrentGame().getAllDraft(0);
-		KingdominoController.getFirstDraft(kingdomino);
+		KingdominoController.setFirstDraft(kingdomino);
 	    //throw new cucumber.api.PendingException();
 	}
 
@@ -91,7 +91,7 @@ public class StartANewGameStepDefinitions {
 	public void the_first_draft_of_dominoes_is_revealed() {
 	    // Write code here that turns the phrase above into concrete actions
 //	    throw new cucumber.api.PendingException();
-		KingdominoController.getFirstDraft(kingdomino);
+		KingdominoController.setFirstDraft(kingdomino);
 		kingdomino.getCurrentGame().getCurrentDraft().setDraftStatus(Draft.DraftStatus.FaceUp);
 
 	}

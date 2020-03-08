@@ -53,18 +53,19 @@ public class KingdominoController {
 	}
 
 	/// ABOVE IS GOOD
-	public static void ChooseNextDomino(Player curPlayer, Kingdomino kingdomino, String chosen) {
+	public static void ChooseNextDomino(Player curPlayer, Kingdomino kingdomino, int chosen) {
 		Game game = kingdomino.getCurrentGame();
-		Draft draft = game.getCurrentDraft();
+		Draft draft = game.getNextDraft();
 
+//		System.out.print(draft.getIdSortedDominos().size());
 		for (int i = 0; i < draft.getIdSortedDominos().size(); i++) {
-			if (Integer.parseInt(chosen) == draft.getIdSortedDomino(i).getId()) {
-				try {
+			if (chosen == draft.getIdSortedDomino(i).getId()) {
+//				try {
 					draft.addSelection(curPlayer, draft.getIdSortedDomino(i));
 
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
 
 			}
 		}
@@ -617,7 +618,7 @@ public class KingdominoController {
 			game.addOrMoveAllDominoAt(dominos.get(i), i);
 		}
 
-		getFirstDraft(kingdomino);
+		setFirstDraft(kingdomino);
 		
 	}
 
@@ -627,23 +628,26 @@ public class KingdominoController {
 	 * @return
 	 * @author Maxime Rieuf
 	 */
-	public static Draft getFirstDraft(Kingdomino kingdomino) {
+	public static Draft setFirstDraft(Kingdomino kingdomino) {
 
-		
-		List<Domino> dominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
+		Game game = kingdomino.getCurrentGame();
+		List<Domino> dominos = new ArrayList<Domino>(game.getAllDominos());
 
-		Draft draft = new Draft(Draft.DraftStatus.FaceDown, kingdomino.getCurrentGame());
+		Draft draft = new Draft(Draft.DraftStatus.FaceDown, game);
 
 		for (int i = 0; i < 4; i++) {
 			draft.addIdSortedDomino(dominos.get(i));
 			dominos.get(i).delete();
 		}
 		
-
-		kingdomino.getCurrentGame().setCurrentDraft(draft);
-
+		game.setCurrentDraft(null);
+		game.setNextDraft(draft);
+		game.setTopDominoInPile(game.getAllDomino(0));
+		
 		return draft;
 	}
+	
+	
 
 	/**
 	 * This method is used to get the dominos in the draw pile in a specific order.
@@ -677,7 +681,7 @@ public class KingdominoController {
 //			System.out.print(i);
 //			game.a
 		}
-		getFirstDraft(kingdomino);
+		setFirstDraft(kingdomino);
 //		System.out.print(game.getAllDominos());
 		// List<Domino> list = new ArrayList<Domino>();
 		
@@ -701,90 +705,68 @@ public class KingdominoController {
 	// *********END FEATURE 5***********
 
 	// **********BEGIN FEATURE 8*********
-	/**
-	 * 
-	 * @param kingdomino
-	 * @return
-	 * @author Maxime Rieuf
-	 */
-	public static Draft revealNextDraft(Kingdomino kingdomino) {
+	
+public static void createNextDraft(Kingdomino kingdomino) {
 
-//		
-//		System.out.println(kingdomino.getCurrentGame().getAllDominos().size()/kingdomino.getCurrentGame().getNumberOfPlayers());
-//		kingdomino.getCurrentGame().setTopDominoInPile(kingdomino.getCurrentGame().getAllDomino(0));
-////		for(int i=0; i<kingdomino.getCurrentGame().getAllDominos().size(); i++) {
-////			kingdomino.getCurrentGame().setTopDominoInPile(kingdomino.getCurrentGame().getAllDomino(i));
-////		}
-//		getFirstDraft(kingdomino);
-//		for(int i=dominos.size()-1; i>dominos.size()-5; i--) {
-//			draft.addIdSortedDomino(dominos.get(i));
-//			dominos.get(i).delete();
-//		}
+		Game game = kingdomino.getCurrentGame();
+		List<Domino> dominos = new ArrayList<Domino>(game.getAllDominos());
 //
-//		kingdomino.getCurrentGame().setCurrentDraft(draft);
-//		
-//		Boolean hasNext = kingdomino.getCurrentGame().hasNextDraft();
-//		if(kingdomino.getCurrentGame().getAllDrafts().size() == kingdomino.getCurrentGame().getAllDominos().size()/kingdomino.getCurrentGame().getNumberOfPlayers()) {
-//			hasNext=false;
-//		}
-//		return dominos;
-		List<Domino> dominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
-//		System.out.print(dominos);
-//		shuffleDominos(dominos);
-		Draft draft = new Draft(kingdomino.getCurrentGame().getCurrentDraft().getDraftStatus(),
-				kingdomino.getCurrentGame());
-		for (int i = dominos.size() - 1; i > dominos.size() - 5; i--) {// get first dominos not last in pile
+		if(game.getAllDominos().size()>0) {
+			
+		Draft draft = new Draft(Draft.DraftStatus.FaceDown, game);
+//
+		for (int i = 0; i < 4; i++) {
 			draft.addIdSortedDomino(dominos.get(i));
 			dominos.get(i).delete();
 		}
-		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
-
-		if (kingdomino.getCurrentGame().getNumberOfPlayers() == 4
-				&& kingdomino.getCurrentGame().getAllDrafts().size() == 12) {
-			kingdomino.getCurrentGame().setNextDraft(null);
+//		
+		game.setCurrentDraft(game.getNextDraft());
+		game.setNextDraft(draft);
+		
+		if(game.getAllDominos().size()>0) {
+		game.setTopDominoInPile(game.getAllDomino(0));
+		}else {
+			game.setTopDominoInPile(null);
 		}
-
-		kingdomino.getCurrentGame().setCurrentDraft(draft);
-
-		return draft;
+		
+		
+		}else {
+			game.setCurrentDraft(game.getNextDraft());
+			game.setNextDraft(null);
+			game.setTopDominoInPile(null);
+		}
+		
+		
 	}
+	
+
 	// *******END Feature 8******
 
 	// *****begin Feature 9******
+
+
+
 	/**
 	 * 
 	 * @param kingdomino
 	 * @return
 	 * @author Maxime Rieuf
 	 */
-	public static Draft orderNextDraft(Kingdomino kingdomino) {
-		// Draft draft = new Draft(Draft.DraftStatus.FaceDown,
-		// kingdomino.getCurrentGame());
-		// Draft draft = kingdomino.getCurrentGame().getCurrentDraft();
-		Draft draft = getFirstDraft(kingdomino);
-		// List<Domino> dominos = new
-		// ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
-//		List<Integer> list = new ArrayList<Integer>();
-//		
-//		for(int i=0; i<dominos.size(); i++) {
-//			list.add(draft.getIdSortedDomino(i).getId());
-//		}
-//		
-//		Collections.sort(list);
-		// System.out.println(kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDominos());
-//		
-		for (int i = 1; i < draft.getIdSortedDominos().size(); i++) {
-			if (draft.getIdSortedDomino(i).getId() < draft.getIdSortedDomino(i - 1).getId()) {
-				draft.addOrMoveIdSortedDominoAt(draft.getIdSortedDomino(i), i - 1);
-			}
+	public static void orderNextDraft(Kingdomino kingdomino) {
+		Draft draft = kingdomino.getCurrentGame().getNextDraft();
+		List<Domino> draftDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getNextDraft().getIdSortedDominos());
+		Collections.sort(draftDominos, (a, b) -> a.getId() - b.getId());
+		for(int i = 0;i<draftDominos.size();i++) {
+			draft.addOrMoveIdSortedDominoAt(draftDominos.get(i), i);
 		}
-		// System.out.println(kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDominos());
-
 		draft.setDraftStatus(Draft.DraftStatus.Sorted);
-
-		return draft;
 	}
-
+	
+	public static void revealNextDraft(Kingdomino kingdomino) {
+		Draft draft = kingdomino.getCurrentGame().getNextDraft();
+		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
+	}
+	// *******END Feature 9******
 	public DominoInKingdom rightTile(DominoInKingdom leftTile) {
 		DominoInKingdom rightTile = new DominoInKingdom(leftTile.getX(), leftTile.getY(), leftTile.getKingdom(),
 				leftTile.getDomino());

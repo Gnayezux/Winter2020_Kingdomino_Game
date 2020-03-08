@@ -57,7 +57,21 @@ public void the_next_draft_is_sorted_with_dominoes(String string) {
 		draft.addIdSortedDomino(game.getAllDomino(Integer.parseInt(s)-1));
 //		System.out.print(game.getPlayer(Integer.parseInt(s)-5));
 	}
-	game.setCurrentDraft(draft);
+	game.setNextDraft(draft);
+
+//	string = string.replaceAll("\\s+", "");
+//	string = string.replace("\"", "");
+//	List<String> numbers = new ArrayList<String>(Arrays.asList(string.split(",")));
+//	Game game = kingdomino.getCurrentGame();
+//	Draft draft = new Draft(Draft.DraftStatus.FaceDown, game);
+//	//
+//	for (int i = 0; i < 4; i++) {
+//		draft.addIdSortedDomino(game.getAllDomino(Integer.parseInt(numbers.get(i))-1));
+//	}
+//	game.setNextDraft(draft);
+	
+	KingdominoController.orderNextDraft(kingdomino);
+
 }
 
 @Given("player's domino selection {string}")
@@ -66,23 +80,20 @@ public void player_s_domino_selection(String string) {
 //    throw new cucumber.api.PendingException();
 //	System.out.print(string);
 	Game game = kingdomino.getCurrentGame();
-	Draft draft = game.getCurrentDraft();
+	Draft draft = game.getNextDraft();
 	string=string.replaceAll("\\s+", "");
 	List<String> selection = new ArrayList<String>(Arrays.asList(string.split(",")));
-//	System.out.print(draft.getIdSortedDominos());
 	int index = 0;
-	for(Player player : game.getPlayers()) {
-		
-		for(String select : selection) {
-			System.out.print(select+" //");
+	for(String select : selection) {
+		for(Player player : game.getPlayers()) {
 			if(select.equals(player.getColor().toString().toLowerCase())) {
-				System.out.print(select+" ////");
 				draft.addSelection(player, draft.getIdSortedDomino(index));
-//				System.out.print(draft.getSelections().get(index).getPlayer().getColor());
 			}
 		}
 		index++;
 	}
+	
+
 	
 }
 
@@ -99,22 +110,33 @@ public void the_current_player_is(String string) {
 		}
 	}
 	game.setNextPlayer(curPlayer);
+	
 }
 
-@When("current player chooses to place king on {string}")
-public void current_player_chooses_to_place_king_on(String string) {
-    // Write code here that turns the phrase above into concrete actions
+//@When("current player chooses to place king on {string}")
+//public void current_player_chooses_to_place_king_on(String string) {
+//    // Write code here that turns the phrase above into concrete actions
 //    throw new cucumber.api.PendingException();
-//	System.out.print(string);
-	KingdominoController.ChooseNextDomino(kingdomino.getCurrentGame().getNextPlayer(), kingdomino, string);
+////	System.out.print(string);
+////	KingdominoController.ChooseNextDomino(kingdomino.getCurrentGame().getNextPlayer(), kingdomino, string);
+//}
+
+@When("current player chooses to place king on {int}")
+public void current_player_chooses_to_place_king_on(Integer int1) {
+    // Write code here that turns the phrase above into concrete actions
+//	System.out.print(int1);
+//    throw new cucumber.api.PendingException();
+	KingdominoController.ChooseNextDomino(kingdomino.getCurrentGame().getNextPlayer(), kingdomino, Integer.valueOf(int1));
+
 }
+
 
 @Then("current player king now is on {string}")
 public void current_player_king_now_is_on(String string) {
     // Write code here that turns the phrase above into concrete actions
 //    throw new cucumber.api.PendingException();
 	Game game = kingdomino.getCurrentGame();
-	Draft draft = game.getCurrentDraft();
+	Draft draft = game.getNextDraft();
 	int id=-1;
 	for(DominoSelection selection : draft.getSelections()) {
 		if(game.getNextPlayer().equals(selection.getPlayer())) {
@@ -127,40 +149,35 @@ public void current_player_king_now_is_on(String string) {
 
 @Then("the selection for next draft is now equal to {string}")
 public void the_selection_for_next_draft_is_now_equal_to(String string) {
-    // Write code here that turns the phrase above into concrete actions
-//    throw new cucumber.api.PendingException();
 	Game game = kingdomino.getCurrentGame();
-	Draft draft = game.getCurrentDraft();
-	String selection = "";
-	for(Domino domino : draft.getIdSortedDominos()) {
-		if(domino.getDominoSelection()!=null) {
-//			System.out.print(domino.getDominoSelection().getPlayer().getColor());
+	Draft draft = game.getNextDraft();
+	string=string.replaceAll("\\s+", "");
+	List<String> selection = new ArrayList<String>(Arrays.asList(string.split(",")));
+	boolean isThere = false;
+	int j =0;
+	for(int i =0;i<selection.size();i++) {
+		if(!selection.get(i).equals("none")) {
 			
+			if(draft.getSelection(i-j).getPlayer().getColor().toString().toLowerCase().equals(selection.get(i))) {
+				isThere = true;
+			}else {
+				isThere = false;
+			}
+			
+		}else {
+			j++;
 		}
-//		System.out.print(domino.getDominoSelection());
-//		boolean isThere = false;
-//		for(int i = 0;i<draft.getSelections().size();i++) {
-//			if(draft.getSelection(i).getDomino().equals(domino)) {
-//				isThere = true;
-//			}
-//		}
-//		if(isThere) {
-//			selection += domino.getDominoSelection().getPlayer().getColor().toString().toLowerCase() +",";
-//		}else {
-//			selection += "none,";
-//		}
+		
 	}
-//	System.out.print(draft.getSelections().get(0).getPlayer());
-//	selection = selection.substring(0, selection.length() - 1);
-	
-//	System.out.print(selection);
-	
+	assertEquals(true,isThere);
+
 }
 
 @Then("the selection for the next draft selection is still {string}")
 public void the_selection_for_the_next_draft_selection_is_still(String string) {
     // Write code here that turns the phrase above into concrete actions
-    throw new cucumber.api.PendingException();
+//    throw new cucumber.api.PendingException();
+	System.out.print(string);
 }
 
 //HELPER METHODS
