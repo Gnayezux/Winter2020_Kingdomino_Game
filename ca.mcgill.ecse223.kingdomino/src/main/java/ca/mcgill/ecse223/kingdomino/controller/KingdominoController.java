@@ -756,8 +756,15 @@ public class KingdominoController {
 
 		return draft;
 	}
+	
+	/**
+	 * a helper method for IdentifyKingdomAttributes
+	 * @author kaichengwu
+	 * @param leftTile
+	 * @return
+	 */
 
-	public DominoInKingdom rightTile(DominoInKingdom leftTile) {
+	public static DominoInKingdom rightTile(DominoInKingdom leftTile) {
 		DominoInKingdom rightTile = new DominoInKingdom(leftTile.getX(), leftTile.getY(), leftTile.getKingdom(),
 				leftTile.getDomino());
 		TerrainType terr = leftTile.getDomino().getRightTile();
@@ -774,7 +781,7 @@ public class KingdominoController {
 		return rightTile;
 	}
 
-	public boolean isConnected(DominoInKingdom d1, DominoInKingdom d2) {
+	public static boolean isConnected(DominoInKingdom d1, DominoInKingdom d2) {
 		if (d1.getX() == d2.getX() && d1.getY() == d2.getY() - 1) {
 			return true;
 		} else if (d1.getX() == d2.getX() && d1.getY() == d2.getY() + 1) {
@@ -789,7 +796,14 @@ public class KingdominoController {
 	}
 
 	//TODO
-	public Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom){
+	/**
+	 * the method that determines the properties in a kingdom
+	 * @param playedDominoes
+	 * @param aKingdom
+	 * @author kaichengwu
+	 * @return
+	 */
+	public static Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom){
 		
 
 		Property[] myProperties= new Property[playedDominoes.length];
@@ -821,12 +835,18 @@ public class KingdominoController {
 						}
 					}
 				}
+		myProperties[i]=aProperty;
 		}
 		return myProperties;
 		
 	}
+	/**
+	 * a method that takes a property as input ant determine its number of crowns and size
+	 * @param aProperty
+	 * @author kaichengwu
+	 */
 	
-	public void CalculatePropertyAttributes(Property aProperty){
+	public static void CalculatePropertyAttributes(Property aProperty){
 		int numCrowns=0;
 		int size =0;
 		for (int i=0; i< aProperty.numberOfIncludedDominos(); i++) {
@@ -843,13 +863,37 @@ public class KingdominoController {
 		aProperty.setSize(size);
 	}
 	
-	public int CalculateBonusScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle castle) {
+	/**
+	 * the method that computes the bonus score 
+	 * @param playedDominoes
+	 * @param aKingdom
+	 * @param castle
+	 * @param kingdomino
+	 * @author kaichengwu
+	 * @return
+	 */
+	public static int CalculateBonusScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle castle, Kingdomino kingdomino) {
 		int bonus = 0;
 		boolean middlexl = false;
 		boolean middlexr = false;
 		boolean middleyt = false;
 		boolean middleyb = false;
-		if (playedDominoes.length ==12) {
+		
+		boolean middleKingdom = false;
+		boolean harmony = false;
+		
+		for(int i = 0;i<kingdomino.getCurrentGame().getSelectedBonusOptions().size();i++) {
+			if(kingdomino.getCurrentGame().getSelectedBonusOption(i).getOptionName().equals("isUsingHarmony")) {
+				harmony = true;
+			}
+			if(kingdomino.getCurrentGame().getSelectedBonusOption(i).getOptionName().equals("isUsingMiddleKingdom")) {
+				middleKingdom = true;
+			}
+			
+		}
+		
+		
+		if ((playedDominoes.length ==12) && harmony) {
 			bonus +=5;
 		}
 		
@@ -868,7 +912,7 @@ public class KingdominoController {
 			}
 			
 		}
-		if(middlexl&&middlexr&&middleyb&&middleyt) {
+		if((middlexl&&middlexr&&middleyb&&middleyt)&&middleKingdom) {
 			bonus+=10;
 		}
 		
@@ -877,7 +921,18 @@ public class KingdominoController {
 		
 	}
 
-	public int CalculatePlayerScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle aCastle) {
+	
+	/**
+	 * the method that computes the total score
+	 * @param playedDominoes
+	 * @param aKingdom
+	 * @param aCastle
+	 * @param kingdomino
+	 * @author kaichengwu
+	 * @return
+	 */
+	public static int CalculatePlayerScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle aCastle, Kingdomino kingdomino) {
+		
 		int score = 0;
 		int pscore = 0;
 		int bonuscore = 0;
@@ -890,7 +945,7 @@ public class KingdominoController {
 			}
 
 		}
-		bonuscore = CalculateBonusScore(playedDominoes, aKingdom, aCastle);
+		bonuscore = CalculateBonusScore(playedDominoes, aKingdom, aCastle, kingdomino);
 		score += bonuscore;
 		return score;
 	}

@@ -32,12 +32,22 @@ public class CalculatePlayerScoreStepDefinition {
 	
 	@Given("the game is initialized for calculate player score")
 	public void the_game_is_initialized_for_calculate_player_score() {
+		
+		Kingdomino kingdomino = new Kingdomino();
+		Game game = new Game(48, kingdomino);
+		game.setNumberOfPlayers(4);
+		kingdomino.setCurrentGame(game);
+		createAllDominoes(game);
+		KingdominoApplication.setKingdomino(kingdomino);
+		
 	    // Write code here that turns the phrase above into concrete actions
 	    throw new cucumber.api.PendingException();
 	}
 
 	@Given("the game has {string} bonus option")
 	public void the_game_has_bonus_option(String string) {
+		
+		
 	    // Write code here that turns the phrase above into concrete actions
 	    throw new cucumber.api.PendingException();
 	}
@@ -54,5 +64,113 @@ public class CalculatePlayerScoreStepDefinition {
 	    throw new cucumber.api.PendingException();
 	}
 
+
+	
+///////////////////////////////////////
+/// -----Private Helper Methods---- ///
+///////////////////////////////////////
+
+private void addDefaultUsersAndPlayers(Game game) {
+String[] userNames = { "User1", "User2", "User3", "User4" };
+for (int i = 0; i < userNames.length; i++) {
+User user = game.getKingdomino().addUser(userNames[i]);
+Player player = new Player(game);
+player.setUser(user);
+player.setColor(PlayerColor.values()[i]);
+Kingdom kingdom = new Kingdom(player);
+new Castle(0, 0, kingdom, player);
+}
+}
+
+private void createAllDominoes(Game game) {
+try {
+BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));
+String line = "";
+String delimiters = "[:\\+()]";
+while ((line = br.readLine()) != null) {
+String[] dominoString = line.split(delimiters); // {id, leftTerrain, rightTerrain, crowns}
+int dominoId = Integer.decode(dominoString[0]);
+TerrainType leftTerrain = getTerrainType(dominoString[1]);
+TerrainType rightTerrain = getTerrainType(dominoString[2]);
+int numCrown = 0;
+if (dominoString.length > 3) {
+numCrown = Integer.decode(dominoString[3]);
+}
+new Domino(dominoId, leftTerrain, rightTerrain, numCrown, game);
+}
+br.close();
+} catch (IOException e) {
+e.printStackTrace();
+throw new java.lang.IllegalArgumentException(
+"Error occured while trying to read alldominoes.dat: " + e.getMessage());
+}
+}
+
+private Domino getdominoByID(int id) {
+Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+for (Domino domino : game.getAllDominos()) {
+if (domino.getId() == id) {
+return domino;
+}
+}
+throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
+}
+
+private TerrainType getTerrainType(String terrain) {
+switch (terrain) {
+case "W":
+return TerrainType.WheatField;
+case "F":
+return TerrainType.Forest;
+case "M":
+return TerrainType.Mountain;
+case "G":
+return TerrainType.Grass;
+case "S":
+return TerrainType.Swamp;
+case "L":
+return TerrainType.Lake;
+default:
+throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
+}
+}
+
+private DirectionKind getDirection(String dir) {
+switch (dir) {
+case "up":
+return DirectionKind.Up;
+case "down":
+return DirectionKind.Down;
+case "left":
+return DirectionKind.Left;
+case "right":
+return DirectionKind.Right;
+default:
+throw new java.lang.IllegalArgumentException("Invalid direction: " + dir);
+}
+}
+
+private DominoStatus getDominoStatus(String status) {
+switch (status) {
+case "inPile":
+return DominoStatus.InPile;
+case "excluded":
+return DominoStatus.Excluded;
+case "inCurrentDraft":
+return DominoStatus.InCurrentDraft;
+case "inNextDraft":
+return DominoStatus.InNextDraft;
+case "erroneouslyPreplaced":
+return DominoStatus.ErroneouslyPreplaced;
+case "correctlyPreplaced":
+return DominoStatus.CorrectlyPreplaced;
+case "placedInKingdom":
+return DominoStatus.PlacedInKingdom;
+case "discarded":
+return DominoStatus.Discarded;
+default:
+throw new java.lang.IllegalArgumentException("Invalid domino status: " + status);
+}
+}
 
 }
