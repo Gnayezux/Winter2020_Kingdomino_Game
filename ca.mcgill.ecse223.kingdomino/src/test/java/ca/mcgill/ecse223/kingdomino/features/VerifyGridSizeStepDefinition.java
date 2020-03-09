@@ -2,59 +2,58 @@ package ca.mcgill.ecse223.kingdomino.features;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.*;
-import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import io.cucumber.java.en.*;
 
-public class VerifyCastleAdjacencyStepDefinition {
-	boolean isChecked;
-	@Given("the game is initialized for castle adjacency")
-	public void the_game_is_initialized_for_castle_adjacency() {
+public class VerifyGridSizeStepDefinition {
+	boolean valid = false;
+
+	@Given("the game is initialized for verify grid size")
+	public void the_game_is_initialized_for_verify_grid_size() {
 		Kingdomino kingdomino = new Kingdomino();
 		Game game = new Game(48, kingdomino);
 		game.setNumberOfPlayers(4);
 		kingdomino.setCurrentGame(game);
+		// Populate game
 		addDefaultUsersAndPlayers(game);
 		KingdominoController.createAllDominos(game);
 		game.setNextPlayer(game.getPlayer(0));
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
-	@Given("the current player preplaced the domino with ID {int} at position {int}:{int} and direction {string}")
-	public void the_current_player_preplaced_the_domino_with_ID_at_position_and_direction(Integer int1, Integer int2, Integer int3, String string) {
+	@When("validation of the grid size is initiated")
+	public void validation_of_the_grid_size_is_initiated() {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
-		DominoInKingdom domIn = new DominoInKingdom(int2, int3, player.getKingdom(), KingdominoApplication.getKingdomino().getCurrentGame().getAllDomino(int1-1));
-		domIn.setDirection(getDirection(string));
+		valid = KingdominoController
+				.verifyGridSize(KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer().getKingdom());
 	}
 
-	@When("check castle adjacency is initiated")
-	public void check_castle_adjacency_is_initiated() {
-		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
-		DominoInKingdom ter = (DominoInKingdom) player.getKingdom().getTerritory(player.getKingdom().numberOfTerritories()-1);
-		isChecked = KingdominoController.verifyCastleAdjacency(ter.getX(), ter.getY(), ter.getDirection());
-	}
-
-	@Then("the castle\\/domino adjacency is {string}")
-	public void the_castle_domino_adjacency_is(String string) {
-		String a;
-		if(isChecked) {
-			a = "valid";
-			assertEquals(string, a );
-		}else {
-			a = "invalid";
-			assertEquals(string, a );
+	@Then("the grid size of the player's kingdom shall be {string}")
+	public void the_grid_size_of_the_player_s_kingdom_shall_be(String string) {
+		String isValid;
+		if (valid) {
+			isValid = "valid";
+		} else {
+			isValid = "invalid";
 		}
+		assertEquals(string, isValid);
+
 	}
-	
-	
+
+	@Given("the  player preplaces domino {int} to their kingdom at position {int}:{int} with direction {string}")
+	public void the_player_preplaces_domino_to_their_kingdom_at_position_with_direction(Integer int1, Integer int2,
+			Integer int3, String string) {
+		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+		Domino dom = KingdominoApplication.getKingdomino().getCurrentGame().getAllDomino(int1 - 1);
+		DominoInKingdom domIn = new DominoInKingdom(int2, int3, player.getKingdom(), dom);
+		domIn.setDirection(getDirection(string));
+		player.getKingdom().addTerritory(domIn);
+	}
+
 	/**********************
 	 * * Helper Methods * *
 	 **********************/
@@ -85,4 +84,5 @@ public class VerifyCastleAdjacencyStepDefinition {
 			throw new java.lang.IllegalArgumentException("Invalid direction: " + dir);
 		}
 	}
+
 }

@@ -9,11 +9,15 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
+import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.Castle;
 import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
+import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
+import ca.mcgill.ecse223.kingdomino.model.Draft;
+import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Kingdom;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
@@ -27,22 +31,28 @@ import io.cucumber.java.en.When;
 
 public class DiscardDominoStepDefinitions {
 
-	/*
-	 * Note that these step definitions and helper methods just serve as a guide to help
-	 * you get started. You may change the code if required.
-	 */
-
+	boolean discarded;
+	
 	@Given("the game is initialized for discard domino")
 	public void the_game_is_initialized_for_discard_domino() {
-		// Intialize empty game
 		Kingdomino kingdomino = new Kingdomino();
 		Game game = new Game(48, kingdomino);
-		game.setNumberOfPlayers(4);
 		kingdomino.setCurrentGame(game);
-		// Populate game
-		addDefaultUsersAndPlayers(game);
-		createAllDominoes(game);
-		game.setNextPlayer(game.getPlayer(0));
+		KingdominoController.setNumberOfPlayers(4, kingdomino);
+		for (int i = 0; i < 4; i++) {
+			KingdominoController.selectColor(PlayerColor.values()[i], i, kingdomino);
+		}
+		List<Player> players = kingdomino.getCurrentGame().getPlayers();
+		for (int i = 0; i < players.size(); i++) {
+			Player player = players.get(i);
+			Kingdom kingdom = new Kingdom(player);
+			new Castle(0, 0, kingdom, player);
+			player.setBonusScore(0);
+			player.setPropertyScore(0);
+			player.setDominoSelection(null);
+			game.setNextPlayer(players.get(0));
+		}
+		KingdominoController.createAllDominos(kingdomino.getCurrentGame());
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
@@ -68,71 +78,39 @@ public class DiscardDominoStepDefinitions {
 
 	@Given("domino {int} is in the current draft")
 	public void domino_is_in_the_current_draft(Integer domID) {
-		// TODO: Write code here that turns the phrase above into concrete actions
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Draft draft = new Draft(DraftStatus.FaceUp, game);
+		draft.addSelection(new DominoSelection(game.getNextPlayer(), getdominoByID(domID), draft));
+		game.setCurrentDraft(draft);
 	}
 
 	@Given("the current player has selected domino {int}")
 	public void the_current_player_has_selected_domino(Integer domID) {
-		// TODO: Write code here that turns the phrase above into concrete actions
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		Player player = game.getNextPlayer();
+		player.setDominoSelection(game.getCurrentDraft().getSelection(0));
 	}
 
 	@Given("the player preplaces domino {int} at its initial position")
 	public void the_player_preplaces_domino_at_its_initial_position(Integer domID) {
-		// TODO: Write code here that turns the phrase above into concrete actions
+		KingdominoController.removeKing(KingdominoApplication.getKingdomino());
 	}
 
 	@When("the player attempts to discard the selected domino")
 	public void the_player_attempts_to_discard_the_selected_domino() {
-		// TODO: Call your Controller method here.
-		throw new cucumber.api.PendingException(); // Remove this line once your controller method is implemented
+		discarded = KingdominoController.discardDomino(KingdominoApplication.getKingdomino());
 	}
 
 	@Then("domino {int} shall have status {string}")
 	public void domino_shall_have_status(Integer domID, String domStatus) {
-		DominoStatus actualStatus = getdominoByID(domID).getStatus();
+		DominoStatus actualStatus = KingdominoController.getDomino(domID, KingdominoApplication.getKingdomino()).getStatus();
 		DominoStatus expectedStatus = getDominoStatus(domStatus);
 		assertEquals(expectedStatus, actualStatus);
 	}
 
-	///////////////////////////////////////
-	/// -----Private Helper Methods---- ///
-	///////////////////////////////////////
-
-	private void addDefaultUsersAndPlayers(Game game) {
-		String[] userNames = { "User1", "User2", "User3", "User4" };
-		for (int i = 0; i < userNames.length; i++) {
-			User user = game.getKingdomino().addUser(userNames[i]);
-			Player player = new Player(game);
-			player.setUser(user);
-			player.setColor(PlayerColor.values()[i]);
-			Kingdom kingdom = new Kingdom(player);
-			new Castle(0, 0, kingdom, player);
-		}
-	}
-
-	private void createAllDominoes(Game game) {
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));
-			String line = "";
-			String delimiters = "[:\\+()]";
-			while ((line = br.readLine()) != null) {
-				String[] dominoString = line.split(delimiters); // {id, leftTerrain, rightTerrain, crowns}
-				int dominoId = Integer.decode(dominoString[0]);
-				TerrainType leftTerrain = getTerrainType(dominoString[1]);
-				TerrainType rightTerrain = getTerrainType(dominoString[2]);
-				int numCrown = 0;
-				if (dominoString.length > 3) {
-					numCrown = Integer.decode(dominoString[3]);
-				}
-				new Domino(dominoId, leftTerrain, rightTerrain, numCrown, game);
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new java.lang.IllegalArgumentException(
-					"Error occured while trying to read alldominoes.dat: " + e.getMessage());
-		}
-	}
+	/**********************
+	 * * Helper Methods * *
+	 **********************/
 
 	private Domino getdominoByID(int id) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
