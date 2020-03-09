@@ -856,6 +856,9 @@ public class KingdominoController {
 			else if (aProperty.getLeftTile()== aProperty.getIncludedDomino(i).getRightTile()){
 				numCrowns += aProperty.getIncludedDomino(i).getRightCrown();
 			}
+			if(aProperty.getIncludedDomino(i).getLeftTile()==aProperty.getIncludedDomino(i).getRightTile()) {
+				size++;
+			}
 			
 			size++;
 		}
