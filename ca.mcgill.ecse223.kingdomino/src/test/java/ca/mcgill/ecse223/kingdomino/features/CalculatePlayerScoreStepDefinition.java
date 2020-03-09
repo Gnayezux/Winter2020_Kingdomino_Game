@@ -49,7 +49,7 @@ public class CalculatePlayerScoreStepDefinition {
 			player.setDominoSelection(null);
 			kingdom.setPlayer(player);
 			player.setKingdom(kingdom);
-			game.setNextPlayer(player);
+			game.setNextPlayer(game.getPlayer(0));
 		}
 		KingdominoController.createAllDominos(kingdomino.getCurrentGame());
 		KingdominoApplication.setKingdomino(kingdomino);

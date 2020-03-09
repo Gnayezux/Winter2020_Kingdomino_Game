@@ -1440,11 +1440,11 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically calculate the score
 	// for each player by summing up their property scores and their bonus scores
 	
-	public static void calculatePlayerScore(Kingdomino kingdomino, Player player) {
+	public static void calculatePlayerScore(Kingdomino kingdomino, Player s) {
 		//identifyProperties(kingdomino);
 		//calculatePropertyAttributes(kingdomino);
 		//Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
-		//Player player = kingdomino.getCurrentGame().getNextPlayer();
+		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		int playerScore = 0; 
 		List<Property> props = player.getKingdom().getProperties();
 		
