@@ -421,25 +421,53 @@ public class KingdominoController {
 				.getTerritory(player.getKingdom().numberOfTerritories() - 1);
 		int x = dom.getX();
 		int y = dom.getY();
+		String dir = null;
 		if (verifyGridSize(player.getKingdom())) {
 			switch (movement) {
 			case "left":
-				dom.setX(x - 1);
+				if(dom.setX(x - 1)) {
+					dir = "left";
+				}
 				break;
 			case "right":
-				dom.setX(x + 1);
+				if(dom.setX(x + 1)) {
+					dir = "right";
+				}
 				break;
 			case "up":
-				dom.setY(y + 1);
+				if(dom.setY(y + 1)) {
+					dir = "up";
+				}
 				break;
 			case "down":
-				dom.setY(y - 1);
+				if(dom.setY(y - 1)) {
+					dir = "down";
+				}
 				break;
+			}
+		}
+		if(dir !=null) {
+			if (!verifyGridSize(player.getKingdom())) {
+				if(dom.getDomino().getStatus().equals(Domino.DominoStatus.CorrectlyPreplaced)) {
+				switch (dir) {
+				case "left":
+					dom.setX(dom.getX() + 1);
+					break;
+				case "right":
+					dom.setX(dom.getX() - 1);
+					break;
+				case "up":
+					dom.setY(dom.getY() - 1);
+					break;
+				case "down":
+					dom.setY(dom.getY() + 1);
+					break;
+				}
+			}
 			}
 		}
 		resetDominoStatus(dom, kingdomino);
 	}
-
 	private static void resetDominoStatus(DominoInKingdom dom, Kingdomino kingdomino) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		boolean castleAdjacency = verifyCastleAdjacency(dom.getX(), dom.getY(), dom.getDirection());
@@ -978,8 +1006,9 @@ public class KingdominoController {
 				}
 			}
 		}
-		//checkForConnected(properties)
+		checkForConnected(player.getKingdom().getProperties(), player.getKingdom());
 	}
+
 	private static boolean propertyContains(DominoInKingdom dom, Property prop) {
 		for (Domino domInProperty : prop.getIncludedDominos()) {
 			if (dom.getDomino() == domInProperty) {
@@ -992,10 +1021,10 @@ public class KingdominoController {
 	private static boolean isLeftMatch(DominoInKingdom dom, Property prop, Kingdom kingdom) {
 		boolean isMatch = false;
 		TerrainType type = prop.getLeftTile();
-		//Comparing with all of the dominos in the property
+		// Comparing with all of the dominos in the property
 		for (Domino domInProperty : prop.getIncludedDominos()) {
 			DominoInKingdom tempTer = null;
-			//Getting the DominoInKingdom object with that domino
+			// Getting the DominoInKingdom object with that domino
 			for (KingdomTerritory t : kingdom.getTerritories()) {
 				if (t instanceof DominoInKingdom) {
 					if (((DominoInKingdom) t).getDomino() == domInProperty) {
@@ -1006,7 +1035,8 @@ public class KingdominoController {
 			}
 			Coord curCoord = new Coord(dom.getX(), dom.getY());
 			Coord toCompareCoord = new Coord(tempTer.getX(), tempTer.getY());
-			if(dom.getDomino().getLeftTile()==tempTer.getDomino().getLeftTile() && curCoord.adJacentTo(toCompareCoord)) {
+			if (dom.getDomino().getLeftTile() == tempTer.getDomino().getLeftTile()
+					&& curCoord.adJacentTo(toCompareCoord)) {
 				isMatch = true;
 			}
 			switch (tempTer.getDirection()) {
@@ -1023,7 +1053,8 @@ public class KingdominoController {
 				toCompareCoord = new Coord(tempTer.getX() + 1, tempTer.getY());
 				break;
 			}
-			if(dom.getDomino().getLeftTile()==tempTer.getDomino().getRightTile() && curCoord.adJacentTo(toCompareCoord)) {
+			if (dom.getDomino().getLeftTile() == tempTer.getDomino().getRightTile()
+					&& curCoord.adJacentTo(toCompareCoord)) {
 				isMatch = true;
 			}
 		}
@@ -1033,10 +1064,10 @@ public class KingdominoController {
 	private static boolean isRightMatch(DominoInKingdom dom, Property prop, Kingdom kingdom) {
 		boolean isMatch = false;
 		TerrainType type = prop.getLeftTile();
-		//Comparing with all of the dominos in the property
+		// Comparing with all of the dominos in the property
 		for (Domino domInProperty : prop.getIncludedDominos()) {
 			DominoInKingdom tempTer = null;
-			//Getting the DominoInKingdom object with that domino
+			// Getting the DominoInKingdom object with that domino
 			for (KingdomTerritory t : kingdom.getTerritories()) {
 				if (t instanceof DominoInKingdom) {
 					if (((DominoInKingdom) t).getDomino() == domInProperty) {
@@ -1045,7 +1076,7 @@ public class KingdominoController {
 					}
 				}
 			}
-			Coord curCoord = null; 
+			Coord curCoord = null;
 			switch (dom.getDirection()) {
 			case Up:
 				curCoord = new Coord(dom.getX(), dom.getY() + 1);
@@ -1061,7 +1092,8 @@ public class KingdominoController {
 				break;
 			}
 			Coord toCompareCoord = new Coord(tempTer.getX(), tempTer.getY());
-			if(dom.getDomino().getRightTile()==tempTer.getDomino().getLeftTile() && curCoord.adJacentTo(toCompareCoord)) {
+			if (dom.getDomino().getRightTile() == tempTer.getDomino().getLeftTile()
+					&& curCoord.adJacentTo(toCompareCoord)) {
 				isMatch = true;
 			}
 			switch (tempTer.getDirection()) {
@@ -1078,13 +1110,101 @@ public class KingdominoController {
 				toCompareCoord = new Coord(tempTer.getX() + 1, tempTer.getY());
 				break;
 			}
-			if(dom.getDomino().getRightTile()==tempTer.getDomino().getRightTile() && curCoord.adJacentTo(toCompareCoord)) {
+			if (dom.getDomino().getRightTile() == tempTer.getDomino().getRightTile()
+					&& curCoord.adJacentTo(toCompareCoord)) {
 				isMatch = true;
 			}
 		}
 		return isMatch;
 	}
 
+	private static void checkForConnected(List<Property> properties, Kingdom k) {
+		ArrayList<Property> propsOfType = new ArrayList<Property>();
+		for (TerrainType type : TerrainType.values()) {
+			for (Property prop : properties) {
+				if (prop.getLeftTile() == type) {
+					propsOfType.add(prop);
+				}
+			}
+			if (propsOfType.size() > 1) {
+				handleDuplicates(propsOfType, k);
+			}
+			if (!propsOfType.isEmpty()) {
+				propsOfType.clear();
+			}
+		}
+	}
+
+	private static void handleDuplicates(List<Property> propsOfType, Kingdom k) {
+		boolean duplicate = false;
+		Kingdom kingdom = k;
+		ArrayList<Property> toDelete = new ArrayList<Property>();
+		do {
+			duplicate = false;
+			for (int i = 0; i < propsOfType.size() - 1; i++) {
+				for (int j = i; j < propsOfType.size(); j++) {
+					if (matchingDomino(propsOfType.get(i), propsOfType.get(j))) {
+						System.out.println("GAFGAFGADGDFGS");
+						System.out.println(propsOfType.get(i).getLeftTile());
+						kingdom = propsOfType.get(i).getKingdom();
+						Property newProp = combineProperties(propsOfType.get(i), propsOfType.get(j));
+						toDelete.add(propsOfType.get(i));
+						toDelete.add(propsOfType.get(j));
+						propsOfType.get(i).delete();
+						propsOfType.get(j).delete();
+						kingdom.addProperty(newProp);
+						duplicate = true;
+					}
+				}
+				for (Property p : toDelete) {
+					deleteProperty(kingdom, p);
+				}
+			}
+		} while (duplicate);
+
+	}
+
+	private static void deleteProperty(Kingdom kingdom, Property p) {
+		if (kingdom.hasProperties()) {
+			for (Property prop : kingdom.getProperties()) {
+				if (p.getIncludedDominos() == prop.getIncludedDominos()) {
+					prop.delete();
+					break;
+				}
+			}
+		}
+	}
+
+	private static boolean matchingDomino(Property p1, Property p2) {
+		ArrayList<Integer> ids = new ArrayList<Integer>();
+		for (Domino dom : p1.getIncludedDominos()) {
+			ids.add(dom.getId());
+		}
+		for (Domino dom : p2.getIncludedDominos()) {
+			if (ids.contains(dom.getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static Property combineProperties(Property p1, Property p2) {
+		ArrayList<Domino> dominos = new ArrayList<Domino>();
+		;
+		Property p = new Property(p1.getKingdom());
+		for (Domino dom : p1.getIncludedDominos()) {
+			dominos.add(dom);
+			p.addIncludedDomino(dom);
+		}
+		for (Domino dom : p2.getIncludedDominos()) {
+			if (!dominos.contains(dom)) {
+				dominos.add(dom);
+				p.addIncludedDomino(dom);
+			}
+		}
+		p.setLeftTile(p1.getLeftTile());
+		return p;
+	}
 	/******************
 	 * * Feature 20 * *
 	 ******************/
