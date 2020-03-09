@@ -50,7 +50,7 @@ public class CalculateBonusScoreStepDefinitions {
 			player.setDominoSelection(null);
 			kingdom.setPlayer(player);
 			player.setKingdom(kingdom);
-			game.setNextPlayer(player);
+			game.setNextPlayer(game.getPlayer(0));
 		}
 		KingdominoController.createAllDominos(kingdomino.getCurrentGame());
 		KingdominoApplication.setKingdomino(kingdomino);
@@ -69,6 +69,7 @@ public class CalculateBonusScoreStepDefinitions {
 		Kingdom kingdom = player.getKingdom();
 		Domino domino = getdominoByID(int1);
 		DominoInKingdom dominoinkingdom = new DominoInKingdom(int2, int3, kingdom, domino);
+		dominoinkingdom.setDirection(getDirection(string));
 		kingdom.addTerritory(dominoinkingdom);
 	}
 
@@ -85,7 +86,7 @@ public class CalculateBonusScoreStepDefinitions {
 
 	@Given("Harmony is selected as bonus option")
 	public void harmony_is_selected_as_bonus_option() {
-		KingdominoController.setBonusOption("MiddleKingdom", KingdominoApplication.getKingdomino(), true);
+		KingdominoController.setBonusOption("Harmony", KingdominoApplication.getKingdomino(), true);
 	}
 
 	private Domino getdominoByID(int id) {
@@ -96,6 +97,21 @@ public class CalculateBonusScoreStepDefinitions {
 			}
 		}
 		throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
+	}
+	
+	private DirectionKind getDirection(String dir) {
+		switch (dir) {
+		case "up":
+			return DirectionKind.Up;
+		case "down":
+			return DirectionKind.Down;
+		case "left":
+			return DirectionKind.Left;
+		case "right":
+			return DirectionKind.Right;
+		default:
+			throw new java.lang.IllegalArgumentException("Invalid direction: " + dir);
+		}
 	}
 
 }

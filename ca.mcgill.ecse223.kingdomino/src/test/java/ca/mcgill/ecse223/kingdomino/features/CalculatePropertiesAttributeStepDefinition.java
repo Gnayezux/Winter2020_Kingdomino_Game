@@ -57,7 +57,11 @@ public class CalculatePropertiesAttributeStepDefinition {
 	@When("calculate property attributes is initiated")
 	public void calculate_property_attributes_is_initiated() {
 		KingdominoController.identifyProperties(KingdominoApplication.getKingdomino());
+		for (Property prop : KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer().getKingdom().getProperties()) {
+			System.out.println(prop.getLeftTile() + ": " + getDominos(prop));
+		}
 		KingdominoController.calculatePropertyAttributes(KingdominoApplication.getKingdomino());
+		
 	}
 
 	@Then("the player shall have a total of {int} properties")
@@ -74,14 +78,31 @@ public class CalculatePropertiesAttributeStepDefinition {
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
 		for (Map<String, String> map : valueMaps) {
 			assertEquals(true, hasProperty(map.get("type"), Integer.decode(map.get("size")),
-					Integer.decode(map.get("size")), properties));
+					Integer.decode(map.get("crowns")), properties));
 
 		}
 	}
 
+	
+	private String getDominos(Property property) {
+		List<Domino> dominos = property.getIncludedDominos();
+		String doms = "";
+		for (Domino dominoInProp : dominos) {
+			if (!doms.equals("")) {
+				doms += ',';
+			}
+			doms += dominoInProp.getId();
+		}
+		return doms;
+	}
+	
 	private boolean hasProperty(String type, int expectedSize, int expectedCrowns, List<Property> properties) {
 		boolean found = false;
 		for (Property prop : properties) {
+//			System.out.println(prop.getLeftTile());
+//			System.out.println(prop.getSize());
+//			System.out.println(prop.getCrowns());
+			
 			if (prop.getLeftTile() == getTerrainType(type) && expectedSize==prop.getSize() && expectedCrowns==prop.getCrowns()) {
 				found = true;
 			}
