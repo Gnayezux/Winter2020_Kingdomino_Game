@@ -786,9 +786,9 @@ public class KingdominoController {
 		int minY = 0;
 		int x = 0, y = 0, x2 = 0, y2 = 0;
 		for (KingdomTerritory d : aKingdom.getTerritories()) {
-			
-//			if (d.getClass().toString() == "KingdomTerritoy") {
-				System.out.print("hi");
+			System.out.print(d.getClass().toString());
+			if (d.getClass().toString() == "KingdomTerritoy") {
+				
 				DominoInKingdom dik = (DominoInKingdom) d;
 				x = dik.getX();
 				y = dik.getY();
@@ -831,7 +831,7 @@ public class KingdominoController {
 				if (y2 > maxY) {
 					maxY = y2;
 				}
-//			}
+			}
 		}
 		System.out.print((maxY - minY) < 5);
 		System.out.print(maxY);
@@ -957,7 +957,7 @@ public class KingdominoController {
 
 	// ****************************************************************************************
 
-	public DominoInKingdom rightTile(DominoInKingdom leftTile) {
+	public static DominoInKingdom rightTile(DominoInKingdom leftTile) {
 		DominoInKingdom rightTile = new DominoInKingdom(leftTile.getX(), leftTile.getY(), leftTile.getKingdom(),
 				leftTile.getDomino());
 		TerrainType terr = leftTile.getDomino().getRightTile();
@@ -974,7 +974,7 @@ public class KingdominoController {
 		return rightTile;
 	}
 
-	public boolean isConnected(DominoInKingdom d1, DominoInKingdom d2) {
+	public static boolean isConnected(DominoInKingdom d1, DominoInKingdom d2) {
 		if (d1.getX() == d2.getX() && d1.getY() == d2.getY() - 1) {
 			return true;
 		} else if (d1.getX() == d2.getX() && d1.getY() == d2.getY() + 1) {

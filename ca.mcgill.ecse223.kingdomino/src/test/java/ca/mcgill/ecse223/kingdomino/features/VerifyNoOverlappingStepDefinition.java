@@ -65,7 +65,7 @@ public class VerifyNoOverlappingStepDefinition {
 		System.out.println(x);
 		System.out.println(y);
 		System.out.println(direction);
-		validity = KingdominoController.VerifyNoOverlapping(getDominoByID(1),kingdom, x, y, direction);
+		validity = KingdominoController.verifyNoOverlapping(getDominoByID(1),kingdom, x, y, direction);
 	}
 	
 	@Then("the current-domino\\/existing-domino overlapping is {string}")
