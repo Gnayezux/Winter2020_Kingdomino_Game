@@ -22,8 +22,8 @@ public class VerifyNoOverlappingStepDefinition {
 	DirectionKind direction;
 	boolean validity;
 	
-	@Given("the game is initialized for neighbor adjacency")
-	public void the_game_is_initialized_for_neighbor_adjacency() {
+	@Given("the game is initialized to check domino overlapping")
+	public void the_game_is_initialized_to_check_domino_overlapping() {
 		Kingdomino kingdomino = new Kingdomino();
 		Game game = new Game(48, kingdomino);
 		game.setNumberOfPlayers(4);
