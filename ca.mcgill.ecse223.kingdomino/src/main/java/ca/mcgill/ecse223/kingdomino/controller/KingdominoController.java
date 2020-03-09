@@ -979,38 +979,42 @@ public class KingdominoController {
 		return false;
 	}
 
-	public Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom) {
+	public static Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom){
+		
 
-		Property[] myProperties = new Property[playedDominoes.length];
-		for (int i = 0; i < playedDominoes.length; i++) {
-
+		Property[] myProperties= new Property[playedDominoes.length];
+		for(int i=0; i<playedDominoes.length; i++) {
 			Property aProperty = new Property(aKingdom);
-			if (aProperty.getIncludedDominos() == null) {
+			if(aProperty.getIncludedDominos()==null) {
 				aProperty.addIncludedDomino(playedDominoes[i].getDomino());
-
+				
 			}
-			for (int j = i + 1; j < playedDominoes.length; j++) {
-				if (isConnected(playedDominoes[j], playedDominoes[i])) {
-					if (playedDominoes[j].getDomino().getLeftTile() == playedDominoes[i].getDomino().getLeftTile()) {
-						aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+				for(int j=i+1; j<playedDominoes.length; j++) {
+					if(isConnected(playedDominoes[j], playedDominoes[i])) {
+						if (playedDominoes[j].getDomino().getLeftTile()==playedDominoes[i].getDomino().getLeftTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
 					}
-				} else if (isConnected(playedDominoes[j], rightTile(playedDominoes[i]))) {
-					if (playedDominoes[j].getDomino().getLeftTile() == playedDominoes[i].getDomino().getRightTile()) {
-						aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+					else if(isConnected(playedDominoes[j], rightTile(playedDominoes[i]))) {
+						if (playedDominoes[j].getDomino().getLeftTile()==playedDominoes[i].getDomino().getRightTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
 					}
-				} else if (isConnected(rightTile(playedDominoes[j]), playedDominoes[i])) {
-					if (playedDominoes[j].getDomino().getRightTile() == playedDominoes[i].getDomino().getLeftTile()) {
-						aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+					else if(isConnected(rightTile(playedDominoes[j]), playedDominoes[i])) {
+						if (playedDominoes[j].getDomino().getRightTile()==playedDominoes[i].getDomino().getLeftTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
 					}
-				} else if (isConnected(rightTile(playedDominoes[j]), rightTile(playedDominoes[i]))) {
-					if (playedDominoes[j].getDomino().getRightTile() == playedDominoes[i].getDomino().getRightTile()) {
-						aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+					else if(isConnected(rightTile(playedDominoes[j]), rightTile(playedDominoes[i]))) {
+						if (playedDominoes[j].getDomino().getRightTile()==playedDominoes[i].getDomino().getRightTile()) {
+							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
+						}
 					}
 				}
-			}
+		myProperties[i]=aProperty;
 		}
 		return myProperties;
-
+		
 	}
 
 	public void CalculatePropertyAttributes(Property aProperty) {
