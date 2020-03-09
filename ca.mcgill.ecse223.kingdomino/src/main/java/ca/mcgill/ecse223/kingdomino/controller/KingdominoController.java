@@ -425,49 +425,50 @@ public class KingdominoController {
 		if (verifyGridSize(player.getKingdom())) {
 			switch (movement) {
 			case "left":
-				if(dom.setX(x - 1)) {
+				if (dom.setX(x - 1)) {
 					dir = "left";
 				}
 				break;
 			case "right":
-				if(dom.setX(x + 1)) {
+				if (dom.setX(x + 1)) {
 					dir = "right";
 				}
 				break;
 			case "up":
-				if(dom.setY(y + 1)) {
+				if (dom.setY(y + 1)) {
 					dir = "up";
 				}
 				break;
 			case "down":
-				if(dom.setY(y - 1)) {
+				if (dom.setY(y - 1)) {
 					dir = "down";
 				}
 				break;
 			}
 		}
-		if(dir !=null) {
+		if (dir != null) {
 			if (!verifyGridSize(player.getKingdom())) {
-				if(dom.getDomino().getStatus().equals(Domino.DominoStatus.CorrectlyPreplaced)) {
-				switch (dir) {
-				case "left":
-					dom.setX(dom.getX() + 1);
-					break;
-				case "right":
-					dom.setX(dom.getX() - 1);
-					break;
-				case "up":
-					dom.setY(dom.getY() - 1);
-					break;
-				case "down":
-					dom.setY(dom.getY() + 1);
-					break;
+				if (dom.getDomino().getStatus().equals(Domino.DominoStatus.CorrectlyPreplaced)) {
+					switch (dir) {
+					case "left":
+						dom.setX(dom.getX() + 1);
+						break;
+					case "right":
+						dom.setX(dom.getX() - 1);
+						break;
+					case "up":
+						dom.setY(dom.getY() - 1);
+						break;
+					case "down":
+						dom.setY(dom.getY() + 1);
+						break;
+					}
 				}
-			}
 			}
 		}
 		resetDominoStatus(dom, kingdomino);
 	}
+
 	private static void resetDominoStatus(DominoInKingdom dom, Kingdomino kingdomino) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		boolean castleAdjacency = verifyCastleAdjacency(dom.getX(), dom.getY(), dom.getDirection());
@@ -1205,6 +1206,7 @@ public class KingdominoController {
 		p.setLeftTile(p1.getLeftTile());
 		return p;
 	}
+
 	/******************
 	 * * Feature 20 * *
 	 ******************/
@@ -1213,6 +1215,17 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically calculate the score
 	// for each of my property based upon the size of that property and the number
 	// of crowns
+
+	public static void calculatePropertyAttributes(Kingdomino kingdomino) {
+		Player player = kingdomino.getCurrentGame().getNextPlayer();
+		List<Property> properties = player.getKingdom().getProperties();
+		for (Property p : properties) {
+			p.setSize(p.getIncludedDominos().size());
+			for (Domino d : p.getIncludedDominos()) {
+				p.setCrowns(p.getCrowns() + d.getLeftCrown() + d.getRightCrown());
+			}
+		}
+	}
 
 	/******************
 	 * * Feature 21 * *
@@ -1223,6 +1236,108 @@ public class KingdominoController {
 	// scores (for Harmony and middle Kingdom) if those bonus scores were selected
 	// as a game option
 
+	public static void calculateBonusScore(Kingdomino kingdomino) {
+		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+		int bonusScore = 0;
+		for (BonusOption b : kingdomino.getCurrentGame().getSelectedBonusOptions()) {
+			if (b.getOptionName().equals("Harmony")) {
+				bonusScore += calculateHarmony(player);
+			}
+			if (b.getOptionName().equals("MiddleKingdom")) {
+				bonusScore += calculateMiddleKingdom(player);
+			}
+		}
+		player.setBonusScore(bonusScore);
+	}
+
+	private static int calculateHarmony(Player player) {
+		if(player.getKingdom().getTerritories().size()==13) {
+			return 5;
+		} else {
+			return 0;
+		}
+	}
+
+	private static int calculateMiddleKingdom(Player player) {
+		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
+		int minX = territories.get(0).getX();
+		int minY = territories.get(0).getY();
+		int maxX = territories.get(0).getX();
+		int maxY = territories.get(0).getY();
+
+		for (KingdomTerritory d : territories) {
+			if (d instanceof DominoInKingdom) {
+				DominoInKingdom dik = (DominoInKingdom) d;
+				int x = dik.getX();
+				int y = dik.getY();
+				int x2 = x, y2 = y;
+				switch (dik.getDirection()) {
+				case Up:
+					y2 = y + 1;
+					x2 = x;
+					break;
+				case Left:
+					x2 = x - 1;
+					y2 = y;
+					break;
+				case Right:
+					x2 = x + 1;
+					y2 = y;
+					break;
+				case Down:
+					x2 = x;
+					y2 = y - 1;
+					break;
+				}
+				if (x < minX) {
+					minX = x;
+				}
+				if (x > maxX) {
+					maxX = x;
+				}
+				if (x2 < minX) {
+					minX = x2;
+				}
+				if (x2 > maxX) {
+					maxX = x2;
+				}
+
+				if (y < minY) {
+					minY = y;
+				}
+				if (y > maxY) {
+					maxY = y;
+				}
+
+				if (y2 < minY) {
+					minY = y2;
+				}
+				if (y2 > maxY) {
+					maxY = y2;
+				}
+			}
+			if (d instanceof Castle) {
+				if (d.getX() > maxX) {
+					maxX = d.getX();
+				}
+				if (d.getX() < minX) {
+					minX = d.getX();
+				}
+				if (d.getY() > maxY) {
+					maxY = d.getY();
+				}
+				if (d.getY() < minY) {
+					minY = d.getY();
+				}
+			}
+		}
+		if(minX==(-1)*maxX && minY==(-1)*maxY) {
+			return 10;
+		} else {
+			return 0;
+		}
+	}
+	
 	/******************
 	 * * Feature 22 * *
 	 ******************/
@@ -1302,5 +1417,6 @@ public class KingdominoController {
 	// tiebreak (i.e. equal score between players) by evaluating the most extended
 	// (largest) property and then the total number of crowns
 
+	//Handled in feature 23
 	// ****************************************************************************************
 }
