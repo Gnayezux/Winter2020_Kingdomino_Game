@@ -49,7 +49,7 @@ public class CalculatePlayerScoreStepDefinition {
 			player.setDominoSelection(null);
 			kingdom.setPlayer(player);
 			player.setKingdom(kingdom);
-			game.setNextPlayer(player);
+			game.setNextPlayer(game.getPlayer(0));
 		}
 		KingdominoController.createAllDominos(kingdomino.getCurrentGame());
 		KingdominoApplication.setKingdomino(kingdomino);
@@ -60,11 +60,13 @@ public class CalculatePlayerScoreStepDefinition {
 		if (!string.equals("no")) {
 			KingdominoController.setBonusOption(string, KingdominoApplication.getKingdomino(), true);
 		}
+		KingdominoController.identifyProperties(KingdominoApplication.getKingdomino());
+		KingdominoController.calculatePropertyAttributes(KingdominoApplication.getKingdomino());
 	}
 
 	@When("calculate player score is initiated")
 	public void calculate_player_score_is_initiated() {
-		//KingdominoController.calculatePlayerScore(KingdominoApplication.getKingdomino());
+		KingdominoController.calculatePlayerScore(KingdominoApplication.getKingdomino(), KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer());
 	}
 
 	@Then("the total score should be {int}")

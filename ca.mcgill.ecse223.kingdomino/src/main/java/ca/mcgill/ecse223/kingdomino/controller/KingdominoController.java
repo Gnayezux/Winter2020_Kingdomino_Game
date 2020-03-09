@@ -942,6 +942,7 @@ public class KingdominoController {
 	// properties of my kingdom so that my score can be calculated
 
 	public static void identifyProperties(Kingdomino kingdomino) {
+		
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
 		List<Property> properties = player.getKingdom().getProperties();
@@ -1008,6 +1009,13 @@ public class KingdominoController {
 			}
 		}
 		checkForConnected(player.getKingdom().getProperties(), player.getKingdom());
+		List<Property> props = player.getKingdom().getProperties();
+		for(int i = 0; i< props.size(); i++) {
+			if(props.get(i).getLeftTile() == null) {
+				props.get(i).delete();
+				i--;
+			}
+		}
 	}
 
 	private static void checkForConnected(List<Property> properties, Kingdom k) {
@@ -1045,7 +1053,7 @@ public class KingdominoController {
 				}
 			}
 		}
-
+		
 		Property prop = new Property(k);
 		for (int i : indexes) {
 			prop.setLeftTile(propsOfType.get(i).getLeftTile());
@@ -1054,7 +1062,6 @@ public class KingdominoController {
 
 			}
 		}
-
 		List<Domino> dominos = new ArrayList<Domino>(prop.getIncludedDominos());
 
 		Collections.sort(dominos, (a, b) -> a.getId() - b.getId());
@@ -1063,7 +1070,7 @@ public class KingdominoController {
 			prop.addOrMoveIncludedDominoAt(dominos.get(i), i);
 
 		}
-
+		
 		List<Property> temp = new ArrayList<Property>(k.getProperties());
 		for (Property todelete : temp) {
 			for (int j : indexes) {
@@ -1296,10 +1303,18 @@ public class KingdominoController {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		List<Property> properties = player.getKingdom().getProperties();
 		for (Property p : properties) {
-			p.setSize(p.getIncludedDominos().size());
+			int inc = 0;
 			for (Domino d : p.getIncludedDominos()) {
-				p.setCrowns(p.getCrowns() + d.getLeftCrown() + d.getRightCrown());
+				if(d.getLeftTile()==p.getLeftTile()) {
+					p.setCrowns(p.getCrowns() + d.getLeftCrown());
+					inc ++;
+				}
+				if(d.getRightTile()==p.getLeftTile()) {
+					p.setCrowns(p.getCrowns() + d.getRightCrown());
+					inc++;
+				}
 			}
+			p.setSize(inc);
 		}
 	}
 
@@ -1317,9 +1332,11 @@ public class KingdominoController {
 		int bonusScore = 0;
 		for (BonusOption b : kingdomino.getCurrentGame().getSelectedBonusOptions()) {
 			if (b.getOptionName().equals("Harmony")) {
+				
 				bonusScore += calculateHarmony(player);
 			}
 			if (b.getOptionName().equals("MiddleKingdom")) {
+				
 				bonusScore += calculateMiddleKingdom(player);
 			}
 		}
@@ -1410,6 +1427,7 @@ public class KingdominoController {
 		if (minX == (-1) * maxX && minY == (-1) * maxY) {
 			return 10;
 		} else {
+			
 			return 0;
 		}
 	}
@@ -1434,6 +1452,37 @@ public class KingdominoController {
 	// {Calculate player score}
 	// As a player, I want the Kingdomino app to automatically calculate the score
 	// for each player by summing up their property scores and their bonus scores
+	
+	public static void calculatePlayerScore(Kingdomino kingdomino, Player s) {
+		//identifyProperties(kingdomino);
+		//calculatePropertyAttributes(kingdomino);
+		//Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+		Player player = kingdomino.getCurrentGame().getNextPlayer();
+		int playerScore = 0; 
+		List<Property> props = player.getKingdom().getProperties();
+		
+		System.out.println(player.getKingdom().getProperty(0));
+		System.out.println(props.size());
+//		System.out.println(props.get(1).getCrowns());
+//		System.out.println(props.get(2).getCrowns());
+		
+		//System.out.println();
+		for(Property p : props) {
+			
+			playerScore += (p.getKingdom().getTerritories().size()) * (p.getCrowns());
+			System.out.println(playerScore);
+		}
+//		for(Property p : props) {
+//			playerScore += (p.getKingdom().getTerritories().size()) * (p.getCrowns());
+//			System.out.println(playerScore);
+//		}
+//		for(int i=0; i<props.size()) {
+//			
+//		}
+		//System.out.println(playerScore);
+		//calculateBonusScore(kingdomino);
+		player.setPropertyScore(playerScore);
+	}
 
 	/******************
 	 * * Feature 23 * *
