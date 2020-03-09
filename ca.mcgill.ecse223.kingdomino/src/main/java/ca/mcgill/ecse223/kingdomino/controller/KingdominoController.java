@@ -453,9 +453,10 @@ public class KingdominoController {
 	private static void resetDominoStatus(DominoInKingdom dom, Kingdomino kingdomino) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		boolean castleAdjacency = verifyCastleAdjacency(dom.getX(), dom.getY(), dom.getDirection());
+		System.out.print(castleAdjacency);
 		boolean neighborAdjacency = verifyNeighborAdjacency(player.getKingdom(), dom.getDomino(), dom.getX(), dom.getY(), dom.getDirection());
 		boolean noOverlapping = verifyNoOverlapping(dom.getDomino(), player.getKingdom(), dom.getX(), dom.getY(), dom.getDirection());
-		if( castleAdjacency || neighborAdjacency) {
+		if( (castleAdjacency || neighborAdjacency)&&noOverlapping) {
 			dom.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
 		} else {
 			dom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
@@ -785,7 +786,9 @@ public class KingdominoController {
 		int minY = 0;
 		int x = 0, y = 0, x2 = 0, y2 = 0;
 		for (KingdomTerritory d : aKingdom.getTerritories()) {
-			if (d.getClass().toString() == "DominoInKingdom") {
+			
+//			if (d.getClass().toString() == "KingdomTerritoy") {
+				System.out.print("hi");
 				DominoInKingdom dik = (DominoInKingdom) d;
 				x = dik.getX();
 				y = dik.getY();
@@ -828,8 +831,14 @@ public class KingdominoController {
 				if (y2 > maxY) {
 					maxY = y2;
 				}
-			}
+//			}
 		}
+		System.out.print((maxY - minY) < 5);
+		System.out.print(maxY);
+		System.out.print(minY);
+		System.out.print((maxX - minX) < 5);
+		System.out.print(maxX);
+		System.out.print(minX);
 		return ((maxX - minX) < 5 && (maxY - minY) < 5);
 	}
 
