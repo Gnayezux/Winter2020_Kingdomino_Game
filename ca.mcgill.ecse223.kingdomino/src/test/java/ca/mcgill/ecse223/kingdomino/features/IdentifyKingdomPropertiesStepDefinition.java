@@ -7,6 +7,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -65,38 +68,55 @@ public class IdentifyKingdomPropertiesStepDefinition {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		List<Property> properties = game.getNextPlayer().getKingdom().getProperties();
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
-		for(Property prop : properties) {
-			System.out.println(prop.getLeftTile() + ": " +getDominos(prop));
+		for (Property prop : properties) {
+			System.out.println(prop.getLeftTile() + ": " + getDominos(prop));
 		}
+
 		for (Map<String, String> map : valueMaps) {
-			//findProperty(map.get("type"), map.get("dominoes"), properties);
-			assertEquals(true, hasProperty(map.get("type"), map.get("dominoes"), properties));
-			
+			List<String> idList = new ArrayList<String>(Arrays.asList(map.get("dominoes").split(",")));
+			HashSet<Integer> set = new HashSet<>();
+			for (int i = 0; i < idList.size(); i++) {
+				set.add(Integer.parseInt(idList.get(i)));
+			}
+			// findProperty(map.get("type"), map.get("dominoes"), properties);
+			assertEquals(true, hasProperty(map.get("type"), set, properties));
+
 		}
 	}
-	
-	private boolean hasProperty(String type, String dominosExpected, List<Property> properties) {
+
+	private boolean hasProperty(String type, HashSet<Integer> dominosExpected, List<Property> properties) {
+//		System.out.println(dominosExpected);
 		boolean found = false;
-		for(Property prop : properties) {
-			if(prop.getLeftTile()==getTerrainType(type) && dominosExpected.equals(getDominos(prop))) {
+		for (Property prop : properties) {
+			if (prop.getLeftTile() == getTerrainType(type) && checkSet(dominosExpected, prop)) {
 				found = true;
 			}
 		}
 		return found;
 	}
-	
+
+	private boolean checkSet(HashSet<Integer> set, Property prop) {
+		boolean full = false;
+		for (int i = 0; i < prop.getIncludedDominos().size(); i++) {
+			if (set.contains(prop.getIncludedDomino(i).getId())) {
+				full = true;
+			}
+		}
+		return full;
+	}
+
 	private String getDominos(Property property) {
 		List<Domino> dominos = property.getIncludedDominos();
 		String doms = "";
-		for(Domino dominoInProp : dominos) {
-			if(!doms.equals("")) {
+		for (Domino dominoInProp : dominos) {
+			if (!doms.equals("")) {
 				doms += ',';
 			}
 			doms += dominoInProp.getId();
 		}
 		return doms;
 	}
-	
+
 	private TerrainType getTerrainType(String terrain) {
 		switch (terrain) {
 		case "wheat":

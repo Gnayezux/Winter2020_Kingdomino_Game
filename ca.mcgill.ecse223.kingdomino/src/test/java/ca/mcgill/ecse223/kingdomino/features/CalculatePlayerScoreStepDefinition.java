@@ -64,7 +64,7 @@ public class CalculatePlayerScoreStepDefinition {
 
 	@When("calculate player score is initiated")
 	public void calculate_player_score_is_initiated() {
-		KingdominoController.calculatePlayerScore(KingdominoApplication.getKingdomino());
+		//KingdominoController.calculatePlayerScore(KingdominoApplication.getKingdomino());
 	}
 
 	@Then("the total score should be {int}")

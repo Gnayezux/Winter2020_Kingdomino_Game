@@ -1010,6 +1010,83 @@ public class KingdominoController {
 		checkForConnected(player.getKingdom().getProperties(), player.getKingdom());
 	}
 
+	private static void checkForConnected(List<Property> properties, Kingdom k) {
+		ArrayList<Property> propsOfType = new ArrayList<Property>();
+		for (TerrainType type : TerrainType.values()) {
+			for (Property prop : properties) {
+				if (prop.getLeftTile() == type) {
+					propsOfType.add(prop);
+				}
+			}
+			if (propsOfType.size() > 1) {
+				handleDuplicates(propsOfType, k);
+			}
+			if (!propsOfType.isEmpty()) {
+				propsOfType.clear();
+			}
+		}
+	}
+
+	private static void handleDuplicates(ArrayList<Property> propsOfType, Kingdom k) {
+		HashMap<Integer, Integer> map = new HashMap<>();
+		ArrayList<Integer> indexes = new ArrayList<>();
+		for (int i = 0; i < propsOfType.size(); i++) {
+			for (int j = 0; j < propsOfType.get(i).getIncludedDominos().size(); j++) {
+				if (!map.containsKey(propsOfType.get(i).getIncludedDomino(j).getId())) {
+					map.put(propsOfType.get(i).getIncludedDomino(j).getId(), i);
+				} else {
+					int index = map.get(propsOfType.get(i).getIncludedDomino(j).getId());
+					if (!indexes.contains(index)) {
+						indexes.add(index);
+					}
+					if (!indexes.contains(i)) {
+						indexes.add(i);
+					}
+				}
+			}
+		}
+
+		Property prop = new Property(k);
+		for (int i : indexes) {
+			prop.setLeftTile(propsOfType.get(i).getLeftTile());
+			for (int j = 0; j < propsOfType.get(i).getIncludedDominos().size(); j++) {
+				prop.addIncludedDomino(propsOfType.get(i).getIncludedDomino(j));
+
+			}
+		}
+
+		List<Domino> dominos = new ArrayList<Domino>(prop.getIncludedDominos());
+
+		Collections.sort(dominos, (a, b) -> a.getId() - b.getId());
+
+		for (int i = 0; i < dominos.size(); i++) {
+			prop.addOrMoveIncludedDominoAt(dominos.get(i), i);
+
+		}
+
+		List<Property> temp = new ArrayList<Property>(k.getProperties());
+		for (Property todelete : temp) {
+			for (int j : indexes) {
+				if (todelete.equals(propsOfType.get(j))) {
+					todelete.delete();
+				}
+			}
+		}
+
+	}
+
+	private static String getDominos(Property property) {
+		List<Domino> dominos = property.getIncludedDominos();
+		String doms = "";
+		for (Domino dominoInProp : dominos) {
+			if (!doms.equals("")) {
+				doms += ',';
+			}
+			doms += dominoInProp.getId();
+		}
+		return doms;
+	}
+
 	private static boolean propertyContains(DominoInKingdom dom, Property prop) {
 		for (Domino domInProperty : prop.getIncludedDominos()) {
 			if (dom.getDomino() == domInProperty) {
@@ -1119,94 +1196,93 @@ public class KingdominoController {
 		return isMatch;
 	}
 
-	private static void checkForConnected(List<Property> properties, Kingdom k) {
-		ArrayList<Property> propsOfType = new ArrayList<Property>();
-		for (TerrainType type : TerrainType.values()) {
-			for (Property prop : properties) {
-				if (prop.getLeftTile() == type) {
-					propsOfType.add(prop);
-				}
-			}
-			if (propsOfType.size() > 1) {
-				handleDuplicates(propsOfType, k);
-			}
-			if (!propsOfType.isEmpty()) {
-				propsOfType.clear();
-			}
-		}
-	}
+//	private static void checkForConnected(List<Property> properties, Kingdom k) {
+//		ArrayList<Property> propsOfType = new ArrayList<Property>();
+//		for (TerrainType type : TerrainType.values()) {
+//			for (Property prop : properties) {
+//				if (prop.getLeftTile() == type) {
+//					propsOfType.add(prop);
+//				}
+//			}
+//			if (propsOfType.size() > 1) {
+//				handleDuplicates(propsOfType, k);
+//			}
+//			if (!propsOfType.isEmpty()) {
+//				propsOfType.clear();
+//			}
+//		}
+//	}
 
-	private static void handleDuplicates(List<Property> propsOfType, Kingdom k) {
-		boolean duplicate = false;
-		Kingdom kingdom = k;
-		ArrayList<Property> toDelete = new ArrayList<Property>();
-		do {
-			duplicate = false;
-			for (int i = 0; i < propsOfType.size() - 1; i++) {
-				for (int j = i; j < propsOfType.size(); j++) {
-					if (matchingDomino(propsOfType.get(i), propsOfType.get(j))) {
-						System.out.println("GAFGAFGADGDFGS");
-						System.out.println(propsOfType.get(i).getLeftTile());
-						kingdom = propsOfType.get(i).getKingdom();
-						Property newProp = combineProperties(propsOfType.get(i), propsOfType.get(j));
-						toDelete.add(propsOfType.get(i));
-						toDelete.add(propsOfType.get(j));
-						propsOfType.get(i).delete();
-						propsOfType.get(j).delete();
-						kingdom.addProperty(newProp);
-						duplicate = true;
-					}
-				}
-				for (Property p : toDelete) {
-					deleteProperty(kingdom, p);
-				}
-			}
-		} while (duplicate);
+//	private static void handleDuplicates(List<Property> propsOfType, Kingdom k) {
+//		boolean duplicate = false;
+//		Kingdom kingdom = k;
+//		ArrayList<Property> toDelete = new ArrayList<Property>();
+//		do {
+//			duplicate = false;
+//			for (int i = 0; i < propsOfType.size() - 1; i++) {
+//				for (int j = i; j < propsOfType.size(); j++) {
+//					if (matchingDomino(propsOfType.get(i), propsOfType.get(j))) {
+//						System.out.println("GAFGAFGADGDFGS");
+//						System.out.println(propsOfType.get(i).getLeftTile());
+//						kingdom = propsOfType.get(i).getKingdom();
+//						Property newProp = combineProperties(propsOfType.get(i), propsOfType.get(j));
+//						toDelete.add(propsOfType.get(i));
+//						toDelete.add(propsOfType.get(j));
+//						propsOfType.get(i).delete();
+//						propsOfType.get(j).delete();
+//						kingdom.addProperty(newProp);
+//						duplicate = true;
+//					}
+//				}
+//				for (Property p : toDelete) {
+//					deleteProperty(kingdom, p);
+//				}
+//			}
+//		} while (duplicate);
+//
+//	}
 
-	}
-
-	private static void deleteProperty(Kingdom kingdom, Property p) {
-		if (kingdom.hasProperties()) {
-			for (Property prop : kingdom.getProperties()) {
-				if (p.getIncludedDominos() == prop.getIncludedDominos()) {
-					prop.delete();
-					break;
-				}
-			}
-		}
-	}
-
-	private static boolean matchingDomino(Property p1, Property p2) {
-		ArrayList<Integer> ids = new ArrayList<Integer>();
-		for (Domino dom : p1.getIncludedDominos()) {
-			ids.add(dom.getId());
-		}
-		for (Domino dom : p2.getIncludedDominos()) {
-			if (ids.contains(dom.getId())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private static Property combineProperties(Property p1, Property p2) {
-		ArrayList<Domino> dominos = new ArrayList<Domino>();
-		;
-		Property p = new Property(p1.getKingdom());
-		for (Domino dom : p1.getIncludedDominos()) {
-			dominos.add(dom);
-			p.addIncludedDomino(dom);
-		}
-		for (Domino dom : p2.getIncludedDominos()) {
-			if (!dominos.contains(dom)) {
-				dominos.add(dom);
-				p.addIncludedDomino(dom);
-			}
-		}
-		p.setLeftTile(p1.getLeftTile());
-		return p;
-	}
-
+//	private static void deleteProperty(Kingdom kingdom, Property p) {
+//		if (kingdom.hasProperties()) {
+//			for (Property prop : kingdom.getProperties()) {
+//				if (p.getIncludedDominos() == prop.getIncludedDominos()) {
+//					prop.delete();
+//					break;
+//				}
+//			}
+//		}
+//	}
+//
+//	private static boolean matchingDomino(Property p1, Property p2) {
+//		ArrayList<Integer> ids = new ArrayList<Integer>();
+//		for (Domino dom : p1.getIncludedDominos()) {
+//			ids.add(dom.getId());
+//		}
+//		for (Domino dom : p2.getIncludedDominos()) {
+//			if (ids.contains(dom.getId())) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+////
+//	private static Property combineProperties(Property p1, Property p2) {
+//		ArrayList<Domino> dominos = new ArrayList<Domino>();
+//		;
+//		Property p = new Property(p1.getKingdom());
+//		for (Domino dom : p1.getIncludedDominos()) {
+//			dominos.add(dom);
+//			p.addIncludedDomino(dom);
+//		}
+//		for (Domino dom : p2.getIncludedDominos()) {
+//			if (!dominos.contains(dom)) {
+//				dominos.add(dom);
+//				p.addIncludedDomino(dom);
+//			}
+//		}
+//		p.setLeftTile(p1.getLeftTile());
+//		return p;
+//	}
 	/******************
 	 * * Feature 20 * *
 	 ******************/
@@ -1251,7 +1327,7 @@ public class KingdominoController {
 	}
 
 	private static int calculateHarmony(Player player) {
-		if(player.getKingdom().getTerritories().size()==13) {
+		if (player.getKingdom().getTerritories().size() == 13) {
 			return 5;
 		} else {
 			return 0;
@@ -1331,13 +1407,13 @@ public class KingdominoController {
 				}
 			}
 		}
-		if(minX==(-1)*maxX && minY==(-1)*maxY) {
+		if (minX == (-1) * maxX && minY == (-1) * maxY) {
 			return 10;
 		} else {
 			return 0;
 		}
 	}
-	
+
 	/******************
 	 * * Feature 22 * *
 	 ******************/
@@ -1417,6 +1493,6 @@ public class KingdominoController {
 	// tiebreak (i.e. equal score between players) by evaluating the most extended
 	// (largest) property and then the total number of crowns
 
-	//Handled in feature 23
+	// Handled in feature 23
 	// ****************************************************************************************
 }
