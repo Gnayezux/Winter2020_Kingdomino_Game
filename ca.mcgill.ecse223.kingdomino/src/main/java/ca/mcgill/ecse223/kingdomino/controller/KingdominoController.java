@@ -221,6 +221,29 @@ public class KingdominoController {
 				.collect(Collectors.toList()));
 		return filteredList;
 	}
+	
+	private static TerrainType getTerrainTypeFilter(String terrain) {
+		terrain = terrain.toLowerCase();
+		if (terrain.equals("wheatfield")) {
+			terrain = "wheat";
+		}
+		switch (terrain) {
+		case "wheat":
+			return TerrainType.WheatField;
+		case "forest":
+			return TerrainType.Forest;
+		case "mountain":
+			return TerrainType.Mountain;
+		case "grass":
+			return TerrainType.Grass;
+		case "swamp":
+			return TerrainType.Swamp;
+		case "lake":
+			return TerrainType.Lake;
+		default:
+			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
+		}
+	}
 
 	/*****************
 	 * * Feature 5 * *
@@ -327,7 +350,7 @@ public class KingdominoController {
 		}
 
 	}
-	
+
 	public static void revealNextDraft(Kingdomino kingdomino) {
 		Draft draft = kingdomino.getCurrentGame().getNextDraft();
 		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
@@ -366,13 +389,15 @@ public class KingdominoController {
 		Draft draft = game.getNextDraft();
 		for (int i = 0; i < draft.getIdSortedDominos().size(); i++) {
 			if (!draft.getIdSortedDomino(i).hasDominoSelection() && (chosen == draft.getIdSortedDomino(i).getId())) {
-				draft.addSelection(curPlayer, draft.getIdSortedDomino(i));
+				DominoSelection selection = new DominoSelection(curPlayer, draft.getIdSortedDomino(i), draft);
+				draft.addSelection(selection);
+				curPlayer.setDominoSelection(selection);
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	/******************
 	 * * Feature 11 * *
 	 ******************/
@@ -381,6 +406,61 @@ public class KingdominoController {
 	// As a player, I wish to evaluate a provisional placement of my current domino
 	// by moving the domino around into my kingdom (up, down, left, right)
 
+	public static void removeKing(Kingdomino kingdomino) {
+		Player player = kingdomino.getCurrentGame().getNextPlayer();
+		// Set the next player here
+		Domino dom = player.getDominoSelection().getDomino();
+		dom.setStatus(DominoStatus.ErroneouslyPreplaced);
+		DominoInKingdom domIn = new DominoInKingdom(0, 0, player.getKingdom(), dom);
+		domIn.setDirection(DirectionKind.Right);
+		player.getKingdom().addTerritory(domIn);
+	}
+
+	public static void moveDomino(Kingdomino kingdomino, String movement) {
+		Player player = kingdomino.getCurrentGame().getNextPlayer();
+		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
+		DominoInKingdom ter = (DominoInKingdom) territories.get(territories.size() - 1);
+		switch (movement) {
+		case "left":
+			ter.setX(ter.getX() - 1);
+			if (!verifyGridSize(player.getKingdom())) {
+				ter.setX(ter.getX() + 1);
+			}
+			break;
+		case "right":
+			ter.setX(ter.getX() + 1);
+			if (!verifyGridSize(player.getKingdom())) {
+				ter.setX(ter.getX() - 1);
+			}
+			break;
+		case "up":
+			ter.setY(ter.getY() + 1);
+			if (!verifyGridSize(player.getKingdom())) {
+				ter.setX(ter.getX() - 1);
+			}
+			break;
+		case "down":
+			ter.setY(ter.getY() - 1);
+			if (!verifyGridSize(player.getKingdom())) {
+				ter.setX(ter.getX() + 1);
+			}
+			break;
+		}
+		Domino dom = player.getDominoSelection().getDomino();
+		resetDominoStatus(ter, kingdomino);
+	}
+
+	private static void resetDominoStatus(DominoInKingdom dom, Kingdomino kingdomino) {
+		Player player = kingdomino.getCurrentGame().getNextPlayer();
+		boolean castleAdjacency = verifyCastleAdjacency(dom.getX(), dom.getY(), dom.getDirection());
+		boolean neighborAdjacency = verifyNeighborAdjacency(player.getKingdom(), dom.getDomino(), dom.getX(), dom.getY(), dom.getDirection());
+		boolean noOverlapping = verifyNoOverlapping(dom.getDomino(), player.getKingdom(), dom.getX(), dom.getY(), dom.getDirection());
+		if( castleAdjacency || neighborAdjacency) {
+			dom.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
+		} else {
+			dom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
+		}
+	}
 	/******************
 	 * * Feature 12 * *
 	 ******************/
@@ -389,6 +469,68 @@ public class KingdominoController {
 	// As a player, I wish to evaluate a provisional placement of my current domino
 	// in my kingdom by rotating it (clockwise or counter-clockwise)
 
+	private static void rotateDomino(Kingdomino kingdomino, String rotation) {
+		Player player = kingdomino.getCurrentGame().getNextPlayer();
+		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
+		DominoInKingdom ter = (DominoInKingdom) territories.get(territories.size() - 1);
+		DirectionKind dir = ter.getDirection();
+		if (rotation.equalsIgnoreCase("clockwise")) {
+			switch (dir) {
+			case Up:
+				ter.setDirection(DirectionKind.Right);
+				if (!verifyGridSize(player.getKingdom())) {
+					ter.setDirection(DirectionKind.Up);
+				}
+				break;
+			case Down:
+				ter.setDirection(DirectionKind.Left);
+				if (!verifyGridSize(player.getKingdom())) {
+					ter.setDirection(DirectionKind.Down);
+				}
+				break;
+			case Right:
+				ter.setDirection(DirectionKind.Down);
+				if (!verifyGridSize(player.getKingdom())) {
+					ter.setDirection(DirectionKind.Right);
+				}
+				break;
+			case Left:
+				ter.setDirection(DirectionKind.Up);
+				if (!verifyGridSize(player.getKingdom())) {
+					ter.setDirection(DirectionKind.Left);
+				}
+				break;
+			}
+		} else {
+			switch (dir) {
+			case Up:
+				ter.setDirection(DirectionKind.Left);
+				if (!verifyGridSize(player.getKingdom())) {
+					ter.setDirection(DirectionKind.Up);
+				}
+				break;
+			case Down:
+				ter.setDirection(DirectionKind.Right);
+				if (!verifyGridSize(player.getKingdom())) {
+					ter.setDirection(DirectionKind.Down);
+				}
+				break;
+			case Right:
+				ter.setDirection(DirectionKind.Up);
+				if (!verifyGridSize(player.getKingdom())) {
+					ter.setDirection(DirectionKind.Right);
+				}
+				break;
+			case Left:
+				ter.setDirection(DirectionKind.Down);
+				if (!verifyGridSize(player.getKingdom())) {
+					ter.setDirection(DirectionKind.Left);
+				}
+				break;
+			}
+		}
+		resetDominoStatus(ter, kingdomino);
+	}
 	/******************
 	 * * Feature 13 * *
 	 ******************/
@@ -398,6 +540,19 @@ public class KingdominoController {
 	// satisfied with its placement, and its current position respects the adjacency
 	// rules, I wish to finalize the placement
 
+	public static boolean placeDomino(Kingdomino kingdomino) {
+		Player player = kingdomino.getCurrentGame().getNextPlayer();
+		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
+		DominoInKingdom ter = (DominoInKingdom) territories.get(territories.size() - 1);
+		Domino dom = ter.getDomino();
+		if(dom.getStatus( )== DominoStatus.CorrectlyPreplaced) {
+			dom.setStatus(DominoStatus.PlacedInKingdom);
+			//Set the next player here
+			return true;
+		}
+		return false;
+	}
+	
 	/******************
 	 * * Feature 14 * *
 	 ******************/
@@ -406,107 +561,6 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically check if my current
 	// domino is placed next to my castle
 
-	/******************
-	 * * Feature 15 * *
-	 ******************/
-
-	// {Verify neighbor adjacency}
-	// As a player, I want the Kingdomino app to automatically check if my current
-	// domino is placed to an adjacent territory
-
-	/******************
-	 * * Feature 16 * *
-	 ******************/
-
-	// {Verify no overlapping}
-	// As a player, I want the Kingdomino app to automatically check that my current
-	// domino is not overlapping with existing dominos
-
-	/******************
-	 * * Feature 17 * *
-	 ******************/
-
-	// {Verify kingdom grid size}
-	// As a player, I want the Kingdomino app to automatically check if the grid of
-	// my kingdom has not yet exceeded a square of 5x5 tiles (including my castle)
-
-	/******************
-	 * * Feature 18 * *
-	 ******************/
-
-	// {Discard domino}
-	// As a player, I wish to discard a domino if it cannot be placed to my kingdom
-	// in a valid way
-
-	/******************
-	 * * Feature 19 * *
-	 ******************/
-
-	// {Identify kingdom properties}
-	// As a player, I want the Kingdomino app to automatically determine each
-	// properties of my kingdom so that my score can be calculated
-
-	/******************
-	 * * Feature 20 * *
-	 ******************/
-
-	// {Calculate property score}
-	// As a player, I want the Kingdomino app to automatically calculate the score
-	// for each of my property based upon the size of that property and the number
-	// of crowns
-
-	/******************
-	 * * Feature 21 * *
-	 ******************/
-
-	// { Calculate bonus scores}
-	// As a player, I want the Kingdomino app to automatically calculate the bonus
-	// scores (for Harmony and middle Kingdom) if those bonus scores were selected
-	// as a game option
-
-	/******************
-	 * * Feature 22 * *
-	 ******************/
-
-	// {Calculate player score}
-	// As a player, I want the Kingdomino app to automatically calculate the score
-	// for each player by summing up their property scores and their bonus scores
-
-	/******************
-	 * * Feature 23 * *
-	 ******************/
-
-	// { Calculate ranking}
-	// As a player, I want the Kingdomino app to automatically calculate the ranking
-	// in order to know the winner of a finished game
-
-	/******************
-	 * * Feature 24 * *
-	 ******************/
-
-	// {Resolve tiebreak}
-	// As a player, I want the Kingdomino app to automatically resolve a potential
-	// tiebreak (i.e. equal score between players) by evaluating the most extended
-	// (largest) property and then the total number of crowns
-
-	// ****************************************************************************************
-	// createNextDraft
-	// orderdraft
-	// reavealdraft
-	//
-	// **********BEGIN FEATURE 8*********
-	/**
-	 * 
-	 * @param kingdomino
-	 * @return
-	 * @author Maxime Rieuf
-	 */
-
-	// *******END Feature 8******
-
-	// Feature 14: Verify castle adjacency
-	// As a player, I want the Kingdomino app to automatically check if my current
-	// domino is placed next to my castle.
 	public static boolean verifyCastleAdjacency(int x, int y, DirectionKind aDirection) {
 		int x1 = 0, y1 = 0;
 
@@ -547,10 +601,15 @@ public class KingdominoController {
 		return false;
 	}
 
-	// Feature 15: Verify neighbor adjacency
+	/******************
+	 * * Feature 15 * *
+	 ******************/
+
+	// {Verify neighbor adjacency}
 	// As a player, I want the Kingdomino app to automatically check if my current
-	// domino is placed to an adjacent territory.
-	public static boolean VerifyNeighborAdjacency(Kingdom aKingdom, Domino aDomino, int x, int y,
+	// domino is placed to an adjacent territory
+
+	public static boolean verifyNeighborAdjacency(Kingdom aKingdom, Domino aDomino, int x, int y,
 			DirectionKind aDirection) {
 		int counter = 0;
 		int x1 = 0, y1 = 0;
@@ -640,56 +699,15 @@ public class KingdominoController {
 		return false;
 	}
 
-/// ABOVE IS GOOD
-	public static void ChooseNextDomino(Player curPlayer, Kingdomino kingdomino, String chosen) {
-		Game game = kingdomino.getCurrentGame();
-		Draft draft = game.getCurrentDraft();
+	/******************
+	 * * Feature 16 * *
+	 ******************/
 
-		for (int i = 0; i < draft.getIdSortedDominos().size(); i++) {
-			if (Integer.parseInt(chosen) == draft.getIdSortedDomino(i).getId()) {
-				try {
-					draft.addSelection(curPlayer, draft.getIdSortedDomino(i));
+	// {Verify no overlapping}
+	// As a player, I want the Kingdomino app to automatically check that my current
+	// domino is not overlapping with existing dominos
 
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-			}
-		}
-	}
-
-	private static TerrainType getTerrainTypeFilter(String terrain) {
-		terrain = terrain.toLowerCase();
-		if (terrain.equals("wheatfield")) {
-			terrain = "wheat";
-		}
-		switch (terrain) {
-		case "wheat":
-			return TerrainType.WheatField;
-		case "forest":
-			return TerrainType.Forest;
-		case "mountain":
-			return TerrainType.Mountain;
-		case "grass":
-			return TerrainType.Grass;
-		case "swamp":
-			return TerrainType.Swamp;
-		case "lake":
-			return TerrainType.Lake;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
-		}
-	}
-
-//
-//	//completed browse single domino
-//	public static Domino BrowseDomino(int id,Kingdomino kingdomino) {
-//		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
-//		Collections.sort(allDominos, (a, b) -> a.getId()-b.getId());
-//		return allDominos.get(id-1);
-//	}
-
-	public boolean VerifyNoOverlapping(Domino aDomino, Kingdom aKingdom, int x, int y, DirectionKind aDirection) {
+	public static boolean verifyNoOverlapping(Domino aDomino, Kingdom aKingdom, int x, int y, DirectionKind aDirection) {
 
 		class coord {
 			public int x;
@@ -752,7 +770,15 @@ public class KingdominoController {
 		return true;
 	}
 
-	public static boolean VerifyGridSize(Kingdom aKingdom) {
+	/******************
+	 * * Feature 17 * *
+	 ******************/
+
+	// {Verify kingdom grid size}
+	// As a player, I want the Kingdomino app to automatically check if the grid of
+	// my kingdom has not yet exceeded a square of 5x5 tiles (including my castle)
+
+	public static boolean verifyGridSize(Kingdom aKingdom) {
 		int maxX = 0;
 		int maxY = 0;
 		int minX = 0;
@@ -807,118 +833,120 @@ public class KingdominoController {
 		return ((maxX - minX) < 5 && (maxY - minY) < 5);
 	}
 
-	// completed ordered browse domino pile
+	/******************
+	 * * Feature 18 * *
+	 ******************/
 
-//
-//	public static void startNewGame(Kingdomino kingdomino) {
-//		//should kingdomino be an input or initialized in method
-//		
-////		Boolean kingdominoIsValid = !kingdomino.equals(null);
-////
-////		if (!kingdominoIsValid) {
-////			throw new IllegalArgumentException("This Kingdomino already contains a game, or the Kingdomino is null");
-////		}
-//		
-//		Game newGame = new Game(48, kingdomino);
-//		
-////		if(kingdomino.getUsers().size() < 2) {
-////			throw new RuntimeException("There needs to be at least 2 users.");
-////		}
-//		try {
-//			SetGameOptions(4, kingdomino);
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		newGame.setNumberOfPlayers(4);					
-//		
-//		
-//		//add players and dominos and castle
-//		Player player1 = newGame.getPlayer(0);
-//		Player player2 = newGame.getPlayer(1);
-//		Player player3 = newGame.getPlayer(2);
-//		Player player4 = newGame.getPlayer(3);
-//		
-//		newGame.setNextPlayer(player1);//should be randomly determined
-//		newGame.setNextPlayer(player2);
-//		newGame.setNextPlayer(player3);
-//		newGame.setNextPlayer(player4);
-//		
-//		
-//		
-//		Kingdom kingdom1 = new Kingdom(player1);
-//		Kingdom kingdom2 = new Kingdom(player2);
-//		Kingdom kingdom3 = new Kingdom(player3);
-//		Kingdom kingdom4 = new Kingdom(player4);
-//		
-//		Castle castle1 = new Castle(0, 0, kingdom1, player1);
-//		Castle castle2 = new Castle(0, 0, kingdom2, player2);
-//		Castle castle3 = new Castle(0, 0, kingdom3, player3);
-//		Castle castle4 = new Castle(0, 0, kingdom4, player4);//check which coordonates this corresponds to
-//		
-//		
-//		
-//		//current settings of the game
-//		kingdomino.setCurrentGame(newGame);
-//		KingdominoApplication.setKingdomino(kingdomino);
-//	}
-	// ******END FEATURE 3******
+	// {Discard domino}
+	// As a player, I wish to discard a domino if it cannot be placed to my kingdom
+	// in a valid way
 
-//	/**
-//	 * This method is used to get the dominos in the draw pile in a specific order.
-//	 * To do so, we store the numbers of the specific arrangement in a List. Then
-//	 * while looping through the current ordered List of dominos, we swap the domino
-//	 * at the index wanted -1 with the domino at the current index of the loop. That
-//	 * way, we get the domino at the index wanted -1 in the desired position.
-//	 * 
-//	 * @param kingdomino
-//	 * @param string
-//	 * @return the dominos ordered in the fixed arrangement wanted
-//	 * @author Maxime Rieuf
-//	 */
-//	public static void getFixedOrder(Kingdomino kingdomino, String string) {
-//		// TODO does not return the right list but does enough to pass tests. Must
-//		// correct
-//		Game game = kingdomino.getCurrentGame();
-//		List<Domino> dominos = new ArrayList<Domino>(game.getAllDominos());
-//
-//		string = string.replaceAll("\\s+", "");
-//		string = string.replace("\"", "");
-//		List<String> numbers = new ArrayList<String>(Arrays.asList(string.split(",")));
-//
-////		for(int i = 0;i<dominos.size();i++) {
-////			dominos.get(i).delete();
-////		}
-//
-//		for (int i = 0; i < dominos.size(); i++) {
-//			game.addOrMoveAllDominoAt(dominos.get(Integer.parseInt(numbers.get(i)) - 1), i);
-////			System.out.print(i);
-////			game.a
-//		}
-//		setFirstDraft(kingdomino);
-////		System.out.print(game.getAllDominos());
-//		// List<Domino> list = new ArrayList<Domino>();
-//
-////		for (int i = 0; i < numbers.size(); i++) {
-////			int id = Integer.parseInt(numbers.get(i));
-////			Domino temp = dominos.get(id - 1);
-////			game.addOrMoveAllDominoAt(game.getAllDomino(i), id - 1);
-////			game.addOrMoveAllDominoAt(temp, i);
-////			// System.out.println(game.getAllDomino(i).getId());
-////			// list.add(game.getAllDomino(i));
-////
-////		}
-////		System.out.println(list);
-////		for(int i=0; i<list.size();i++) {
-////			game.setTopDominoInPile(list.get(i));
-////		}
-////		System.out.println(game.getAllDominos());
-////		return list;
-//
-//	}
-	// *********END FEATURE 5***********
+	/******************
+	 * * Feature 19 * *
+	 ******************/
 
-	// *****begin Feature 9******
+	// {Identify kingdom properties}
+	// As a player, I want the Kingdomino app to automatically determine each
+	// properties of my kingdom so that my score can be calculated
+
+	/******************
+	 * * Feature 20 * *
+	 ******************/
+
+	// {Calculate property score}
+	// As a player, I want the Kingdomino app to automatically calculate the score
+	// for each of my property based upon the size of that property and the number
+	// of crowns
+
+	/******************
+	 * * Feature 21 * *
+	 ******************/
+
+	// { Calculate bonus scores}
+	// As a player, I want the Kingdomino app to automatically calculate the bonus
+	// scores (for Harmony and middle Kingdom) if those bonus scores were selected
+	// as a game option
+
+	/******************
+	 * * Feature 22 * *
+	 ******************/
+
+	// {Calculate player score}
+	// As a player, I want the Kingdomino app to automatically calculate the score
+	// for each player by summing up their property scores and their bonus scores
+
+	/******************
+	 * * Feature 23 * *
+	 ******************/
+
+	// { Calculate ranking}
+	// As a player, I want the Kingdomino app to automatically calculate the ranking
+	// in order to know the winner of a finished game
+
+	public static void calculateRanking(Kingdomino kingdomino) {
+		List<Player> players = kingdomino.getCurrentGame().getPlayers();
+		Player currentPlayer;
+		Player tempPlayer;
+		for (int i = 0; i < players.size() - 1; i++) {
+			currentPlayer = players.get(i);
+			for (int j = i + 1; j < players.size(); j++) {
+				tempPlayer = players.get(j);
+				if (tempPlayer.getTotalScore() > currentPlayer.getTotalScore()) {
+					players.set(i, tempPlayer);
+					players.set(j, currentPlayer);
+					currentPlayer = tempPlayer;
+				} else if (tempPlayer.getTotalScore() == currentPlayer.getTotalScore()) {
+					if (getLargestPropertySize(tempPlayer.getKingdom().getProperties()) > getLargestPropertySize(
+							currentPlayer.getKingdom().getProperties())) {
+						players.set(i, tempPlayer);
+						players.set(j, currentPlayer);
+						currentPlayer = tempPlayer;
+					} else if (getNumberCrowns(tempPlayer.getKingdom().getProperties()) > getNumberCrowns(
+							currentPlayer.getKingdom().getProperties())) {
+						players.set(i, tempPlayer);
+						players.set(j, currentPlayer);
+						currentPlayer = tempPlayer;
+					}
+				}
+			}
+		}
+	}
+
+	private static int getLargestPropertySize(List<Property> properties) {
+		if (properties == null) {
+			return 0;
+		}
+		Property largestProperty = properties.get(0);
+		if (properties.size() == 1) {
+			return largestProperty.getSize();
+		}
+		for (int i = 1; i < properties.size(); i++) {
+			if (properties.get(i).getSize() > largestProperty.getSize()) {
+				largestProperty = properties.get(i);
+			}
+		}
+		return largestProperty.getSize();
+
+	}
+
+	private static int getNumberCrowns(List<Property> properties) {
+		int numCrowns = 0;
+		for (Property property : properties) {
+			numCrowns += property.getCrowns();
+		}
+		return numCrowns;
+	}
+
+	/******************
+	 * * Feature 24 * *
+	 ******************/
+
+	// {Resolve tiebreak}
+	// As a player, I want the Kingdomino app to automatically resolve a potential
+	// tiebreak (i.e. equal score between players) by evaluating the most extended
+	// (largest) property and then the total number of crowns
+
+	// ****************************************************************************************
 
 	public DominoInKingdom rightTile(DominoInKingdom leftTile) {
 		DominoInKingdom rightTile = new DominoInKingdom(leftTile.getX(), leftTile.getY(), leftTile.getKingdom(),
@@ -1217,34 +1245,6 @@ public class KingdominoController {
 	}
 
 	// Calculating the ranking of the players in the game
-	public static void calculateRanking(Kingdomino kingdomino) {
-		List<Player> players = kingdomino.getCurrentGame().getPlayers();
-		Player currentPlayer;
-		Player tempPlayer;
-		for (int i = 0; i < players.size() - 1; i++) {
-			currentPlayer = players.get(i);
-			for (int j = i + 1; j < players.size(); j++) {
-				tempPlayer = players.get(j);
-				if (tempPlayer.getTotalScore() > currentPlayer.getTotalScore()) {
-					players.set(i, tempPlayer);
-					players.set(j, currentPlayer);
-					currentPlayer = tempPlayer;
-				} else if (tempPlayer.getTotalScore() == currentPlayer.getTotalScore()) {
-					if (getLargestPropertySize(tempPlayer.getKingdom().getProperties()) > getLargestPropertySize(
-							currentPlayer.getKingdom().getProperties())) {
-						players.set(i, tempPlayer);
-						players.set(j, currentPlayer);
-						currentPlayer = tempPlayer;
-					} else if (getNumberCrowns(tempPlayer.getKingdom().getProperties()) > getNumberCrowns(
-							currentPlayer.getKingdom().getProperties())) {
-						players.set(i, tempPlayer);
-						players.set(j, currentPlayer);
-						currentPlayer = tempPlayer;
-					}
-				}
-			}
-		}
-	}
 
 	// Feature 18, discardDomino
 	public static void discardDomino(DominoInKingdom currentDomino) {
@@ -1258,31 +1258,6 @@ public class KingdominoController {
 		 * for (int i = 0; i < players.size(); i++) {
 		 * players.get(i).setCurrentRanking(i+1); }
 		 */
-	}
-
-	private static int getLargestPropertySize(List<Property> properties) {
-		if (properties == null) {
-			return 0;
-		}
-		Property largestProperty = properties.get(0);
-		if (properties.size() == 1) {
-			return largestProperty.getSize();
-		}
-		for (int i = 1; i < properties.size(); i++) {
-			if (properties.get(i).getSize() > largestProperty.getSize()) {
-				largestProperty = properties.get(i);
-			}
-		}
-		return largestProperty.getSize();
-
-	}
-
-	private static int getNumberCrowns(List<Property> properties) {
-		int numCrowns = 0;
-		for (Property property : properties) {
-			numCrowns += property.getCrowns();
-		}
-		return numCrowns;
 	}
 
 }
