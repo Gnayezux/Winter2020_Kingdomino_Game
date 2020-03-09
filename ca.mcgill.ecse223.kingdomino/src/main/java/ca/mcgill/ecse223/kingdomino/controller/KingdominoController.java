@@ -1017,7 +1017,7 @@ public class KingdominoController {
 		
 	}
 
-	public void CalculatePropertyAttributes(Property aProperty) {
+	public static void CalculatePropertyAttributes(Property aProperty) {
 		int numCrowns = 0;
 		int size = 0;
 		for (int i = 0; i < aProperty.numberOfIncludedDominos(); i++) {
@@ -1026,6 +1026,9 @@ public class KingdominoController {
 			} else if (aProperty.getLeftTile() == aProperty.getIncludedDomino(i).getRightTile()) {
 				numCrowns += aProperty.getIncludedDomino(i).getRightCrown();
 			}
+			if(aProperty.getIncludedDomino(i).getLeftTile()==aProperty.getIncludedDomino(i).getRightTile()) {
+				size++;
+			}
 
 			size++;
 		}
@@ -1033,44 +1036,57 @@ public class KingdominoController {
 		aProperty.setSize(size);
 	}
 
-	public int CalculateBonusScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle castle) {
+	public static int CalculateBonusScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle castle, Kingdomino kingdomino) {
 		int bonus = 0;
 		boolean middlexl = false;
 		boolean middlexr = false;
 		boolean middleyt = false;
 		boolean middleyb = false;
-		if (playedDominoes.length == 12) {
-			bonus += 5;
-		}
-
-		for (int i = 0; i < playedDominoes.length; i++) {
-			if ((playedDominoes[i].getX() == castle.getX() - 2)
-					|| (rightTile(playedDominoes[i]).getX() == castle.getX() - 2)) {
-				middlexl = true;
+		
+		boolean middleKingdom = false;
+		boolean harmony = false;
+		
+		for(int i = 0;i<kingdomino.getCurrentGame().getSelectedBonusOptions().size();i++) {
+			if(kingdomino.getCurrentGame().getSelectedBonusOption(i).getOptionName().equals("isUsingHarmony")) {
+				harmony = true;
 			}
-			if ((playedDominoes[i].getX() == castle.getX() + 2)
-					|| (rightTile(playedDominoes[i]).getX() == castle.getX() + 2)) {
+			if(kingdomino.getCurrentGame().getSelectedBonusOption(i).getOptionName().equals("isUsingMiddleKingdom")) {
+				middleKingdom = true;
+			}
+			
+		}
+		
+		
+		if ((playedDominoes.length ==12) && harmony) {
+			bonus +=5;
+		}
+		
+		for (int i=0; i<playedDominoes.length; i++) {
+			if ((playedDominoes[i].getX()==castle.getX()-2)||(rightTile(playedDominoes[i]).getX()== castle.getX()-2)) {
+				middlexl = true;
+				}
+			if ((playedDominoes[i].getX()==castle.getX()+2)||(rightTile(playedDominoes[i]).getX()== castle.getX()+2)) {
 				middlexr = true;
 			}
-			if ((playedDominoes[i].getY() == castle.getY() - 2)
-					|| (rightTile(playedDominoes[i]).getY() == castle.getY() - 2)) {
+			if ((playedDominoes[i].getY()==castle.getY()-2)||(rightTile(playedDominoes[i]).getY()== castle.getY()-2)) {
 				middleyb = true;
 			}
-			if ((playedDominoes[i].getY() == castle.getY() + 2)
-					|| (rightTile(playedDominoes[i]).getY() == castle.getY() + 2)) {
+			if ((playedDominoes[i].getY()==castle.getY()+2)||(rightTile(playedDominoes[i]).getY()== castle.getY()+2)) {
 				middleyt = true;
 			}
-
+			
 		}
-		if (middlexl && middlexr && middleyb && middleyt) {
-			bonus += 10;
+		if((middlexl&&middlexr&&middleyb&&middleyt)&&middleKingdom) {
+			bonus+=10;
 		}
-
+		
+			
 		return bonus;
-
+		
 	}
 
-	public int CalculatePlayerScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle aCastle) {
+
+	public static int CalculatePlayerScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle aCastle) {
 		int score = 0;
 		int pscore = 0;
 		int bonuscore = 0;
