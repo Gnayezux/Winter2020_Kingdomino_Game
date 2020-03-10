@@ -1315,6 +1315,7 @@ public class KingdominoController {
 				}
 			}
 			p.setSize(inc);
+			p.setScore(p.getSize()*p.getCrowns());
 		}
 	}
 
