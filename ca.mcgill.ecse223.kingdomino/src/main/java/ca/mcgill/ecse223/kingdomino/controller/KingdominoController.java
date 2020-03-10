@@ -937,6 +937,14 @@ public class KingdominoController {
 	 * * Feature 19 * *
 	 ******************/
 
+	
+	/**
+	 * @author kaichengwu
+	 * @param kingdomino
+	 * @return void
+	 * this method identifies the kingdom properties
+	 */
+	
 	// {Identify kingdom properties}
 	// As a player, I want the Kingdomino app to automatically determine each
 	// properties of my kingdom so that my score can be calculated
@@ -1058,6 +1066,10 @@ public class KingdominoController {
 				d=false;
 			}
 			
+			//all cases of expanding are plotted bellow,
+			//a new tile of the same terrain type was added to a singular tile of the same type; (e.g. a tile on the left)
+			//or a new tile was added between two tiles of the same type; (e.g. a tile on top, a tile on the left)
+			//or a new tile was added between three tiles (e.g. a tile on top, a tile on the left, a tile on the right)
 			
 			boolean myLeft = l &&tiles.get(locationl).get("property")!=null && tile.get("terrain").equals(tiles.get(locationl).get("terrain"));
 			boolean myUp = u&&tiles.get(locationu).get("property")!=null && tile.get("terrain").equals(tiles.get(locationu).get("terrain"));
@@ -1267,6 +1279,9 @@ public class KingdominoController {
 				prop.addIncludedDomino((Domino)tile.get("domino"));
 			}
 		}
+		
+		//testing codes
+		//___________________________________________________________
 //		System.out.print(locations);
 //		for(int i =0;i<kingdom.getProperties().size();i++) {
 //			System.out.println("#############");
@@ -1282,6 +1297,7 @@ public class KingdominoController {
 //			}
 //		}
 	}
+	//_______another attempt of implementing the feature________
 //	public static void identifyProperties(Kingdomino kingdomino) {
 //		
 //		Player player = kingdomino.getCurrentGame().getNextPlayer();
@@ -1360,6 +1376,7 @@ public class KingdominoController {
 ////		}
 //	}
 
+	//private helper methods
 	private static void checkForConnected(List<Property> properties, Kingdom k) {
 		ArrayList<Property> propsOfType = new ArrayList<Property>();
 		for (TerrainType type : TerrainType.values()) {
@@ -1632,10 +1649,19 @@ public class KingdominoController {
 //		p.setLeftTile(p1.getLeftTile());
 //		return p;
 //	}
+	
+	
+
 	/******************
 	 * * Feature 20 * *
 	 ******************/
 
+	/**
+	 * this methods calculate the attributes of each property (num of crowns & size of property), and sets them up for furthur use
+	 * @author kaichengwu
+	 * @param kingdomino
+	 * @return void
+	 */
 	// {Calculate property score}
 	// As a player, I want the Kingdomino app to automatically calculate the score
 	// for each of my property based upon the size of that property and the number
@@ -1661,6 +1687,7 @@ public class KingdominoController {
 				
 			}
 			p.setSize(inc);
+			p.setScore(p.getSize()*p.getCrowns());
 		}
 	}
 
@@ -1668,6 +1695,13 @@ public class KingdominoController {
 	 * * Feature 21 * *
 	 ******************/
 
+	
+	/**
+	 * this feature calculates the bonus score of the player if the bonus feature harmony/middle kingdom were selected at the beginning of the game
+	 * @param kingdomino
+	 * @return void
+	 * @author kaichengwu
+	 */
 	// { Calculate bonus scores}
 	// As a player, I want the Kingdomino app to automatically calculate the bonus
 	// scores (for Harmony and middle Kingdom) if those bonus scores were selected
@@ -1691,6 +1725,7 @@ public class KingdominoController {
 		player.setBonusScore(bonusScore);
 	}
 
+	//if there are 13 terriotories in kingtom => harmony is achieved
 	private static int calculateHarmony(Player player) {
 		if (player.getKingdom().getTerritories().size() == 13) {
 			return 5;
@@ -1699,6 +1734,7 @@ public class KingdominoController {
 		}
 	}
 
+	//if the castle is in the middle => middlekingdom is achieved
 	private static int calculateMiddleKingdom(Player player) {
 		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
 		
@@ -1781,10 +1817,32 @@ public class KingdominoController {
 		}
 	}
 
+	
+	
 	/******************
 	 * * Feature 22 * *
 	 ******************/
+	
+	/**
+	 * @author kaichengwu
+	 * @param kingdomino
+	 * @return void
+	 * this features calculate the total score of the player by summing up the score of each individual property
+	 */
+	public static void calculatePlayerScore(Kingdomino kingdomino){
+		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+		int propscore = 0;
+		List<Property> myprop = player.getKingdom().getProperties();
+		for(int i=0; i<myprop.size();i++) {
+			propscore+= myprop.get(i).getScore();
+		}
 
+		player.setPropertyScore(propscore);
+		
+	}
+
+	
+	
 	// {Calculate player score}
 	// As a player, I want the Kingdomino app to automatically calculate the score
 	// for each player by summing up their property scores and their bonus scores
@@ -1819,27 +1877,7 @@ public class KingdominoController {
 //		//calculateBonusScore(kingdomino);
 //		player.setPropertyScore(playerScore);
 //	}
-	public static void calculatePlayerScore(Kingdomino kingdomino){
-		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
-		int propscore = 0;
-//		System.out.print(player);
-		List<Property> myprop = player.getKingdom().getProperties();
-//		System.out.print(myprop.size());
-//		System.out.print(player.getGame().getSelectedBonusOptions());
-		for(int i=0; i<myprop.size();i++) {
-			
-			propscore+= (myprop.get(i).getCrowns()*myprop.get(i).getSize());
-//			System.out.println("########");
-//			System.out.println(myprop.get(i).getLeftTile());
-//			System.out.println(myprop.get(i).getIncludedDominos());
-//			System.out.println(myprop.get(i).getCrowns());
-//			System.out.println("########");
-//			System.out.println(myprop.get(i).getSize());
-		}
-//		System.out.print(propscore);
-		player.setPropertyScore(propscore);
-		
-	}
+
 
 	/******************
 	 * * Feature 23 * *
