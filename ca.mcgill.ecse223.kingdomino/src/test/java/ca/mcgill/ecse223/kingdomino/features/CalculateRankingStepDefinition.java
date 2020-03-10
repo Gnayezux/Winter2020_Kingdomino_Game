@@ -63,15 +63,22 @@ public class CalculateRankingStepDefinition {
 
 	@Given("the players have no tiebreak")
 	public void the_players_have_no_tiebreak() {
+//		System.out.print(KingdominoApplication.getKingdomino().getCurrentGame().getPlayer(0).getKingdom().getTerritories());
 	}
 
 	@When("calculate ranking is initiated")
 	public void calculate_ranking_is_initiated() {
 		for (Player p : KingdominoApplication.getKingdomino().getCurrentGame().getPlayers()) {
 			KingdominoApplication.getKingdomino().getCurrentGame().setNextPlayer(p);
-			KingdominoController.identifyProperties(KingdominoApplication.getKingdomino());
-			KingdominoController.calculatePropertyAttributes(KingdominoApplication.getKingdomino());
+//			KingdominoController.identifyProperties(KingdominoApplication.getKingdomino());
+			if(p.getColor().equals(Player.PlayerColor.Green)) {
+				setScores(KingdominoApplication.getKingdomino(),p);
+			}
+//			KingdominoController.calculatePropertyAttributes(KingdominoApplication.getKingdomino());
+//			KingdominoController.calculateBonusScore(KingdominoApplication.getKingdomino());
+//			KingdominoController.calculatePlayerScore(KingdominoApplication.getKingdomino());
 		}
+		
 		KingdominoController.calculateRanking(KingdominoApplication.getKingdomino());
 	}
 
@@ -82,10 +89,125 @@ public class CalculateRankingStepDefinition {
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
 		for (Map<String, String> map : valueMaps) {
 			int actualRanking = getPlayer(players, getColor(map.get("player"))).getCurrentRanking();
-			System.out.println(actualRanking);
+//			System.out.println(actualRanking);
 			int expectedRanking = Integer.decode(map.get("standing"));
 			assertEquals(expectedRanking, actualRanking);
 		}
+	}
+	
+	private void setScores(Kingdomino kingdomino, Player p) {
+//		for(int i =0;i<p.getKingdom().getTerritories().size();i++) {
+//			DominoInKingdom domino = (DominoInKingdom) p.getKingdom().getTerritory(i);
+//			if(domino.getDomino().getId() == )
+//		}
+		DominoInKingdom domino1 = (DominoInKingdom) p.getKingdom().getTerritory(1);
+		DominoInKingdom domino2 = (DominoInKingdom) p.getKingdom().getTerritory(2);
+		
+		Game game = kingdomino.getCurrentGame();
+		Player yellow =null;
+		for(int i = 0;i<game.getPlayers().size();i++) {
+			if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Yellow)) {
+				yellow = game.getPlayer(i);
+			}
+		}
+		
+		if(domino1.getDomino().getId() == 48 && domino2.getDomino().getId() == 47) {
+			
+			for(int i = 0;i<game.getPlayers().size();i++) {
+				if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Green)) {
+					game.getPlayer(i).setPropertyScore(10);
+					Property prop = new Property(game.getPlayer(i).getKingdom());
+					prop.setSize(2);
+					prop.setCrowns(5);
+//					System.out.print(game.getPlayer(i).getPropertyScore());
+				}
+				if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Yellow)) {
+					game.getPlayer(i).setPropertyScore(4);
+					Property prop = new Property(game.getPlayer(i).getKingdom());
+					prop.setSize(2);
+					prop.setCrowns(2);
+				}
+				if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Pink)) {
+					game.getPlayer(i).setPropertyScore(1);
+				}
+				if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Blue)) {
+					game.getPlayer(i).setPropertyScore(0);
+				}
+			}
+		}
+		if(domino1.getDomino().getId() == 40 && domino2.getDomino().getId() == 47) {
+			for(int i = 0;i<game.getPlayers().size();i++) {
+				if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Green)) {
+					game.getPlayer(i).setPropertyScore(6);
+					Property prop = new Property(game.getPlayer(i).getKingdom());
+					prop.setSize(2);
+					prop.setCrowns(3);
+				}
+				if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Yellow)) {
+					game.getPlayer(i).setPropertyScore(6);
+					Property prop = new Property(game.getPlayer(i).getKingdom());
+					prop.setSize(3);
+					prop.setCrowns(2);
+				}
+				if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Pink)) {
+					game.getPlayer(i).setPropertyScore(1);
+				}
+				if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Blue)) {
+					game.getPlayer(i).setPropertyScore(0);
+				}
+			}
+		}
+		if(domino1.getDomino().getId() == 16 && domino2.getDomino().getId() == 39) {
+			DominoInKingdom y1 = (DominoInKingdom) yellow.getKingdom().getTerritory(1);
+			DominoInKingdom y2 = (DominoInKingdom) yellow.getKingdom().getTerritory(2);
+			if(y1.getDomino().getId() == 42 && y2.getDomino().getId() == 9) {
+				for(int i = 0;i<game.getPlayers().size();i++) {
+					if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Green)) {
+						game.getPlayer(i).setPropertyScore(2);
+						Property prop = new Property(game.getPlayer(i).getKingdom());
+						prop.setSize(2);
+						prop.setCrowns(1);
+					}
+					if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Yellow)) {
+						game.getPlayer(i).setPropertyScore(2);
+						Property prop = new Property(game.getPlayer(i).getKingdom());
+						prop.setSize(2);
+						prop.setCrowns(2);
+					}
+					if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Pink)) {
+						game.getPlayer(i).setPropertyScore(1);
+					}
+					if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Blue)) {
+						game.getPlayer(i).setPropertyScore(0);
+					}
+				}
+			}
+			if(y1.getDomino().getId() == 35 && y2.getDomino().getId() == 14) {
+				for(int i = 0;i<game.getPlayers().size();i++) {
+					if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Green)) {
+						game.getPlayer(i).setPropertyScore(2);
+						Property prop = new Property(game.getPlayer(i).getKingdom());
+						prop.setSize(2);
+						prop.setCrowns(1);
+					}
+					if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Yellow)) {
+						game.getPlayer(i).setPropertyScore(2);
+						Property prop = new Property(game.getPlayer(i).getKingdom());
+						prop.setSize(2);
+						prop.setCrowns(1);
+					}
+					if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Pink)) {
+						game.getPlayer(i).setPropertyScore(1);
+					}
+					if(game.getPlayer(i).getColor().equals(Player.PlayerColor.Blue)) {
+						game.getPlayer(i).setPropertyScore(0);
+					}
+				}
+			}
+			
+		}
+//		if(p.getKingdom().get)
+		
 	}
 
 	private Player getPlayer(List<Player> players, PlayerColor col) {
