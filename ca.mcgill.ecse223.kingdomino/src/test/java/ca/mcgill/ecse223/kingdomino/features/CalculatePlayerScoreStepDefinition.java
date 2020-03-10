@@ -30,6 +30,9 @@ import io.cucumber.java.en.When;
 
 public class CalculatePlayerScoreStepDefinition {
 
+	/**
+	 * @author Kaichengwu
+	 */
 	@Given("the game is initialized for calculate player score")
 	public void the_game_is_initialized_for_calculate_player_score() {
 		Kingdomino kingdomino = new Kingdomino();
@@ -55,6 +58,9 @@ public class CalculatePlayerScoreStepDefinition {
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
+	/**
+	 * @author Kaichengwu
+	 */
 	@Given("the game has {string} bonus option")
 	public void the_game_has_bonus_option(String string) {
 		if (!string.equals("no")) {
@@ -70,17 +76,24 @@ public class CalculatePlayerScoreStepDefinition {
 		KingdominoController.calculateBonusScore(KingdominoApplication.getKingdomino());
 	}
 
+	/**
+	 * @author Kaichengwu
+	 */
 	@When("calculate player score is initiated")
 	public void calculate_player_score_is_initiated() {
 		KingdominoController.calculatePlayerScore(KingdominoApplication.getKingdomino());
 	}
 
+	/**
+	 * @author Kaichengwu
+	 */
 	@Then("the total score should be {int}")
 	public void the_total_score_should_be(Integer int1) {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
 		assertEquals((int) int1, player.getTotalScore());
 	}
 
+	//HELPER METHODS
 	private TerrainType getTerrainType(String terrain) {
 		switch (terrain) {
 		case "W":

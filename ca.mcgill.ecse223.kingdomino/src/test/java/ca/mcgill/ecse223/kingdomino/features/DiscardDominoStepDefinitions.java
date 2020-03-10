@@ -33,6 +33,9 @@ public class DiscardDominoStepDefinitions {
 
 	boolean discarded;
 	
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Given("the game is initialized for discard domino")
 	public void the_game_is_initialized_for_discard_domino() {
 		Kingdomino kingdomino = new Kingdomino();
@@ -56,6 +59,9 @@ public class DiscardDominoStepDefinitions {
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Given("the player's kingdom has the following dominoes:")
 	public void the_player_s_kingdom_has_the_following_dominoes(io.cucumber.datatable.DataTable dataTable) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
@@ -76,6 +82,9 @@ public class DiscardDominoStepDefinitions {
 		}
 	}
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Given("domino {int} is in the current draft")
 	public void domino_is_in_the_current_draft(Integer domID) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
@@ -84,23 +93,35 @@ public class DiscardDominoStepDefinitions {
 		game.setCurrentDraft(draft);
 	}
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Given("the current player has selected domino {int}")
 	public void the_current_player_has_selected_domino(Integer domID) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Player player = game.getNextPlayer();
 		player.setDominoSelection(game.getCurrentDraft().getSelection(0));
 	}
-
+	
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Given("the player preplaces domino {int} at its initial position")
 	public void the_player_preplaces_domino_at_its_initial_position(Integer domID) {
 		KingdominoController.removeKing(KingdominoApplication.getKingdomino());
 	}
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@When("the player attempts to discard the selected domino")
 	public void the_player_attempts_to_discard_the_selected_domino() {
 		discarded = KingdominoController.discardDomino(KingdominoApplication.getKingdomino());
 	}
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Then("domino {int} shall have status {string}")
 	public void domino_shall_have_status(Integer domID, String domStatus) {
 		DominoStatus actualStatus = KingdominoController.getDomino(domID, KingdominoApplication.getKingdomino()).getStatus();

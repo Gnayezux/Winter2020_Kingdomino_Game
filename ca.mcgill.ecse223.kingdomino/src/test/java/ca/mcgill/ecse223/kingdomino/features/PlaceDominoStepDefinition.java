@@ -12,6 +12,9 @@ import java.util.*;
 
 public class PlaceDominoStepDefinition {
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Given("the {string}'s kingdom has the following dominoes:")
 	public void the_s_kingdom_has_the_following_dominoes(String string, io.cucumber.datatable.DataTable dataTable) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
@@ -24,17 +27,26 @@ public class PlaceDominoStepDefinition {
 		}
 	}
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Given("domino {int} is in {string} status")
 	public void domino_is_in_status(Integer int1, String string) {
 		Domino dom = getdominoByID(int1);
 		dom.setStatus(getDominoStatus(string));
 	}
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@When("{string} requests to place the selected domino {int}")
 	public void requests_to_place_the_selected_domino(String string, Integer int1) {
 	    KingdominoController.placeDomino(KingdominoApplication.getKingdomino());
 	}
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Then("{string}'s kingdom should now have domino {int} at position {int}:{int} with direction {string}")
 	public void s_kingdom_should_now_have_domino_at_position_with_direction(String string, Integer int1, Integer int2, Integer int3, String string2) {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();

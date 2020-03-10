@@ -37,46 +37,41 @@ public class CalculateRankingStepDefinition {
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
 		int i = 0;
 		for (Map<String, String> map : valueMaps) {
-			//Adding a Player
+			// Adding a Player
 			User user = game.getKingdomino().addUser(userNames[i]);
 			Player player = new Player(game);
 			player.setUser(user);
 			player.setColor(getColor(map.get("player")));
 			Kingdom kingdom = new Kingdom(player);
 			new Castle(0, 0, kingdom, player);
-			//Adding their first domino
+			// Adding their first domino
 			int posx = Integer.decode(map.get("posx1"));
 			int posy = Integer.decode(map.get("posy1"));
 			int id = Integer.decode(map.get("domino1"));
-			DominoInKingdom dom = new DominoInKingdom(posx, posy,kingdom, getDominoByID(id));
+			DominoInKingdom dom = new DominoInKingdom(posx, posy, kingdom, getDominoByID(id));
 			dom.setDirection(getDirection(map.get("dominodir1")));
-			//Adding their second domino
+			// Adding their second domino
 			posx = Integer.decode(map.get("posx2"));
 			posy = Integer.decode(map.get("posy2"));
 			id = Integer.decode(map.get("domino2"));
-			dom = new DominoInKingdom(posx, posy,kingdom, getDominoByID(id));
+			dom = new DominoInKingdom(posx, posy, kingdom, getDominoByID(id));
 			dom.setDirection(getDirection(map.get("dominodir2")));
 			i++;
 		}
+
 	}
 
 	@Given("the players have no tiebreak")
-	
 	public void the_players_have_no_tiebreak() {
-		/*Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		List<Player> players = game.getPlayers();
-		for(int i = 0; i<players.size()/2; i++) {
-			for(int j = 0; j<players.size(); j++) {
-				if(players.get(i).getTotalScore()==players.get(j).getTotalScore()) {
-					throw new java.lang.IllegalArgumentException("There is a tie");
-				}
-			}
-		}*/
 	}
 
 	@When("calculate ranking is initiated")
 	public void calculate_ranking_is_initiated() {
-		//KingdominoController.calculatePropertyAttributes(KingdominoApplication.getKingdomino());
+		for (Player p : KingdominoApplication.getKingdomino().getCurrentGame().getPlayers()) {
+			KingdominoApplication.getKingdomino().getCurrentGame().setNextPlayer(p);
+			KingdominoController.identifyProperties(KingdominoApplication.getKingdomino());
+			KingdominoController.calculatePropertyAttributes(KingdominoApplication.getKingdomino());
+		}
 		KingdominoController.calculateRanking(KingdominoApplication.getKingdomino());
 	}
 
@@ -87,20 +82,21 @@ public class CalculateRankingStepDefinition {
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
 		for (Map<String, String> map : valueMaps) {
 			int actualRanking = getPlayer(players, getColor(map.get("player"))).getCurrentRanking();
+			System.out.println(actualRanking);
 			int expectedRanking = Integer.decode(map.get("standing"));
 			assertEquals(expectedRanking, actualRanking);
 		}
 	}
 
-	private Player getPlayer (List<Player> players, PlayerColor col) {
-		for(Player p: players) {
-			if(p.getColor()==col) {
+	private Player getPlayer(List<Player> players, PlayerColor col) {
+		for (Player p : players) {
+			if (p.getColor() == col) {
 				return p;
 			}
 		}
 		throw new java.lang.IllegalArgumentException("Inexistant player of color: " + col);
 	}
-	
+
 	private DirectionKind getDirection(String dir) {
 		switch (dir) {
 		case "up":
@@ -115,7 +111,7 @@ public class CalculateRankingStepDefinition {
 			throw new java.lang.IllegalArgumentException("Invalid direction: " + dir);
 		}
 	}
-	
+
 	private PlayerColor getColor(String color) {
 		switch (color) {
 		case "blue":
@@ -130,7 +126,7 @@ public class CalculateRankingStepDefinition {
 			throw new java.lang.IllegalArgumentException("Invalid color: " + color);
 		}
 	}
-	
+
 	private void createAllDominoes(Game game) {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));

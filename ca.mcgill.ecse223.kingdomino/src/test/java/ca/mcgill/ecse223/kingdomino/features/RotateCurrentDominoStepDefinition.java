@@ -28,6 +28,9 @@ import io.cucumber.java.en.When;
 
 public class RotateCurrentDominoStepDefinition {
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Given("the game is initialized for rotate current domino")
 	public void the_game_is_initialized_for_rotate_current_domino() {
 	    Kingdomino kingdomino = new Kingdomino();
@@ -50,11 +53,17 @@ public class RotateCurrentDominoStepDefinition {
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@When("{string} requests to rotate the domino with {string}")
 	public void requests_to_rotate_the_domino_with(String string, String string2) {
 		KingdominoController.rotateDomino(KingdominoApplication.getKingdomino(), string2);
 	}
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Then("the domino {int} is still tentatively placed at {int}:{int} but with new direction {string}")
 	public void the_domino_is_still_tentatively_placed_at_but_with_new_direction(Integer int1, Integer int2, Integer int3, String string) {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
@@ -66,12 +75,18 @@ public class RotateCurrentDominoStepDefinition {
 		assertEquals(getDirection(string), dom.getDirection());
 	}
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Then("the domino {int} should have status {string}")
 	public void the_domino_should_have_status(Integer int1, String string) {
 		Domino dom = getdominoByID(int1);
 		assertEquals(getDominoStatus(string), dom.getStatus());
 	}
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Then("domino {int} is tentatively placed at the same position {int}:{int} with the same direction {string}")
 	public void domino_is_tentatively_placed_at_the_same_position_with_the_same_direction(Integer int1, Integer int2, Integer int3, String string) {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
@@ -83,6 +98,9 @@ public class RotateCurrentDominoStepDefinition {
 		assertEquals(getDirection(string), dom.getDirection());
 	}
 
+	/**
+	 * @author Mathieu-Joseph Magri
+	 */
 	@Then("domino {int} should still have status {string}")
 	public void domino_should_still_have_status(Integer int1, String string) {
 		Domino dom = getdominoByID(int1);
