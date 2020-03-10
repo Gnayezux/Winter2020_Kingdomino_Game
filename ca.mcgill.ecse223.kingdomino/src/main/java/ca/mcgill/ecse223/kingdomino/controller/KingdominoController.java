@@ -21,16 +21,32 @@ public class KingdominoController {
 	/*****************
 	 * * Feature 1 * *
 	 *****************/
+	
 	// {Set game options}
 	// As a player, I want to configure the designated options of the Kingdomino
 	// game including the number of players (2, 3 or 4) and the bonus scoring
 	// options
+	
+	/**
+	 * Let's us start a kingdomino game with desired configurations.
+	 * @param kingdomino The kingdomino application we wish to analyze.
+	 * @return void
+	 * @author Abdallah Shapsough
+	 */
 
 	public static void setGameOptions(Kingdomino kingdomino) {
 		Game game = new Game(48, kingdomino);
 		kingdomino.setCurrentGame(game);
 
 	}
+	
+	/**
+	 * Let's us choose the number of players we want in a kingdomino game.
+	 * @param numPlayers Number of players present in a kingdomino game.
+	 * @param kingdomino The kingdomino application we wish to analyze.
+	 * @return void
+	 * @author Abdallah Shapsough
+	 */
 
 	public static void setNumberOfPlayers(int numPlayers, Kingdomino kingdomino) {
 		Game game = kingdomino.getCurrentGame();
@@ -39,6 +55,15 @@ public class KingdominoController {
 			Player player = new Player(game);
 		}
 	}
+	
+	/**
+	 * Determines which bonus option shall be activated or not whithin a kingdomino game.
+	 * @param bonus Selected bonus option for a game.
+	 * @param kingdomino The kingdomino application we wish to analyze.
+	 * @param selected If true, the bonus option will be added to the game.
+	 * @return void
+	 * @author Abdallah Shapsough
+	 */
 
 	public static void setBonusOption(String bonus, Kingdomino kingdomino, boolean selected) {
 		Game game = kingdomino.getCurrentGame();
@@ -56,10 +81,26 @@ public class KingdominoController {
 		}
 	}
 
+	/**
+	 * Let's us get a user and set it to a player within a kingdomino game.
+	 * @param user Selected use that will set to a player.
+	 * @param num Number of a player that will be set User user.
+	 * @param kingdomino The kingdomino application we wish to analyze.
+	 * @return void
+	 * @author Abdallah Shapsough
+	 */
 	public static void selectUser(User user, int num, Kingdomino kingdomino) {
 		kingdomino.getCurrentGame().getPlayer(num).setUser(user);
 	}
 
+	/**
+	 * Let's us set a color to a specififc player within a kingdomino game.
+	 * @param color A PlayerColor that will be set to a player.
+	 * @param num Number of a player that will be set a PlayerColor color.
+	 * @param kingdomino The kingdomino application we wish to analyze.
+	 * @return void
+	 * @author Abdallah Shapsough
+	 */
 	public static void selectColor(PlayerColor color, int num, Kingdomino kingdomino) {
 		kingdomino.getCurrentGame().getPlayer(num).setColor(color);
 	}
@@ -67,10 +108,19 @@ public class KingdominoController {
 	/*****************
 	 * * Feature 2 * *
 	 *****************/
+	
 	// {Provide user profile}
 	// As a player, I wish to use my unique user name in when a game starts. I also
 	// want the Kingdomino app to maintain my game statistics (e.g. number of games
 	// played, won, etc.).
+	
+	/**
+	 * Let's us create a new user that can be used for multiple kingdomino games. 
+	 * @param userName
+	 * @param kingdomino
+	 * @return boolean
+	 * @author Abdallah Shapsough
+	 */
 
 	public static boolean createNewUser(String userName, Kingdomino kingdomino) {
 		if (User.getWithName(userName) != null) {
@@ -99,23 +149,51 @@ public class KingdominoController {
 		kingdomino.addUser(userName);
 		return true;
 	}
+	
+	/**
+	 * Let's us clear all users within a kingdomino application.
+	 * @param kingdomino The kingdomino instance that we use.
+	 * @return void
+	 * @author Abdallah Shapsough
+	 */
 
 	public static void clearUsers(Kingdomino kingdomino) {
 		for (User user : kingdomino.getUsers()) {
 			kingdomino.removeUser(user);
 		}
 	}
+	
+	/**
+	 * Let's us browse all users in a sorted manner.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return List<User> A sorted list of users from a kingdomno instance is returned.
+	 * @author Abdallah Shapsough
+	 */
 
 	public static List<User> browseAllUsers(Kingdomino kingdomino) {
 		ArrayList<User> users = new ArrayList<User>(kingdomino.getUsers());
 		Collections.sort(users, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
 		return users;
 	}
+	
+	/**
+	 * Let's us view the amount of games won by a specific user.
+	 * @param userName Specific user we wish to view.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return int A number of games won by a specific user.
+	 * @author Abdallah Shapsough
+	 */
 
 	public static int getUserGamesWon(String userName, Kingdomino kingdomino) {
 		return User.getWithName(userName).getWonGames();
 	}
-
+	/**
+	 * Let's us view the amount of games played by a specific user.
+	 * @param userName Specific user we wish to view.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return int A number of played games by a specific user is returned.
+	 * @author Abdallah Shapsough
+	 */
 	public static int getUserGamesPlayed(String userName, Kingdomino kingdomino) {
 		return User.getWithName(userName).getPlayedGames();
 	}
@@ -128,6 +206,13 @@ public class KingdominoController {
 	// As a Kingdomino player, I want to start a new game of Kingdomino against some
 	// opponents with my castle placed on my territory with the current settings of
 	// the game. The initial order of player should be randomly determined.
+	
+	/**
+	 * Starts a new kingdomino game by initiating player's kingdoms and castles. The dominos are created and shuffled as well.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return void
+	 * @author Maxime Rieuf
+	 */
 
 	public static void startNewGame(Kingdomino kingdomino) {
 		// TODO Randomly order the players
@@ -145,6 +230,14 @@ public class KingdominoController {
 		}
 		shuffleDominos(kingdomino);
 	}
+	
+	/**
+	 * Creates all dominos for a specific game.
+	 * @param game The game for which we wish to create dominos.
+	 * @return void
+	 * @throws IllegalArgumentException
+	 * @author ECSE 223
+	 */
 
 	public static void createAllDominos(Game game) {
 		try {
@@ -169,7 +262,14 @@ public class KingdominoController {
 					"Error occured while trying to read alldominoes.dat: " + e.getMessage());
 		}
 	}
-
+	
+	/**
+	 * Helper method provided by the teaching staff. Let's us obtain a TerrainType from a string with the same name.
+	 * @param terrain
+	 * @return TerrainType A TerrainType is returned.
+	 * @throws IllegalArgumentException if an invalid TerrainType is submitted.
+	 * @author ECSE 223
+	 */
 	private static TerrainType getTerrainType(String terrain) {
 		switch (terrain) {
 		case "W":
@@ -196,6 +296,13 @@ public class KingdominoController {
 	// {Browse domino pile}
 	// As a player, I wish to browse the set of all dominos in increasing order of
 	// numbers prior to playing the game so that I can adjust my strategy
+	
+	/**
+	 * Let's a player browse the current domino pile being used.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return ArrayList<Domino> The domino list that is returned for a player to browse.
+	 * @author Abdallah Shapsough
+	 */
 
 	public static ArrayList<Domino> browseDominoPile(Kingdomino kingdomino) {
 		if (kingdomino.getCurrentGame().getAllDominos().size() == 0) {
@@ -205,12 +312,28 @@ public class KingdominoController {
 		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
 		return allDominos;
 	}
+	
+	/**
+	 * Acquires a domino with a specific ID.
+	 * @param id ID of a specific domino to 
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return Domino The domino that is associated with the ID.
+	 * @author Abdallah Shapsough
+	 */
 
 	public static Domino getDomino(int id, Kingdomino kingdomino) {
 		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
 		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
 		return allDominos.get(id - 1);
 	}
+	
+	/**
+	 * 
+	 * @param terrain 
+	 * @param kingdomino
+	 * @return List<Domino>
+	 * @author Abdallah Shapsough
+	 */
 
 	public static List<Domino> browseFilteredDominos(String terrain, Kingdomino kingdomino) {
 		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
@@ -252,6 +375,13 @@ public class KingdominoController {
 	// {Shuffle domino pile}
 	// As a player, I want to have a randomly shuffled pile of dominos so that every
 	// game becomes unique
+	
+	/**
+	 * Shuffles the dominos in a random order for a kingdomino game. 
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return void
+	 * @author Maxime Rieuf
+	 */
 
 	public static void shuffleDominos(Kingdomino kingdomino) {
 		Game game = kingdomino.getCurrentGame();
@@ -271,7 +401,14 @@ public class KingdominoController {
 		}
 		setFirstDraft(kingdomino);
 	}
-
+	
+	/**
+	 * 
+	 * @param kingdomino
+	 * @return Draft
+	 * @author Maxime Rieuf
+	 */
+	
 	public static Draft setFirstDraft(Kingdomino kingdomino) {
 		Game game = kingdomino.getCurrentGame();
 		List<Domino> dominos = new ArrayList<Domino>(game.getAllDominos());
@@ -285,6 +422,14 @@ public class KingdominoController {
 		game.setTopDominoInPile(game.getAllDomino(0));
 		return draft;
 	}
+	
+	/**
+	 * 
+	 * @param kingdomino
+	 * @param string
+	 * @return void
+	 * @author Maxime Rieuf
+	 */
 
 	public static void getFixedOrder(Kingdomino kingdomino, String string) {
 		Game game = kingdomino.getCurrentGame();
@@ -306,6 +451,13 @@ public class KingdominoController {
 	// {Load game}
 	// As a player, I want to load a previously played game so that I can continue
 	// it from the last position
+	
+	/**
+	 * Let's a player load a previously saved game so it can be continued.
+	 * @param
+	 * @return
+	 * @author Victorai Iannotti
+	 */
 
 	/*****************
 	 * * Feature 7 * *
@@ -314,6 +466,13 @@ public class KingdominoController {
 	// {Save game}
 	// As a player, I want to save the current game if the game has not yet been
 	// finished so that I can continue it later
+	
+	/**
+	 * Let's a player save a current game so it can be continued or finished later.
+	 * @param
+	 * @return
+	 * @author Victorai Iannotti
+	 */
 
 	/*****************
 	 * * Feature 8 * *
@@ -323,6 +482,13 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically reveal the next four
 	// dominos once the previous round is finished
 
+	/**
+	 * Creates the next draft of dominos that shall be selected by players in a kingdomino game.
+	 * The dominos are, however, not yet revealed.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return void
+	 * @author Maxime Rieuf
+	 */
 	public static void createNextDraft(Kingdomino kingdomino) {
 
 		Game game = kingdomino.getCurrentGame();
@@ -350,7 +516,14 @@ public class KingdominoController {
 		}
 
 	}
-
+	
+	/**
+	 * Reveals the dominos for the current draft by setting its status.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return void
+	 * @author Maxime Rieuf
+	 */
+	
 	public static void revealNextDraft(Kingdomino kingdomino) {
 		Draft draft = kingdomino.getCurrentGame().getNextDraft();
 		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
@@ -364,6 +537,14 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically order the revealed
 	// next draft of dominos in increasing order with respect to their numbers so
 	// that I know which are the more valuable dominos
+	
+	/**
+	 * Orders the dominos in the current draft that has been revealed. The dominos are ordered 
+	 * in increasing integer value to let players know of their value and importance.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return void
+	 * @author Maxime Rieuf
+	 */
 
 	public static void orderNextDraft(Kingdomino kingdomino) {
 		Draft draft = kingdomino.getCurrentGame().getNextDraft();
@@ -383,6 +564,15 @@ public class KingdominoController {
 	// {Choose next domino}
 	// As a player, I wish to be able to choose a designated domino from the next
 	// draft assuming that this domino has not yet been chosen by any other players
+	
+	/**
+	 * Let's a player choose a domino from a current draft by using its number ID.
+	 * @param curPlayer The player that must chose a domino from the current draft
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @param chosen Number ID of the player's chosen domino in the current draft
+	 * @return boolean Returns true if a domino has been selected, false if it hasn't
+	 * @author Abdallah Shapsough
+	 */
 
 	public static boolean ChooseNextDomino(Player curPlayer, Kingdomino kingdomino, int chosen) {
 		Game game = kingdomino.getCurrentGame();
@@ -401,28 +591,47 @@ public class KingdominoController {
 	/******************
 	 * * Feature 11 * *
 	 ******************/
+	
+	
 
 	// {Move current domino}
 	// As a player, I wish to evaluate a provisional placement of my current domino
 	// by moving the domino around into my kingdom (up, down, left, right)
 
+	/**
+	 * Removes current player's king from a selected domino, adds it in current player's kingdom and places it at (0,0).
+	 * @param kingdomino The kingdomino application from which we get our current game to analyze
+	 * @return void
+	 * @author Mathieu-Joseph Magri
+	 * 
+	 */
+	
 	public static void removeKing(Kingdomino kingdomino) {
-		Player player = kingdomino.getCurrentGame().getNextPlayer();
+		Player player = kingdomino.getCurrentGame().getNextPlayer(); 
 		Domino dom = player.getDominoSelection().getDomino();
 		dom.setStatus(DominoStatus.ErroneouslyPreplaced);
-		DominoInKingdom domIn = new DominoInKingdom(0, 0, player.getKingdom(), dom);
-		domIn.setDirection(DirectionKind.Right);
-		player.getKingdom().addTerritory(domIn);
+		DominoInKingdom domIn = new DominoInKingdom(0, 0, player.getKingdom(), dom); //Placing domino in player's kingdom
+		domIn.setDirection(DirectionKind.Right); 
+		player.getKingdom().addTerritory(domIn); //Adding the newly placed domino as a territory in player's kingdom
 	}
 
+	/**
+	 * Move's a domino in four ways: Up, down, left and right. Takes into account adjacency 
+	 * rules (castle and neighbor), grid size rules and overlapping rules. Updates coordinates
+	 * of the domino that has been moved.
+	 * @param kingdomino The kingdomino application from which we get our current game to analyze
+	 * @param movement The movement (Up, Down, Left, Right) that will be applied to our domino to move it.
+	 * @return void
+	 * @author Mathieu-Joseph Magri
+	 */
 	public static void moveDomino(Kingdomino kingdomino, String movement) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		DominoInKingdom dom = (DominoInKingdom) player.getKingdom()
-				.getTerritory(player.getKingdom().numberOfTerritories() - 1);
+				.getTerritory(player.getKingdom().numberOfTerritories() - 1); //Get last domino
 		int x = dom.getX();
 		int y = dom.getY();
 		String dir = null;
-		if (verifyGridSize(player.getKingdom())) {
+		if (verifyGridSize(player.getKingdom())) { //if the grid size of a kingdom respects rules
 			switch (movement) {
 			case "left":
 				if (dom.setX(x - 1)) {
@@ -447,7 +656,7 @@ public class KingdominoController {
 			}
 		}
 		if (dir != null) {
-			if (!verifyGridSize(player.getKingdom())) {
+			if (!verifyGridSize(player.getKingdom())) { //if the grid size of a kingdom does not respect the rules
 				if (dom.getDomino().getStatus().equals(Domino.DominoStatus.CorrectlyPreplaced)) {
 					switch (dir) {
 					case "left":
@@ -469,6 +678,14 @@ public class KingdominoController {
 		resetDominoStatus(dom, kingdomino);
 	}
 
+	/**
+	 * If a domino respects placement rules withing a kingdom, its status will be updated accordingly 
+	 * with either CorrectlyPreplace or ErroneouslyPreplaced.
+	 * @param dom Domino we want to reset
+	 * @param kingdomino The kingdomino application from which we get our current game to analyze
+	 * @return void
+	 * @author Mathieu-Joseph Magri
+	 */
 	private static void resetDominoStatus(DominoInKingdom dom, Kingdomino kingdomino) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		boolean castleAdjacency = verifyCastleAdjacency(dom.getX(), dom.getY(), dom.getDirection());
@@ -490,6 +707,15 @@ public class KingdominoController {
 	// {Rotate current domino}
 	// As a player, I wish to evaluate a provisional placement of my current domino
 	// in my kingdom by rotating it (clockwise or counter-clockwise)
+	
+	/**
+	 * Let's a player rotate a domino in either clockwise or counter-clockwise fashion. If a domino respects
+	 * placement rules, its direction will be updated accordingly. 
+	 * @param kingdomino The kingdomino application from which we get our current game to analyze
+	 * @param rotation	The selected rotation that will be applied to a selected domino.
+	 * @return void
+	 * @author Mathieu-Joseph Magri
+	 */
 
 	public static void rotateDomino(Kingdomino kingdomino, String rotation) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
@@ -562,6 +788,13 @@ public class KingdominoController {
 	// As a player, I wish to place my selected domino to my kingdom. If I am
 	// satisfied with its placement, and its current position respects the adjacency
 	// rules, I wish to finalize the placement
+	
+	/**
+	 * Takes a CorrectlyPreplaced domino and places it in a player's kingdom.
+	 * @param kingdomino The kingdomino application from which we get our current game to analyze
+	 * @return boolean A boolean value which indicates whether the domino has been successfully added (true) into a kingdom or not (false).
+	 * @author Mathieu-Joseph Magri
+	 */
 
 	public static boolean placeDomino(Kingdomino kingdomino) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
@@ -891,6 +1124,13 @@ public class KingdominoController {
 	// {Discard domino}
 	// As a player, I wish to discard a domino if it cannot be placed to my kingdom
 	// in a valid way
+	
+	/**
+	 * If a player can't place a domino in a his own domino in any maner possible, that domino gets discarded from the game.
+	 * @param kingdomino The kingdomino application from which we get our current game to analyze.
+	 * @return boolean A boolean value which indicates whether the domino has been successfully discarded (true) from a kingdom or not (false).
+	 * @author Mathieu-Joseph Magri
+	 */
 
 	public static boolean discardDomino(Kingdomino kingdomino) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
@@ -902,7 +1142,12 @@ public class KingdominoController {
 			return true;
 		}
 	}
-
+	/**
+	 * Verifies whether or not a domino can still be placed in a player's kingdom.
+	 * @param kingdom  The kingdomino application from which we get our current game to analyze.
+	 * @return boolean A boolean value which indicates whether the domino can still be placed within a player's kingdom or not.
+	 * @author Mathieu-Joseph Magri
+	 */
 	public static boolean canStillPlay(Kingdom kingdom) {
 		DominoInKingdom dom = (DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size() - 1);
 		int originalX = dom.getX();
