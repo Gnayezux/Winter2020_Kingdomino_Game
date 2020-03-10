@@ -60,4 +60,3 @@ Feature: Rotate Current Domino
       | yellow | 23 |    0 |   -4 | left  | counterclockwise | ErroneouslyPreplaced |
       | blue   |  4 |    4 |   -3 | down  | counterclockwise | CorrectlyPreplaced   |
       | blue   | 23 |   -2 |    4 | right | counterclockwise | ErroneouslyPreplaced |
-
