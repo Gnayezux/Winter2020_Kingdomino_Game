@@ -16,6 +16,9 @@ import static org.junit.Assert.fail;
 
 public class StartANewGameStepDefinitions {
 
+	/**
+	 * @author Maxime Rieuf
+	 */
 	@Given("the program is started and ready for starting a new game")
 	public void the_program_is_started_and_ready_for_starting_a_new_game() {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
@@ -24,6 +27,9 @@ public class StartANewGameStepDefinitions {
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
+	/**
+	 * @author Maxime Rieuf
+	 */
 	@Given("there are four selected players")
 	public void there_are_four_selected_players() {
 		String[] userNames = { "User1", "User2", "User3", "User4" };
@@ -34,6 +40,9 @@ public class StartANewGameStepDefinitions {
 		
 	}
 
+	/**
+	 * @author Maxime Rieuf
+	 */
 	@Given("bonus options Harmony and MiddleKingdom are selected")
 	public void bonus_options_Harmony_and_MiddleKingdom_are_selected() {
 		KingdominoController.setBonusOption("Harmony", KingdominoApplication.getKingdomino(), true);
@@ -41,17 +50,26 @@ public class StartANewGameStepDefinitions {
 
 	}
 
+	/**
+	 * @author Maxime Rieuf
+	 */
 	@When("starting a new game is initiated")
 	public void starting_a_new_game_is_initiated() {    
 		KingdominoController.startNewGame(KingdominoApplication.getKingdomino());
 	}
 
+	/**
+	 * @author Maxime Rieuf
+	 */
 	@When("reveal first draft is initiated")
 	public void reveal_first_draft_is_initiated() {
 		KingdominoController.orderNextDraft(KingdominoApplication.getKingdomino());
 		KingdominoController.revealNextDraft(KingdominoApplication.getKingdomino());
 	}
 
+	/**
+	 * @author Maxime Rieuf
+	 */
 	@Then("all kingdoms shall be initialized with a single castle")
 	public void all_kingdoms_shall_be_initialized_with_a_single_castle() {
 		for(int i = 0; i < KingdominoApplication.getKingdomino().getCurrentGame().getNumberOfPlayers(); i++) {			
@@ -59,6 +77,9 @@ public class StartANewGameStepDefinitions {
 		}
 	}
 
+	/**
+	 * @author Maxime Rieuf
+	 */
 	@Then("all castle are placed at {int}:{int} in their respective kingdoms")
 	public void all_castle_are_placed_at_in_their_respective_kingdoms(Integer int1, Integer int2) {
 		for(int i = 0; i < KingdominoApplication.getKingdomino().getCurrentGame().getNumberOfPlayers(); i++) {			
@@ -67,16 +88,25 @@ public class StartANewGameStepDefinitions {
 		}
 	}
 
+	/**
+	 * @author Maxime Rieuf
+	 */
 	@Then("the first draft of dominoes is revealed")
 	public void the_first_draft_of_dominoes_is_revealed() {
 		assertEquals(Draft.DraftStatus.FaceUp, KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft().getDraftStatus());
 	}
 
+	/**
+	 * @author Maxime Rieuf
+	 */
 	@Then("all the dominoes form the first draft are facing up")
 	public void all_the_dominoes_form_the_first_draft_are_facing_up() {
 		// If the draft is face up the dominos are face up
 	}
 
+	/**
+	 * @author Maxime Rieuf
+	 */
 	@Then("all the players have no properties")
 	public void all_the_players_have_no_properties() {
 		for (int i = 0; i < KingdominoApplication.getKingdomino().getCurrentGame().getNumberOfPlayers(); i++) {
@@ -85,6 +115,9 @@ public class StartANewGameStepDefinitions {
 		
 	}
 
+	/**
+	 * @author Maxime Rieuf
+	 */
 	@Then("all player scores are initialized to zero")
 	public void all_player_scores_are_initialized_to_zero() {
 		for (int i = 0; i < KingdominoApplication.getKingdomino().getCurrentGame().getNumberOfPlayers(); i++) {

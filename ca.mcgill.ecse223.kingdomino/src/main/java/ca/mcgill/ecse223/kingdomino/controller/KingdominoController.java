@@ -236,16 +236,16 @@ public class KingdominoController {
 	// the game. The initial order of player should be randomly determined.
 
 	/**
-	 * Starts a new kingdomino game by initiating player's kingdoms and castles. The
-	 * dominos are created and shuffled as well.
-	 * 
+	 * Starts a new kingdomino game by initiating player's kingdoms and castles. The dominos are created and shuffled as well.
+	 * All scores of the each players are initialized to 0
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
+	 * @gherkin StartANewGame.feature
 	 */
 
 	public static void startNewGame(Kingdomino kingdomino) {
-		// TODO Randomly order the players
+		
 		List<Player> players = kingdomino.getCurrentGame().getPlayers();
 		for (int i = 0; i < players.size(); i++) {
 			Player player = players.get(i);
@@ -426,11 +426,13 @@ public class KingdominoController {
 	// game becomes unique
 
 	/**
-	 * Shuffles the dominos in a random order for a kingdomino game.
-	 * 
+	 * Shuffles the dominos in a random order for a kingdomino game. To do so we loop through the list of dominos and at each index i,
+	 * we swap the domino with another one at a random position. That way we know that the dominos are shuffled well.
+	 * Then, we set the first draft of the kingdomino game using the method implemented later in the controller.
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
+	 * @gherkin ShuffleDominos.feature
 	 */
 
 	public static void shuffleDominos(Kingdomino kingdomino) {
@@ -453,10 +455,11 @@ public class KingdominoController {
 	}
 
 	/**
-	 * 
-	 * @param kingdomino
-	 * @return Draft
+	 * In this method we set the first draft of the kingdomino game by taking the first 4 dominos in the pile
+	 * @param kingdomino The kingdomino instance that is used
+	 * @return Draft The draft of 4 dominos
 	 * @author Maxime Rieuf
+	 * @gherkin ShuffleDominos.feature
 	 */
 
 	public static Draft setFirstDraft(Kingdomino kingdomino) {
@@ -474,11 +477,12 @@ public class KingdominoController {
 	}
 
 	/**
-	 * 
-	 * @param kingdomino
-	 * @param string
+	 * This method is used for the fixed arrangement scenario. 
+	 * @param kingdomino The kingdomino instance that is used
+	 * @param string The desired arrangement string given to us in the scenario
 	 * @return void
 	 * @author Maxime Rieuf
+	 * @gherkin ShuffleDominos.feature
 	 */
 
 	public static void getFixedOrder(Kingdomino kingdomino, String string) {
@@ -488,6 +492,9 @@ public class KingdominoController {
 		string = string.replace("\"", "");
 		List<String> numbers = new ArrayList<String>(Arrays.asList(string.split(",")));
 
+		/*Here, while we loop through the desired arrangement indexes, we get the domino at the specific index in the fixed arrangement
+		 * and place it at index i. That way we get our fixed order of dominos.
+		*/
 		for (int i = 0; i < dominos.size(); i++) {
 			game.addOrMoveAllDominoAt(dominos.get(Integer.parseInt(numbers.get(i)) - 1), i);
 		}
@@ -530,17 +537,17 @@ public class KingdominoController {
 	 * * Feature 8 * *
 	 *****************/
 
-	// {Reveal next draft of dominos}
-	// As a player, I want the Kingdomino app to automatically reveal the next four
-	// dominos once the previous round is finished
+	// {Create next draft of dominos}
+	//  As a player, I want the Kingdomino app to automatically provide the
+	//	next four dominos once the previous round is finished
 
 	/**
-	 * Creates the next draft of dominos that shall be selected by players in a
-	 * kingdomino game. The dominos are, however, not yet revealed.
-	 * 
+	 * Creates the next draft of 4 dominos that shall be selected by players in a kingdomino game.
+	 * The dominos are, however, not yet revealed.
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
+	 * @gherkin CreateNextDraft.feature
 	 */
 	public static void createNextDraft(Kingdomino kingdomino) {
 
@@ -549,6 +556,8 @@ public class KingdominoController {
 		if (game.getAllDominos().size() > 0) {
 
 			Draft draft = new Draft(Draft.DraftStatus.FaceDown, game);
+			
+			//It takes the first 4 dominos in the pile
 			for (int i = 0; i < 4; i++) {
 				draft.addIdSortedDomino(dominos.get(i));
 				dominos.get(i).delete();
@@ -570,36 +579,24 @@ public class KingdominoController {
 
 	}
 
-	/**
-	 * Reveals the dominos for the current draft by setting its status.
-	 * 
-	 * @param kingdomino The kingdomino instance that is used.
-	 * @return void
-	 * @author Maxime Rieuf
-	 */
-
-	public static void revealNextDraft(Kingdomino kingdomino) {
-		Draft draft = kingdomino.getCurrentGame().getNextDraft();
-		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
-	}
 
 	/*****************
 	 * * Feature 9 * *
 	 *****************/
 
 	// {Order next draft of dominos}
-	// As a player, I want the Kingdomino app to automatically order the revealed
-	// next draft of dominos in increasing order with respect to their numbers so
-	// that I know which are the more valuable dominos
 
+	// As a player, I want the Kingdomino app to automatically
+	// order and reveal the next draft of dominos in increasing order with respect to their numbers so that I
+	// know which are the more valuable dominos
+	
 	/**
-	 * Orders the dominos in the current draft that has been revealed. The dominos
-	 * are ordered in increasing integer value to let players know of their value
-	 * and importance.
-	 * 
+	 * Orders the dominos in the current draft. The dominos are ordered 
+	 * in increasing integer value to let players know of their value and importance.
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
+	 * @gherkin OrderAndRevealNextDraft.feature
 	 */
 
 	public static void orderNextDraft(Kingdomino kingdomino) {
@@ -611,6 +608,19 @@ public class KingdominoController {
 			draft.addOrMoveIdSortedDominoAt(draftDominos.get(i), i);
 		}
 		draft.setDraftStatus(Draft.DraftStatus.Sorted);
+	}
+	
+	/**
+	 * Reveals the dominos for the current draft by setting its status.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return void
+	 * @author Maxime Rieuf
+	 * @gherkin OrderAndRevealNextDraft.feature
+	 */
+	
+	public static void revealNextDraft(Kingdomino kingdomino) {
+		Draft draft = kingdomino.getCurrentGame().getNextDraft();
+		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
 	}
 
 	/******************
