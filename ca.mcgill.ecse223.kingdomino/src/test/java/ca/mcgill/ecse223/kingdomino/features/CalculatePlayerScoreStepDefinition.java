@@ -58,15 +58,21 @@ public class CalculatePlayerScoreStepDefinition {
 	@Given("the game has {string} bonus option")
 	public void the_game_has_bonus_option(String string) {
 		if (!string.equals("no")) {
-			KingdominoController.setBonusOption(string, KingdominoApplication.getKingdomino(), true);
+			if(string.equals("Middle Kingdom")) {
+				KingdominoController.setBonusOption("MiddleKingdom", KingdominoApplication.getKingdomino(), true);
+			}else {
+				KingdominoController.setBonusOption(string, KingdominoApplication.getKingdomino(), true);
+			}
+			
 		}
 		KingdominoController.identifyProperties(KingdominoApplication.getKingdomino());
 		KingdominoController.calculatePropertyAttributes(KingdominoApplication.getKingdomino());
+		KingdominoController.calculateBonusScore(KingdominoApplication.getKingdomino());
 	}
 
 	@When("calculate player score is initiated")
 	public void calculate_player_score_is_initiated() {
-		KingdominoController.calculatePlayerScore(KingdominoApplication.getKingdomino(), KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer());
+		KingdominoController.calculatePlayerScore(KingdominoApplication.getKingdomino());
 	}
 
 	@Then("the total score should be {int}")

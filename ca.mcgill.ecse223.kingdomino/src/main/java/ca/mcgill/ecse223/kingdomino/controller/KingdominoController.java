@@ -940,83 +940,425 @@ public class KingdominoController {
 	// {Identify kingdom properties}
 	// As a player, I want the Kingdomino app to automatically determine each
 	// properties of my kingdom so that my score can be calculated
-
 	public static void identifyProperties(Kingdomino kingdomino) {
+		Game game = kingdomino.getCurrentGame();
+		Player player = game.getNextPlayer();
+		Kingdom kingdom = player.getKingdom();
 		
-		Player player = kingdomino.getCurrentGame().getNextPlayer();
-		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
-		List<Property> properties = player.getKingdom().getProperties();
-		boolean isMatchL;
-		boolean isMatchR;
-		// Going through all of the territories in the kingdom
-		for (int i = 0; i < territories.size(); i++) {
-			// Only care about the territories that are DominoInKingdoms
-			if (territories.get(i) instanceof DominoInKingdom) {
-				// Working with the DominoInKingdom
-				DominoInKingdom ter = (DominoInKingdom) territories.get(i);
-
-				isMatchL = false;
-				// Looking at the left tile
-				for (int j = 0; j < properties.size(); j++) {
-					// If this property type matches the left tile type
-					if (ter.getDomino().getLeftTile() == properties.get(j).getLeftTile()) {
-						// If the domino isn't already present in the property
-						if (!propertyContains(ter, properties.get(j))) {
-							// If the domino left tile is adjacent to another square of a domino in property
-							// of same type
-							if (isLeftMatch(ter, properties.get(j), player.getKingdom())) {
-								properties.get(j).addIncludedDomino(ter.getDomino());
-								isMatchL = true;
-							}
-						} else {
-							isMatchL = true;
-						}
-					}
-
+		
+		List<KingdomTerritory> territories = new ArrayList<KingdomTerritory>(kingdom.getTerritories());
+		
+		ArrayList<HashMap<String,Object>> tiles = new ArrayList<>();
+		
+		HashMap<String,Integer> locations = new HashMap<>();
+		int index=0;
+		for(KingdomTerritory ter : territories) {
+			if(ter instanceof DominoInKingdom) {
+				DominoInKingdom domino = (DominoInKingdom) ter;
+				HashMap<String,Object> left = new HashMap<>();
+				HashMap<String,Object> right = new HashMap<>();
+				
+				int x1 = 0, y1 = 0;
+				int x = domino.getX();
+				int y = domino.getY();
+				switch (domino.getDirection()) {
+				case Up:
+					y1 = y + 1;
+					x1 = x;
+					break;
+				case Left:
+					x1 = x - 1;
+					y1 = y;
+					break;
+				case Right:
+					x1 = x + 1;
+					y1 = y;
+					break;
+				case Down:
+					x1 = x;
+					y1 = y - 1;
+					break;
 				}
-				if (!isMatchL) {
-					Property prop = new Property(player.getKingdom());
-					prop.addIncludedDomino(ter.getDomino());
-					prop.setLeftTile(ter.getDomino().getLeftTile());
-					player.getKingdom().addProperty(prop);
-				}
-				// Looking at the right tile
-				isMatchR = false;
-				// Looking at the left tile
-				for (int j = 0; j < properties.size(); j++) {
-					// If this property type matches the left tile type
-					if (ter.getDomino().getRightTile() == properties.get(j).getLeftTile()) {
-						// If the domino isn't already present in the property
-						if (!propertyContains(ter, properties.get(j))) {
-							// If the domino left tile is adjacent to another square of a domino in property
-							// of same type
-							if (isRightMatch(ter, properties.get(j), player.getKingdom())) {
-								properties.get(j).addIncludedDomino(ter.getDomino());
-								isMatchR = true;
-							}
-						} else {
-							isMatchR = true;
-						}
-					}
-
-				}
-				if (!isMatchR) {
-					Property prop = new Property(player.getKingdom());
-					prop.addIncludedDomino(ter.getDomino());
-					prop.setLeftTile(ter.getDomino().getRightTile());
-					player.getKingdom().addProperty(prop);
+				
+				left.put("terrain", domino.getDomino().getLeftTile());
+				left.put("x", x);
+				left.put("y", y);
+				left.put("domino", domino.getDomino());
+				left.put("property", null);
+				
+				right.put("terrain", domino.getDomino().getRightTile());
+				right.put("x", x1);
+				right.put("y", y1);
+				right.put("domino", domino.getDomino());
+				right.put("property", null);
+				
+				tiles.add(left);
+				tiles.add(right);
+				
+				String locationl = Integer.toString(x) + Integer.toString(y);
+				locations.put(locationl, index);
+				index++;
+				
+				String locationr = Integer.toString(x1) + Integer.toString(y1);
+				locations.put(locationr, index);
+				index++;
+			}
+//			System.out.println("#######");
+//			System.out.println(tiles);
+//			System.out.println("#######");
+			
+		}
+//		
+		for(HashMap<String,Object> tile : tiles) {
+			
+			int leftx = Integer.parseInt(tile.get("x").toString())-1;
+			int lefty = Integer.parseInt(tile.get("y").toString());
+			String left = Integer.toString(leftx) + Integer.toString(lefty);
+			
+			int upx = Integer.parseInt(tile.get("x").toString());
+			int upy = Integer.parseInt(tile.get("y").toString())+1;
+			String up = Integer.toString(upx) + Integer.toString(upy);
+			
+			int rightx = Integer.parseInt(tile.get("x").toString())+1;
+			int righty = Integer.parseInt(tile.get("y").toString());
+			String right = Integer.toString(rightx) + Integer.toString(righty);
+			
+			int downx = Integer.parseInt(tile.get("x").toString());
+			int downy = Integer.parseInt(tile.get("y").toString())-1;
+			String down = Integer.toString(downx) + Integer.toString(downy);
+			int locationl=-1;
+			int locationu=-1;
+			int locationr=-1;
+			int locationd=-1;
+			
+			boolean l = true;
+			boolean u = true;
+			boolean r = true;
+			boolean d = true;
+			
+			if(locations.containsKey(left)) {
+				locationl = locations.get(left);
+			}else {
+				l=false;
+			}
+			if(locations.containsKey(up)) {
+				locationu = locations.get(up);
+			}else {
+				u=false;
+			}
+			
+			if(locations.containsKey(right)) {
+				locationr = locations.get(right);
+			}else {
+				r=false;
+			}
+			if(locations.containsKey(down)) {
+				locationd = locations.get(down);
+			}else {
+				d=false;
+			}
+			
+			
+			boolean myLeft = l &&tiles.get(locationl).get("property")!=null && tile.get("terrain").equals(tiles.get(locationl).get("terrain"));
+			boolean myUp = u&&tiles.get(locationu).get("property")!=null && tile.get("terrain").equals(tiles.get(locationu).get("terrain"));
+			boolean myRight = r&&tiles.get(locationr).get("property")!=null  && tile.get("terrain").equals(tiles.get(locationr).get("terrain"));
+			boolean myDown = d&&tiles.get(locationd).get("property")!=null  && tile.get("terrain").equals(tiles.get(locationd).get("terrain"));
+			if(myLeft&&myRight) {
+				tile.put("property", tiles.get(locationl).get("property"));
+				Property prop = (Property)tiles.get(locationl).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationr).get("property").equals(tiles.get(locationl).get("property"))){
+					Property tem = (Property) tiles.get(locationr).get("property");
+					tem.delete();
+					tiles.get(locationr).put("property", tiles.get(locationl).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationr).get("domino"));
+					
 				}
 			}
-		}
-		checkForConnected(player.getKingdom().getProperties(), player.getKingdom());
-		List<Property> props = player.getKingdom().getProperties();
-		for(int i = 0; i< props.size(); i++) {
-			if(props.get(i).getLeftTile() == null) {
-				props.get(i).delete();
-				i--;
+			if(myLeft&&myUp) {
+				tile.put("property", tiles.get(locationl).get("property"));
+				Property prop = (Property)tiles.get(locationl).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationu).get("property").equals(tiles.get(locationl).get("property"))){
+					Property tem = (Property) tiles.get(locationu).get("property");
+					tem.delete();
+					tiles.get(locationu).put("property", tiles.get(locationl).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
+					
+				}
+			}
+			if(myLeft&&myDown) {
+				tile.put("property", tiles.get(locationl).get("property"));
+				Property prop = (Property)tiles.get(locationl).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationd).get("property").equals(tiles.get(locationl).get("property"))){
+					Property tem = (Property) tiles.get(locationd).get("property");
+					tem.delete();
+					tiles.get(locationd).put("property", tiles.get(locationl).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
+					
+				}
+			}
+			if(myUp&&myRight) {
+				tile.put("property", tiles.get(locationu).get("property"));
+				Property prop = (Property)tiles.get(locationu).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationr).get("property").equals(tiles.get(locationu).get("property"))){
+					Property tem = (Property) tiles.get(locationr).get("property");
+					tem.delete();
+					tiles.get(locationr).put("property", tiles.get(locationu).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationr).get("domino"));
+					
+				}
+			}
+			if(myUp&&myDown) {
+				tile.put("property", tiles.get(locationu).get("property"));
+				Property prop = (Property)tiles.get(locationu).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationd).get("property").equals(tiles.get(locationu).get("property"))){
+					Property tem = (Property) tiles.get(locationd).get("property");
+					tem.delete();
+					tiles.get(locationd).put("property", tiles.get(locationu).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
+					
+				}
+			}
+			if(myRight&&myDown) {
+				tile.put("property", tiles.get(locationr).get("property"));
+				Property prop = (Property)tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationd).get("property");
+					tem.delete();
+					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
+					
+				}
+			}
+			if(myLeft&&myUp&&myRight) {
+				tile.put("property", tiles.get(locationr).get("property"));
+				Property prop = (Property)tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationu).get("property");
+					tem.delete();
+					tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
+					
+				}
+				if(!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationl).get("property");
+					tem.delete();
+					tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationl).get("domino"));
+					
+				}
+			}
+			if(myLeft&&myDown&&myRight) {
+				tile.put("property", tiles.get(locationr).get("property"));
+				Property prop = (Property)tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationd).get("property");
+					tem.delete();
+					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
+					
+				}
+				if(!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationl).get("property");
+					tem.delete();
+					tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationl).get("domino"));
+					
+				}
+			}
+			if(myDown&&myUp&&myRight) {
+				tile.put("property", tiles.get(locationr).get("property"));
+				Property prop = (Property)tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationu).get("property");
+					tem.delete();
+					tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
+					
+				}
+				if(!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationd).get("property");
+					tem.delete();
+					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
+					
+				}
+			}
+			if(myLeft&&myUp&&myDown) {
+				tile.put("property", tiles.get(locationd).get("property"));
+				Property prop = (Property)tiles.get(locationd).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationu).get("property").equals(tiles.get(locationd).get("property"))){
+					Property tem = (Property) tiles.get(locationu).get("property");
+					tem.delete();
+					tiles.get(locationu).put("property", tiles.get(locationd).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
+					
+				}
+				if(!tiles.get(locationl).get("property").equals(tiles.get(locationd).get("property"))){
+					Property tem = (Property) tiles.get(locationl).get("property");
+					tem.delete();
+					tiles.get(locationl).put("property", tiles.get(locationd).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationl).get("domino"));
+					
+				}
+			}
+			if(myLeft&&myUp&&myRight&&myDown) {
+				tile.put("property", tiles.get(locationr).get("property"));
+				Property prop = (Property)tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationu).get("property");
+					tem.delete();
+					tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
+					
+				}
+				if(!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationl).get("property");
+					tem.delete();
+					tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationl).get("domino"));
+					
+				}
+				if(!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationd).get("property");
+					tem.delete();
+					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
+					
+				}
+			}
+			if(myLeft) {
+				
+				tile.put("property", tiles.get(locationl).get("property"));
+				Property prop = (Property)tiles.get(locationl).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				continue;
+			}else if(myUp) {
+				tile.put("property", tiles.get(locationu).get("property"));
+				Property prop = (Property)tiles.get(locationu).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				continue;
+			}else if(myRight) {
+				tile.put("property", tiles.get(locationr).get("property"));
+				Property prop = (Property)tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				continue;
+			}else if(myDown) {
+				tile.put("property", tiles.get(locationd).get("property"));
+				Property prop = (Property)tiles.get(locationd).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				continue;
+			}else {
+				
+				tile.put("property", new Property(kingdom));
+				Property prop = (Property)tile.get("property");
+				Domino dom =(Domino)tile.get("domino");
+				prop.setLeftTile((TerrainType)tile.get("terrain"));
+				prop.addIncludedDomino((Domino)tile.get("domino"));
 			}
 		}
+//		System.out.print(locations);
+//		for(int i =0;i<kingdom.getProperties().size();i++) {
+//			System.out.println("#############");
+//			System.out.println(kingdom.getProperty(i).getIncludedDominos());
+//			System.out.println("#############");
+//		}
+//		checkForConnected(player.getKingdom().getProperties(), player.getKingdom());
+//		List<Property> props = player.getKingdom().getProperties();
+//		for(int i = 0; i< props.size(); i++) {
+//			if(props.get(i).getLeftTile() == null) {
+//				props.get(i).delete();
+//				i--;
+//			}
+//		}
 	}
+//	public static void identifyProperties(Kingdomino kingdomino) {
+//		
+//		Player player = kingdomino.getCurrentGame().getNextPlayer();
+//		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
+//		List<Property> properties = player.getKingdom().getProperties();
+//		boolean isMatchL;
+//		boolean isMatchR;
+//		// Going through all of the territories in the kingdom
+//		for (int i = 0; i < territories.size(); i++) {
+//			// Only care about the territories that are DominoInKingdoms
+//			if (territories.get(i) instanceof DominoInKingdom) {
+//				// Working with the DominoInKingdom
+//				DominoInKingdom ter = (DominoInKingdom) territories.get(i);
+//
+//				isMatchL = false;
+//				// Looking at the left tile
+//				for (int j = 0; j < properties.size(); j++) {
+//					// If this property type matches the left tile type
+//					if (ter.getDomino().getLeftTile() == properties.get(j).getLeftTile()) {
+//						// If the domino isn't already present in the property
+//						if (!propertyContains(ter, properties.get(j))) {
+//							// If the domino left tile is adjacent to another square of a domino in property
+//							// of same type
+//							if (isLeftMatch(ter, properties.get(j), player.getKingdom())) {
+//								properties.get(j).addIncludedDomino(ter.getDomino());
+//								isMatchL = true;
+//							}
+//						} else {
+//							isMatchL = true;
+//						}
+//					}
+//
+//				}
+//				if (!isMatchL) {
+//					Property prop = new Property(player.getKingdom());
+//					prop.addIncludedDomino(ter.getDomino());
+//					prop.setLeftTile(ter.getDomino().getLeftTile());
+//					player.getKingdom().addProperty(prop);
+//				}
+//				// Looking at the right tile
+//				isMatchR = false;
+//				// Looking at the left tile
+//				for (int j = 0; j < properties.size(); j++) {
+//					// If this property type matches the left tile type
+//					if (ter.getDomino().getRightTile() == properties.get(j).getLeftTile()) {
+//						// If the domino isn't already present in the property
+//						if (!propertyContains(ter, properties.get(j))) {
+//							// If the domino left tile is adjacent to another square of a domino in property
+//							// of same type
+//							if (isRightMatch(ter, properties.get(j), player.getKingdom())) {
+//								properties.get(j).addIncludedDomino(ter.getDomino());
+//								isMatchR = true;
+//							}
+//						} else {
+//							isMatchR = true;
+//						}
+//					}
+//
+//				}
+//				if (!isMatchR) {
+//					Property prop = new Property(player.getKingdom());
+//					prop.addIncludedDomino(ter.getDomino());
+//					prop.setLeftTile(ter.getDomino().getRightTile());
+//					player.getKingdom().addProperty(prop);
+//				}
+//			}
+//		}
+//		
+////		checkForConnected(player.getKingdom().getProperties(), player.getKingdom());
+////		List<Property> props = player.getKingdom().getProperties();
+////		for(int i = 0; i< props.size(); i++) {
+////			if(props.get(i).getLeftTile() == null) {
+////				props.get(i).delete();
+////				i--;
+////			}
+////		}
+//	}
 
 	private static void checkForConnected(List<Property> properties, Kingdom k) {
 		ArrayList<Property> propsOfType = new ArrayList<Property>();
@@ -1305,14 +1647,18 @@ public class KingdominoController {
 		for (Property p : properties) {
 			int inc = 0;
 			for (Domino d : p.getIncludedDominos()) {
+				
 				if(d.getLeftTile()==p.getLeftTile()) {
+					
 					p.setCrowns(p.getCrowns() + d.getLeftCrown());
 					inc ++;
 				}
 				if(d.getRightTile()==p.getLeftTile()) {
+//					System.out.print(d.getRightCrown());
 					p.setCrowns(p.getCrowns() + d.getRightCrown());
 					inc++;
 				}
+				
 			}
 			p.setSize(inc);
 		}
@@ -1331,10 +1677,12 @@ public class KingdominoController {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
 		int bonusScore = 0;
 		for (BonusOption b : kingdomino.getCurrentGame().getSelectedBonusOptions()) {
+			
 			if (b.getOptionName().equals("Harmony")) {
 				
 				bonusScore += calculateHarmony(player);
 			}
+			
 			if (b.getOptionName().equals("MiddleKingdom")) {
 				
 				bonusScore += calculateMiddleKingdom(player);
@@ -1353,6 +1701,7 @@ public class KingdominoController {
 
 	private static int calculateMiddleKingdom(Player player) {
 		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
+		
 		int minX = territories.get(0).getX();
 		int minY = territories.get(0).getY();
 		int maxX = territories.get(0).getX();
@@ -1439,36 +1788,57 @@ public class KingdominoController {
 	// {Calculate player score}
 	// As a player, I want the Kingdomino app to automatically calculate the score
 	// for each player by summing up their property scores and their bonus scores
-	
-	public static void calculatePlayerScore(Kingdomino kingdomino, Player s) {
-		//identifyProperties(kingdomino);
-		//calculatePropertyAttributes(kingdomino);
-		//Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
-		Player player = kingdomino.getCurrentGame().getNextPlayer();
-		int playerScore = 0; 
-		List<Property> props = player.getKingdom().getProperties();
-		
-		System.out.println(player.getKingdom().getProperty(0));
-		System.out.println(props.size());
-//		System.out.println(props.get(1).getCrowns());
-//		System.out.println(props.get(2).getCrowns());
-		
-		//System.out.println();
-		for(Property p : props) {
-			
-			playerScore += (p.getKingdom().getTerritories().size()) * (p.getCrowns());
-			System.out.println(playerScore);
-		}
+//	
+//	public static void calculatePlayerScore(Kingdomino kingdomino, Player s) {
+//		//identifyProperties(kingdomino);
+//		//calculatePropertyAttributes(kingdomino);
+//		//Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+//		Player player = kingdomino.getCurrentGame().getNextPlayer();
+//		int playerScore = 0; 
+//		List<Property> props = player.getKingdom().getProperties();
+//		
+//		System.out.println(player.getKingdom().getProperty(0));
+//		System.out.println(props.size());
+////		System.out.println(props.get(1).getCrowns());
+////		System.out.println(props.get(2).getCrowns());
+//		
+//		//System.out.println();
 //		for(Property p : props) {
+//			
 //			playerScore += (p.getKingdom().getTerritories().size()) * (p.getCrowns());
 //			System.out.println(playerScore);
 //		}
-//		for(int i=0; i<props.size()) {
-//			
-//		}
-		//System.out.println(playerScore);
-		//calculateBonusScore(kingdomino);
-		player.setPropertyScore(playerScore);
+////		for(Property p : props) {
+////			playerScore += (p.getKingdom().getTerritories().size()) * (p.getCrowns());
+////			System.out.println(playerScore);
+////		}
+////		for(int i=0; i<props.size()) {
+////			
+////		}
+//		//System.out.println(playerScore);
+//		//calculateBonusScore(kingdomino);
+//		player.setPropertyScore(playerScore);
+//	}
+	public static void calculatePlayerScore(Kingdomino kingdomino){
+		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+		int propscore = 0;
+//		System.out.print(player);
+		List<Property> myprop = player.getKingdom().getProperties();
+//		System.out.print(myprop.size());
+//		System.out.print(player.getGame().getSelectedBonusOptions());
+		for(int i=0; i<myprop.size();i++) {
+			
+			propscore+= (myprop.get(i).getCrowns()*myprop.get(i).getSize());
+//			System.out.println("########");
+//			System.out.println(myprop.get(i).getLeftTile());
+//			System.out.println(myprop.get(i).getIncludedDominos());
+//			System.out.println(myprop.get(i).getCrowns());
+//			System.out.println("########");
+//			System.out.println(myprop.get(i).getSize());
+		}
+//		System.out.print(propscore);
+		player.setPropertyScore(propscore);
+		
 	}
 
 	/******************
