@@ -1,3 +1,4 @@
+
 package ca.mcgill.ecse223.kingdomino.features;
 
 import static org.junit.Assert.assertEquals;
@@ -19,6 +20,9 @@ public class VerifyNeighborAdjacencyStepDefinition {
 	
 	boolean validity;
 	
+	/**
+	 * @author Zeyang Xu
+	 */
 	@Given("the game is initialized for neighbor adjacency")
 	public void the_game_is_initialized_for_neighbor_adjacency() {
 		Kingdomino kingdomino = new Kingdomino();
@@ -31,6 +35,9 @@ public class VerifyNeighborAdjacencyStepDefinition {
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
+	/**
+	 * @author Zeyang Xu
+	 */
 	@Given("the following dominoes are present in a player's kingdom:")
 	public void the_following_dominoes_are_present_in_a_player_s_kingdom(io.cucumber.datatable.DataTable dataTable) {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
@@ -45,6 +52,9 @@ public class VerifyNeighborAdjacencyStepDefinition {
 		}
 	}
 
+	/**
+	 * @author Zeyang Xu
+	 */
 	@When("check current preplaced domino adjacency is initiated")
 	public void check_current_preplaced_domino_adjacency_is_initiated() {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
@@ -52,6 +62,9 @@ public class VerifyNeighborAdjacencyStepDefinition {
 		validity = KingdominoController.verifyNeighborAdjacency(player.getKingdom(),  ter.getDomino(), ter.getX(), ter.getY(), ter.getDirection());
 	}
 
+	/**
+	 * @author Zeyang Xu
+	 */
 	@Then("the current-domino\\/existing-domino adjacency is {string}")
 	public void the_current_domino_existing_domino_adjacency_is(String string) {
 		assertEquals(getValidity(string), this.validity);
@@ -100,3 +113,4 @@ public class VerifyNeighborAdjacencyStepDefinition {
 		}
 	}
 }
+

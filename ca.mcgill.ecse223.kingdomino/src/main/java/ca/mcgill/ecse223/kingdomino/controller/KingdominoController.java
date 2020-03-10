@@ -33,6 +33,7 @@ public class KingdominoController {
 	 * @param kingdomino The kingdomino application we wish to analyze.
 	 * @return void
 	 * @author Abdallah Shapsough
+	 * @gherkin SetGameOptions.feature
 	 */
 
 	public static void setGameOptions(Kingdomino kingdomino) {
@@ -48,6 +49,7 @@ public class KingdominoController {
 	 * @param kingdomino The kingdomino application we wish to analyze.
 	 * @return void
 	 * @author Abdallah Shapsough
+	 * @gherkin SetGameOptions.feature
 	 */
 
 	public static void setNumberOfPlayers(int numPlayers, Kingdomino kingdomino) {
@@ -59,14 +61,20 @@ public class KingdominoController {
 	}
 
 	/**
-	 * Determines which bonus option shall be activated or not whithin a kingdomino
-	 * game.
+	 * <<<<<<< HEAD Determines which bonus option shall be activated or not whithin
+	 * a kingdomino game.
 	 * 
-	 * @param bonus      Selected bonus option for a game.
+	 * @param bonus      Selected bonus option for a game. ======= Determines which
+	 *                   bonus option shall be activated or not within a kingdomino
+	 *                   game.
+	 * @param bonus      Selected bonus option for a game. >>>>>>> branch 'master'
+	 *                   of
+	 *                   https://github.com/McGill-ECSE223-Winter2020/ecse223-group-project-03
 	 * @param kingdomino The kingdomino application we wish to analyze.
 	 * @param selected   If true, the bonus option will be added to the game.
 	 * @return void
 	 * @author Abdallah Shapsough
+	 * @gherkin SetGameOptions.feature
 	 */
 
 	public static void setBonusOption(String bonus, Kingdomino kingdomino, boolean selected) {
@@ -93,6 +101,7 @@ public class KingdominoController {
 	 * @param kingdomino The kingdomino application we wish to analyze.
 	 * @return void
 	 * @author Abdallah Shapsough
+	 * @gherkin SetGameOptions.feature
 	 */
 	public static void selectUser(User user, int num, Kingdomino kingdomino) {
 		kingdomino.getCurrentGame().getPlayer(num).setUser(user);
@@ -106,6 +115,7 @@ public class KingdominoController {
 	 * @param kingdomino The kingdomino application we wish to analyze.
 	 * @return void
 	 * @author Abdallah Shapsough
+	 * @gherkin SetGameOptions.feature
 	 */
 	public static void selectColor(PlayerColor color, int num, Kingdomino kingdomino) {
 		kingdomino.getCurrentGame().getPlayer(num).setColor(color);
@@ -127,6 +137,7 @@ public class KingdominoController {
 	 * @param kingdomino
 	 * @return boolean
 	 * @author Abdallah Shapsough
+	 * @gherkin ProvideUserProfile.feature
 	 */
 
 	public static boolean createNewUser(String userName, Kingdomino kingdomino) {
@@ -163,6 +174,7 @@ public class KingdominoController {
 	 * @param kingdomino The kingdomino instance that we use.
 	 * @return void
 	 * @author Abdallah Shapsough
+	 * @gherkin ProvideUserProfile.feature
 	 */
 
 	public static void clearUsers(Kingdomino kingdomino) {
@@ -178,6 +190,7 @@ public class KingdominoController {
 	 * @return List<User> A sorted list of users from a kingdomno instance is
 	 *         returned.
 	 * @author Abdallah Shapsough
+	 * @gherkin ProvideUserProfile.feature
 	 */
 
 	public static List<User> browseAllUsers(Kingdomino kingdomino) {
@@ -193,6 +206,7 @@ public class KingdominoController {
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return int A number of games won by a specific user.
 	 * @author Abdallah Shapsough
+	 * @gherkin ProvideUserProfile.feature
 	 */
 
 	public static int getUserGamesWon(String userName, Kingdomino kingdomino) {
@@ -206,6 +220,7 @@ public class KingdominoController {
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return int A number of played games by a specific user is returned.
 	 * @author Abdallah Shapsough
+	 * @gherkin ProvideUserProfile.feature
 	 */
 	public static int getUserGamesPlayed(String userName, Kingdomino kingdomino) {
 		return User.getWithName(userName).getPlayedGames();
@@ -322,6 +337,7 @@ public class KingdominoController {
 	 * @return ArrayList<Domino> The domino list that is returned for a player to
 	 *         browse.
 	 * @author Abdallah Shapsough
+	 * @gherkin BrowseDominoPile.feature
 	 */
 
 	public static ArrayList<Domino> browseDominoPile(Kingdomino kingdomino) {
@@ -340,6 +356,7 @@ public class KingdominoController {
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return Domino The domino that is associated with the ID.
 	 * @author Abdallah Shapsough
+	 * @gherkin BrowseDominoPile.feature
 	 */
 
 	public static Domino getDomino(int id, Kingdomino kingdomino) {
@@ -349,11 +366,16 @@ public class KingdominoController {
 	}
 
 	/**
+	 * <<<<<<< HEAD
 	 * 
-	 * @param terrain
+	 * @param terrain    ======= browse filtered dominos based on terrain of your
+	 *                   choice
+	 * @param terrain    >>>>>>> branch 'master' of
+	 *                   https://github.com/McGill-ECSE223-Winter2020/ecse223-group-project-03
 	 * @param kingdomino
 	 * @return List<Domino>
 	 * @author Abdallah Shapsough
+	 * @gherkin BrowseDominoPile.feature
 	 */
 
 	public static List<Domino> browseFilteredDominos(String terrain, Kingdomino kingdomino) {
@@ -366,6 +388,12 @@ public class KingdominoController {
 		return filteredList;
 	}
 
+	/**
+	 * helper method to get back terrain type from a string
+	 * 
+	 * @param terrain
+	 * @return
+	 */
 	private static TerrainType getTerrainTypeFilter(String terrain) {
 		terrain = terrain.toLowerCase();
 		if (terrain.equals("wheatfield")) {
@@ -603,6 +631,7 @@ public class KingdominoController {
 	 * @return boolean Returns true if a domino has been selected, false if it
 	 *         hasn't
 	 * @author Abdallah Shapsough
+	 * @gherkin ChooseNextDomino.feature
 	 */
 
 	public static boolean ChooseNextDomino(Player curPlayer, Kingdomino kingdomino, int chosen) {
@@ -635,7 +664,7 @@ public class KingdominoController {
 	 *                   game to analyze
 	 * @return void
 	 * @author Mathieu-Joseph Magri
-	 * 
+	 * @gherkin MoveCurrentDomino.feature
 	 */
 
 	public static void removeKing(Kingdomino kingdomino) {
@@ -659,6 +688,7 @@ public class KingdominoController {
 	 *                   to our domino to move it.
 	 * @return void
 	 * @author Mathieu-Joseph Magri
+	 * @gherkin MoveCurrentDomino.feature
 	 */
 	public static void moveDomino(Kingdomino kingdomino, String movement) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
@@ -723,15 +753,18 @@ public class KingdominoController {
 	 *                   game to analyze
 	 * @return void
 	 * @author Mathieu-Joseph Magri
+	 * @gherkin MoveCurrentDomino.feature
 	 */
 	private static void resetDominoStatus(DominoInKingdom dom, Kingdomino kingdomino) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		boolean castleAdjacency = verifyCastleAdjacency(dom.getX(), dom.getY(), dom.getDirection());
+
 		boolean neighborAdjacency = verifyNeighborAdjacency(player.getKingdom(), dom.getDomino(), dom.getX(),
 				dom.getY(), dom.getDirection());
 		boolean noOverlapping = verifyNoOverlapping(dom.getDomino(), player.getKingdom(), dom.getX(), dom.getY(),
 				dom.getDirection());
 		if ((castleAdjacency || neighborAdjacency) && noOverlapping) {
+
 			dom.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
 		} else {
 			dom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
@@ -757,6 +790,7 @@ public class KingdominoController {
 	 *                   domino.
 	 * @return void
 	 * @author Mathieu-Joseph Magri
+	 * @gherkin RotateCurrentDomino.feature
 	 */
 
 	public static void rotateDomino(Kingdomino kingdomino, String rotation) {
@@ -839,6 +873,7 @@ public class KingdominoController {
 	 * @return boolean A boolean value which indicates whether the domino has been
 	 *         successfully added (true) into a kingdom or not (false).
 	 * @author Mathieu-Joseph Magri
+	 * @gherkin PlaceDomino.feature
 	 */
 
 	public static boolean placeDomino(Kingdomino kingdomino) {
@@ -862,6 +897,16 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically check if my current
 	// domino is placed next to my castle
 
+	/**
+	 * Verifies if a domino is placed next to a casle
+	 * 
+	 * @param x
+	 * @param y
+	 * @param aDirection
+	 * @return
+	 * @author Zeyang Xu
+	 * @gherkin VerifyCastleAdjacency.feature
+	 */
 	public static boolean verifyCastleAdjacency(int x, int y, DirectionKind aDirection) {
 		int x1 = 0, y1 = 0;
 
@@ -909,6 +954,20 @@ public class KingdominoController {
 	// {Verify neighbor adjacency}
 	// As a player, I want the Kingdomino app to automatically check if my current
 	// domino is placed to an adjacent territory
+
+	/**
+	 * Verifies if a domino is adjacent to its neighbor to make sure a domino can be
+	 * placed on that location on the grid
+	 * 
+	 * @param aKingdom
+	 * @param aDomino
+	 * @param x
+	 * @param y
+	 * @param aDirection
+	 * @return
+	 * @author Zeyang Xu
+	 * @gherkin VerifyNeightborAdjacency.feature
+	 */
 
 	public static boolean verifyNeighborAdjacency(Kingdom aKingdom, Domino aDomino, int x, int y,
 			DirectionKind aDirection) {
@@ -996,6 +1055,19 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically check that my current
 	// domino is not overlapping with existing dominos
 
+	/**
+	 * Verifies that when a domino is on the board, the domino does not overlap
+	 * another domino or castle
+	 * 
+	 * @param aDomino
+	 * @param aKingdom
+	 * @param x
+	 * @param y
+	 * @param aDirection
+	 * @return
+	 * @author Zeyang Xu
+	 * @gherkin VerifyNoOverlapping.feature
+	 */
 	public static boolean verifyNoOverlapping(Domino aDomino, Kingdom aKingdom, int x, int y,
 			DirectionKind aDirection) {
 
@@ -1086,6 +1158,15 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically check if the grid of
 	// my kingdom has not yet exceeded a square of 5x5 tiles (including my castle)
 
+	/**
+	 * Verifies that the domino placed is within the size of the grid where the
+	 * dominos on the territory can form of up to 5x5 grid size
+	 * 
+	 * @param aKingdom
+	 * @return
+	 * @author Zeyang Xu
+	 * @gherkin VerifyGridSize.feature
+	 */
 	public static boolean verifyGridSize(Kingdom aKingdom) {
 		int maxX = -5;
 		int maxY = -5;
@@ -1093,7 +1174,9 @@ public class KingdominoController {
 		int minY = 5;
 		int x = 0, y = 0, x2 = 0, y2 = 0;
 		for (KingdomTerritory d : aKingdom.getTerritories()) {
+
 			if (d instanceof DominoInKingdom) {
+
 				DominoInKingdom dik = (DominoInKingdom) d;
 
 				x = dik.getX();
@@ -1159,6 +1242,12 @@ public class KingdominoController {
 				}
 			}
 		}
+		System.out.print((maxY - minY) < 5);
+		System.out.print(maxY);
+		System.out.print(minY);
+		System.out.print((maxX - minX) < 5);
+		System.out.print(maxX);
+		System.out.print(minX);
 		return ((maxX - minX) < 5 && (maxY - minY) < 5);
 	}
 
@@ -1179,6 +1268,7 @@ public class KingdominoController {
 	 * @return boolean A boolean value which indicates whether the domino has been
 	 *         successfully discarded (true) from a kingdom or not (false).
 	 * @author Mathieu-Joseph Magri
+	 * @gherkin DiscardDomino.feature
 	 */
 
 	public static boolean discardDomino(Kingdomino kingdomino) {
@@ -1200,6 +1290,7 @@ public class KingdominoController {
 	 * @return boolean A boolean value which indicates whether the domino can still
 	 *         be placed within a player's kingdom or not.
 	 * @author Mathieu-Joseph Magri
+	 * @gherkin DiscardDomino.feature
 	 */
 	public static boolean canStillPlay(Kingdom kingdom) {
 		DominoInKingdom dom = (DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size() - 1);
@@ -1236,6 +1327,7 @@ public class KingdominoController {
 	 ******************/
 
 	/**
+	 * @gherkin IdentifyProperties.feature
 	 * @author kaichengwu
 	 * @param kingdomino
 	 * @return void this method identifies the kingdom properties
@@ -1306,377 +1398,279 @@ public class KingdominoController {
 				locations.put(locationr, index);
 				index++;
 			}
-//			System.out.println("#######");
-//			System.out.println(tiles);
-//			System.out.println("#######");
 
-		}
-//		
-		for (HashMap<String, Object> tile : tiles) {
+			for (HashMap<String, Object> tile : tiles) {
 
-			int leftx = Integer.parseInt(tile.get("x").toString()) - 1;
-			int lefty = Integer.parseInt(tile.get("y").toString());
-			String left = Integer.toString(leftx) + Integer.toString(lefty);
+				int leftx = Integer.parseInt(tile.get("x").toString()) - 1;
+				int lefty = Integer.parseInt(tile.get("y").toString());
+				String left = Integer.toString(leftx) + Integer.toString(lefty);
 
-			int upx = Integer.parseInt(tile.get("x").toString());
-			int upy = Integer.parseInt(tile.get("y").toString()) + 1;
-			String up = Integer.toString(upx) + Integer.toString(upy);
+				int upx = Integer.parseInt(tile.get("x").toString());
+				int upy = Integer.parseInt(tile.get("y").toString()) + 1;
+				String up = Integer.toString(upx) + Integer.toString(upy);
 
-			int rightx = Integer.parseInt(tile.get("x").toString()) + 1;
-			int righty = Integer.parseInt(tile.get("y").toString());
-			String right = Integer.toString(rightx) + Integer.toString(righty);
+				int rightx = Integer.parseInt(tile.get("x").toString()) + 1;
+				int righty = Integer.parseInt(tile.get("y").toString());
+				String right = Integer.toString(rightx) + Integer.toString(righty);
 
-			int downx = Integer.parseInt(tile.get("x").toString());
-			int downy = Integer.parseInt(tile.get("y").toString()) - 1;
-			String down = Integer.toString(downx) + Integer.toString(downy);
-			int locationl = -1;
-			int locationu = -1;
-			int locationr = -1;
-			int locationd = -1;
+				int downx = Integer.parseInt(tile.get("x").toString());
+				int downy = Integer.parseInt(tile.get("y").toString()) - 1;
+				String down = Integer.toString(downx) + Integer.toString(downy);
+				int locationl = -1;
+				int locationu = -1;
+				int locationr = -1;
+				int locationd = -1;
 
-			boolean l = true;
-			boolean u = true;
-			boolean r = true;
-			boolean d = true;
+				boolean l = true;
+				boolean u = true;
+				boolean r = true;
+				boolean d = true;
 
-			if (locations.containsKey(left)) {
-				locationl = locations.get(left);
-			} else {
-				l = false;
-			}
-			if (locations.containsKey(up)) {
-				locationu = locations.get(up);
-			} else {
-				u = false;
-			}
-
-			if (locations.containsKey(right)) {
-				locationr = locations.get(right);
-			} else {
-				r = false;
-			}
-			if (locations.containsKey(down)) {
-				locationd = locations.get(down);
-			} else {
-				d = false;
-			}
-
-			// all cases of expanding are plotted bellow,
-			// a new tile of the same terrain type was added to a singular tile of the same
-			// type; (e.g. a tile on the left)
-			// or a new tile was added between two tiles of the same type; (e.g. a tile on
-			// top, a tile on the left)
-			// or a new tile was added between three tiles (e.g. a tile on top, a tile on
-			// the left, a tile on the right)
-
-			boolean myLeft = l && tiles.get(locationl).get("property") != null
-					&& tile.get("terrain").equals(tiles.get(locationl).get("terrain"));
-			boolean myUp = u && tiles.get(locationu).get("property") != null
-					&& tile.get("terrain").equals(tiles.get(locationu).get("terrain"));
-			boolean myRight = r && tiles.get(locationr).get("property") != null
-					&& tile.get("terrain").equals(tiles.get(locationr).get("terrain"));
-			boolean myDown = d && tiles.get(locationd).get("property") != null
-					&& tile.get("terrain").equals(tiles.get(locationd).get("terrain"));
-			if (myLeft && myRight) {
-				tile.put("property", tiles.get(locationl).get("property"));
-				Property prop = (Property) tiles.get(locationl).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				if (!tiles.get(locationr).get("property").equals(tiles.get(locationl).get("property"))) {
-					Property tem = (Property) tiles.get(locationr).get("property");
-					tem.delete();
-					tiles.get(locationr).put("property", tiles.get(locationl).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationr).get("domino"));
-
+				if (locations.containsKey(left)) {
+					locationl = locations.get(left);
+				} else {
+					l = false;
 				}
-			}
-			if (myLeft && myUp) {
-				tile.put("property", tiles.get(locationl).get("property"));
-				Property prop = (Property) tiles.get(locationl).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				if (!tiles.get(locationu).get("property").equals(tiles.get(locationl).get("property"))) {
-					Property tem = (Property) tiles.get(locationu).get("property");
-					tem.delete();
-					tiles.get(locationu).put("property", tiles.get(locationl).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
-
+				if (locations.containsKey(up)) {
+					locationu = locations.get(up);
+				} else {
+					u = false;
 				}
-			}
-			if (myLeft && myDown) {
-				tile.put("property", tiles.get(locationl).get("property"));
-				Property prop = (Property) tiles.get(locationl).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				if (!tiles.get(locationd).get("property").equals(tiles.get(locationl).get("property"))) {
-					Property tem = (Property) tiles.get(locationd).get("property");
-					tem.delete();
-					tiles.get(locationd).put("property", tiles.get(locationl).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
 
+				if (locations.containsKey(right)) {
+					locationr = locations.get(right);
+				} else {
+					r = false;
 				}
-			}
-			if (myUp && myRight) {
-				tile.put("property", tiles.get(locationu).get("property"));
-				Property prop = (Property) tiles.get(locationu).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				if (!tiles.get(locationr).get("property").equals(tiles.get(locationu).get("property"))) {
-					Property tem = (Property) tiles.get(locationr).get("property");
-					tem.delete();
-					tiles.get(locationr).put("property", tiles.get(locationu).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationr).get("domino"));
-
+				if (locations.containsKey(down)) {
+					locationd = locations.get(down);
+				} else {
+					d = false;
 				}
-			}
-			if (myUp && myDown) {
-				tile.put("property", tiles.get(locationu).get("property"));
-				Property prop = (Property) tiles.get(locationu).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				if (!tiles.get(locationd).get("property").equals(tiles.get(locationu).get("property"))) {
-					Property tem = (Property) tiles.get(locationd).get("property");
-					tem.delete();
-					tiles.get(locationd).put("property", tiles.get(locationu).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
 
+				// all cases of expanding are plotted bellow,
+				// a new tile of the same terrain type was added to a singular tile of the same
+				// type; (e.g. a tile on the left)
+				// or a new tile was added between two tiles of the same type; (e.g. a tile on
+				// top, a tile on the left)
+				// or a new tile was added between three tiles (e.g. a tile on top, a tile on
+				// the left, a tile on the right)
+
+				boolean myLeft = l && tiles.get(locationl).get("property") != null
+						&& tile.get("terrain").equals(tiles.get(locationl).get("terrain"));
+				boolean myUp = u && tiles.get(locationu).get("property") != null
+						&& tile.get("terrain").equals(tiles.get(locationu).get("terrain"));
+				boolean myRight = r && tiles.get(locationr).get("property") != null
+						&& tile.get("terrain").equals(tiles.get(locationr).get("terrain"));
+				boolean myDown = d && tiles.get(locationd).get("property") != null
+						&& tile.get("terrain").equals(tiles.get(locationd).get("terrain"));
+				if (myLeft && myRight) {
+					tile.put("property", tiles.get(locationl).get("property"));
+					Property prop = (Property) tiles.get(locationl).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					if (!tiles.get(locationr).get("property").equals(tiles.get(locationl).get("property"))) {
+						Property tem = (Property) tiles.get(locationr).get("property");
+						tem.delete();
+						tiles.get(locationr).put("property", tiles.get(locationl).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationr).get("domino"));
+
+					}
 				}
-			}
-			if (myRight && myDown) {
-				tile.put("property", tiles.get(locationr).get("property"));
-				Property prop = (Property) tiles.get(locationr).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				if (!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))) {
-					Property tem = (Property) tiles.get(locationd).get("property");
-					tem.delete();
-					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
+				if (myLeft && myUp) {
+					tile.put("property", tiles.get(locationl).get("property"));
+					Property prop = (Property) tiles.get(locationl).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					if (!tiles.get(locationu).get("property").equals(tiles.get(locationl).get("property"))) {
+						Property tem = (Property) tiles.get(locationu).get("property");
+						tem.delete();
+						tiles.get(locationu).put("property", tiles.get(locationl).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
 
+					}
 				}
-			}
-			if (myLeft && myUp && myRight) {
-				tile.put("property", tiles.get(locationr).get("property"));
-				Property prop = (Property) tiles.get(locationr).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				if (!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))) {
-					Property tem = (Property) tiles.get(locationu).get("property");
-					tem.delete();
-					tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
+				if (myLeft && myDown) {
+					tile.put("property", tiles.get(locationl).get("property"));
+					Property prop = (Property) tiles.get(locationl).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					if (!tiles.get(locationd).get("property").equals(tiles.get(locationl).get("property"))) {
+						Property tem = (Property) tiles.get(locationd).get("property");
+						tem.delete();
+						tiles.get(locationd).put("property", tiles.get(locationl).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
 
+					}
 				}
-				if (!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))) {
-					Property tem = (Property) tiles.get(locationl).get("property");
-					tem.delete();
-					tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationl).get("domino"));
+				if (myUp && myRight) {
+					tile.put("property", tiles.get(locationu).get("property"));
+					Property prop = (Property) tiles.get(locationu).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					if (!tiles.get(locationr).get("property").equals(tiles.get(locationu).get("property"))) {
+						Property tem = (Property) tiles.get(locationr).get("property");
+						tem.delete();
+						tiles.get(locationr).put("property", tiles.get(locationu).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationr).get("domino"));
 
+					}
 				}
-			}
-			if (myLeft && myDown && myRight) {
-				tile.put("property", tiles.get(locationr).get("property"));
-				Property prop = (Property) tiles.get(locationr).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				if (!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))) {
-					Property tem = (Property) tiles.get(locationd).get("property");
-					tem.delete();
-					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
+				if (myUp && myDown) {
+					tile.put("property", tiles.get(locationu).get("property"));
+					Property prop = (Property) tiles.get(locationu).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					if (!tiles.get(locationd).get("property").equals(tiles.get(locationu).get("property"))) {
+						Property tem = (Property) tiles.get(locationd).get("property");
+						tem.delete();
+						tiles.get(locationd).put("property", tiles.get(locationu).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
 
+					}
 				}
-				if (!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))) {
-					Property tem = (Property) tiles.get(locationl).get("property");
-					tem.delete();
-					tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationl).get("domino"));
+				if (myRight && myDown) {
+					tile.put("property", tiles.get(locationr).get("property"));
+					Property prop = (Property) tiles.get(locationr).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					if (!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))) {
+						Property tem = (Property) tiles.get(locationd).get("property");
+						tem.delete();
+						tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
 
+					}
 				}
-			}
-			if (myDown && myUp && myRight) {
-				tile.put("property", tiles.get(locationr).get("property"));
-				Property prop = (Property) tiles.get(locationr).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				if (!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))) {
-					Property tem = (Property) tiles.get(locationu).get("property");
-					tem.delete();
-					tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
+				if (myLeft && myUp && myRight) {
+					tile.put("property", tiles.get(locationr).get("property"));
+					Property prop = (Property) tiles.get(locationr).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					if (!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))) {
+						Property tem = (Property) tiles.get(locationu).get("property");
+						tem.delete();
+						tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
 
+					}
+					if (!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))) {
+						Property tem = (Property) tiles.get(locationl).get("property");
+						tem.delete();
+						tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationl).get("domino"));
+
+					}
 				}
-				if (!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))) {
-					Property tem = (Property) tiles.get(locationd).get("property");
-					tem.delete();
-					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
+				if (myLeft && myDown && myRight) {
+					tile.put("property", tiles.get(locationr).get("property"));
+					Property prop = (Property) tiles.get(locationr).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					if (!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))) {
+						Property tem = (Property) tiles.get(locationd).get("property");
+						tem.delete();
+						tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
 
+					}
+					if (!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))) {
+						Property tem = (Property) tiles.get(locationl).get("property");
+						tem.delete();
+						tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationl).get("domino"));
+
+					}
 				}
-			}
-			if (myLeft && myUp && myDown) {
-				tile.put("property", tiles.get(locationd).get("property"));
-				Property prop = (Property) tiles.get(locationd).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				if (!tiles.get(locationu).get("property").equals(tiles.get(locationd).get("property"))) {
-					Property tem = (Property) tiles.get(locationu).get("property");
-					tem.delete();
-					tiles.get(locationu).put("property", tiles.get(locationd).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
+				if (myDown && myUp && myRight) {
+					tile.put("property", tiles.get(locationr).get("property"));
+					Property prop = (Property) tiles.get(locationr).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					if (!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))) {
+						Property tem = (Property) tiles.get(locationu).get("property");
+						tem.delete();
+						tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
 
+					}
+					if (!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))) {
+						Property tem = (Property) tiles.get(locationd).get("property");
+						tem.delete();
+						tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
+
+					}
 				}
-				if (!tiles.get(locationl).get("property").equals(tiles.get(locationd).get("property"))) {
-					Property tem = (Property) tiles.get(locationl).get("property");
-					tem.delete();
-					tiles.get(locationl).put("property", tiles.get(locationd).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationl).get("domino"));
+				if (myLeft && myUp && myDown) {
+					tile.put("property", tiles.get(locationd).get("property"));
+					Property prop = (Property) tiles.get(locationd).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					if (!tiles.get(locationu).get("property").equals(tiles.get(locationd).get("property"))) {
+						Property tem = (Property) tiles.get(locationu).get("property");
+						tem.delete();
+						tiles.get(locationu).put("property", tiles.get(locationd).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
 
+					}
+					if (!tiles.get(locationl).get("property").equals(tiles.get(locationd).get("property"))) {
+						Property tem = (Property) tiles.get(locationl).get("property");
+						tem.delete();
+						tiles.get(locationl).put("property", tiles.get(locationd).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationl).get("domino"));
+
+					}
 				}
-			}
-			if (myLeft && myUp && myRight && myDown) {
-				tile.put("property", tiles.get(locationr).get("property"));
-				Property prop = (Property) tiles.get(locationr).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				if (!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))) {
-					Property tem = (Property) tiles.get(locationu).get("property");
-					tem.delete();
-					tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
+				if (myLeft && myUp && myRight && myDown) {
+					tile.put("property", tiles.get(locationr).get("property"));
+					Property prop = (Property) tiles.get(locationr).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					if (!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))) {
+						Property tem = (Property) tiles.get(locationu).get("property");
+						tem.delete();
+						tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
 
+					}
+					if (!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))) {
+						Property tem = (Property) tiles.get(locationl).get("property");
+						tem.delete();
+						tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationl).get("domino"));
+
+					}
+					if (!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))) {
+						Property tem = (Property) tiles.get(locationd).get("property");
+						tem.delete();
+						tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
+						prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
+
+					}
 				}
-				if (!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))) {
-					Property tem = (Property) tiles.get(locationl).get("property");
-					tem.delete();
-					tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationl).get("domino"));
+				if (myLeft) {
 
+					tile.put("property", tiles.get(locationl).get("property"));
+					Property prop = (Property) tiles.get(locationl).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					continue;
+				} else if (myUp) {
+					tile.put("property", tiles.get(locationu).get("property"));
+					Property prop = (Property) tiles.get(locationu).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					continue;
+				} else if (myRight) {
+					tile.put("property", tiles.get(locationr).get("property"));
+					Property prop = (Property) tiles.get(locationr).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					continue;
+				} else if (myDown) {
+					tile.put("property", tiles.get(locationd).get("property"));
+					Property prop = (Property) tiles.get(locationd).get("property");
+					prop.addIncludedDomino((Domino) tile.get("domino"));
+					continue;
+				} else {
+
+					tile.put("property", new Property(kingdom));
+					Property prop = (Property) tile.get("property");
+					Domino dom = (Domino) tile.get("domino");
+					prop.setLeftTile((TerrainType) tile.get("terrain"));
+					prop.addIncludedDomino((Domino) tile.get("domino"));
 				}
-				if (!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))) {
-					Property tem = (Property) tiles.get(locationd).get("property");
-					tem.delete();
-					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
-
-				}
-			}
-			if (myLeft) {
-
-				tile.put("property", tiles.get(locationl).get("property"));
-				Property prop = (Property) tiles.get(locationl).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				continue;
-			} else if (myUp) {
-				tile.put("property", tiles.get(locationu).get("property"));
-				Property prop = (Property) tiles.get(locationu).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				continue;
-			} else if (myRight) {
-				tile.put("property", tiles.get(locationr).get("property"));
-				Property prop = (Property) tiles.get(locationr).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				continue;
-			} else if (myDown) {
-				tile.put("property", tiles.get(locationd).get("property"));
-				Property prop = (Property) tiles.get(locationd).get("property");
-				prop.addIncludedDomino((Domino) tile.get("domino"));
-				continue;
-			} else {
-
-				tile.put("property", new Property(kingdom));
-				Property prop = (Property) tile.get("property");
-				Domino dom = (Domino) tile.get("domino");
-				prop.setLeftTile((TerrainType) tile.get("terrain"));
-				prop.addIncludedDomino((Domino) tile.get("domino"));
 			}
 		}
 
-		// testing codes
-		// ___________________________________________________________
-//		System.out.print(locations);
-//		for(int i =0;i<kingdom.getProperties().size();i++) {
-//			System.out.println("#############");
-//			System.out.println(kingdom.getProperty(i).getIncludedDominos());
-//			System.out.println("#############");
-//		}
-//		checkForConnected(player.getKingdom().getProperties(), player.getKingdom());
-//		List<Property> props = player.getKingdom().getProperties();
-//		for(int i = 0; i< props.size(); i++) {
-//			if(props.get(i).getLeftTile() == null) {
-//				props.get(i).delete();
-//				i--;
-//			}
-//		}
 	}
-	// _______another attempt of implementing the feature________
-//	public static void identifyProperties(Kingdomino kingdomino) {
-//		
-//		Player player = kingdomino.getCurrentGame().getNextPlayer();
-//		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
-//		List<Property> properties = player.getKingdom().getProperties();
-//		boolean isMatchL;
-//		boolean isMatchR;
-//		// Going through all of the territories in the kingdom
-//		for (int i = 0; i < territories.size(); i++) {
-//			// Only care about the territories that are DominoInKingdoms
-//			if (territories.get(i) instanceof DominoInKingdom) {
-//				// Working with the DominoInKingdom
-//				DominoInKingdom ter = (DominoInKingdom) territories.get(i);
-//
-//				isMatchL = false;
-//				// Looking at the left tile
-//				for (int j = 0; j < properties.size(); j++) {
-//					// If this property type matches the left tile type
-//					if (ter.getDomino().getLeftTile() == properties.get(j).getLeftTile()) {
-//						// If the domino isn't already present in the property
-//						if (!propertyContains(ter, properties.get(j))) {
-//							// If the domino left tile is adjacent to another square of a domino in property
-//							// of same type
-//							if (isLeftMatch(ter, properties.get(j), player.getKingdom())) {
-//								properties.get(j).addIncludedDomino(ter.getDomino());
-//								isMatchL = true;
-//							}
-//						} else {
-//							isMatchL = true;
-//						}
-//					}
-//
-//				}
-//				if (!isMatchL) {
-//					Property prop = new Property(player.getKingdom());
-//					prop.addIncludedDomino(ter.getDomino());
-//					prop.setLeftTile(ter.getDomino().getLeftTile());
-//					player.getKingdom().addProperty(prop);
-//				}
-//				// Looking at the right tile
-//				isMatchR = false;
-//				// Looking at the left tile
-//				for (int j = 0; j < properties.size(); j++) {
-//					// If this property type matches the left tile type
-//					if (ter.getDomino().getRightTile() == properties.get(j).getLeftTile()) {
-//						// If the domino isn't already present in the property
-//						if (!propertyContains(ter, properties.get(j))) {
-//							// If the domino left tile is adjacent to another square of a domino in property
-//							// of same type
-//							if (isRightMatch(ter, properties.get(j), player.getKingdom())) {
-//								properties.get(j).addIncludedDomino(ter.getDomino());
-//								isMatchR = true;
-//							}
-//						} else {
-//							isMatchR = true;
-//						}
-//					}
-//
-//				}
-//				if (!isMatchR) {
-//					Property prop = new Property(player.getKingdom());
-//					prop.addIncludedDomino(ter.getDomino());
-//					prop.setLeftTile(ter.getDomino().getRightTile());
-//					player.getKingdom().addProperty(prop);
-//				}
-//			}
-//		}
-//		
-////		checkForConnected(player.getKingdom().getProperties(), player.getKingdom());
-////		List<Property> props = player.getKingdom().getProperties();
-////		for(int i = 0; i< props.size(); i++) {
-////			if(props.get(i).getLeftTile() == null) {
-////				props.get(i).delete();
-////				i--;
-////			}
-////		}
-//	}
 
 	// private helper methods
 	private static void checkForConnected(List<Property> properties, Kingdom k) {
@@ -1961,6 +1955,7 @@ public class KingdominoController {
 	 * of property), and sets them up for furthur use
 	 * 
 	 * @author kaichengwu
+	 * @gherkin CalculatePropertyAttributes.feature
 	 * @param kingdomino
 	 * @return void
 	 */
@@ -2004,6 +1999,7 @@ public class KingdominoController {
 	 * @param kingdomino
 	 * @return void
 	 * @author kaichengwu
+	 * @gherkin CalculateBonusScores.feature
 	 */
 	// { Calculate bonus scores}
 	// As a player, I want the Kingdomino app to automatically calculate the bonus
@@ -2126,9 +2122,14 @@ public class KingdominoController {
 
 	/**
 	 * @author kaichengwu
-	 * @param kingdomino
+	 * @param kingdomino <<<<<<< HEAD
 	 * @return void this features calculate the total score of the player by summing
-	 *         up the score of each individual property
+	 *         up the score of each individual property =======
+	 * @return void
+	 * @gherkin CalculatePlayerScore.feature this features calculate the total score
+	 *          of the player by summing up the score of each individual property
+	 *          >>>>>>> branch 'master' of
+	 *          https://github.com/McGill-ECSE223-Winter2020/ecse223-group-project-03
 	 */
 	public static void calculatePlayerScore(Kingdomino kingdomino) {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
