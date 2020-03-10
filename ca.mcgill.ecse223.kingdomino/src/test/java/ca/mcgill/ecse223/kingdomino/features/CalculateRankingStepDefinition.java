@@ -18,6 +18,10 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+/**
+ * @author Victoria Iannotti
+ */
+
 public class CalculateRankingStepDefinition {
 	@Given("the game is initialized for calculate ranking")
 	public void the_game_is_initialized_for_calculate_ranking() {

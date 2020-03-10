@@ -18,6 +18,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+/**
+ * @author Victoria Iannotti
+ */
 public class ResolveTiebreakStepDefinition {
 	@Given("the game is initialized for resolve tiebreak")
 	public void the_game_is_initialized_for_resolve_tiebreak() {
@@ -27,7 +30,7 @@ public class ResolveTiebreakStepDefinition {
 		kingdomino.setCurrentGame(game);
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
-	
+
 	@Then("player standings should be the followings:")
 	public void player_standings_should_be_the_followings(io.cucumber.datatable.DataTable dataTable) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
@@ -39,7 +42,7 @@ public class ResolveTiebreakStepDefinition {
 			assertEquals(expectedRanking, actualRanking);
 		}
 	}
-	
+
 	private PlayerColor getColor(String color) {
 		switch (color) {
 		case "blue":
@@ -54,15 +57,14 @@ public class ResolveTiebreakStepDefinition {
 			throw new java.lang.IllegalArgumentException("Invalid color: " + color);
 		}
 	}
-	
-	private Player getPlayer (List<Player> players, PlayerColor col) {
-		for(Player p: players) {
-			if(p.getColor()==col) {
+
+	private Player getPlayer(List<Player> players, PlayerColor col) {
+		for (Player p : players) {
+			if (p.getColor() == col) {
 				return p;
 			}
 		}
 		throw new java.lang.IllegalArgumentException("Inexistant player of color: " + col);
 	}
-	
-	
+
 }
