@@ -21,16 +21,32 @@ public class KingdominoController {
 	/*****************
 	 * * Feature 1 * *
 	 *****************/
+	
 	// {Set game options}
 	// As a player, I want to configure the designated options of the Kingdomino
 	// game including the number of players (2, 3 or 4) and the bonus scoring
 	// options
+	
+	/**
+	 * Let's us start a kingdomino game with desired configurations.
+	 * @param kingdomino The kingdomino application we wish to analyze.
+	 * @return void
+	 * @author Abdallah Shapsough
+	 */
 
 	public static void setGameOptions(Kingdomino kingdomino) {
 		Game game = new Game(48, kingdomino);
 		kingdomino.setCurrentGame(game);
 
 	}
+	
+	/**
+	 * Let's us choose the number of players we want in a kingdomino game.
+	 * @param numPlayers Number of players present in a kingdomino game.
+	 * @param kingdomino The kingdomino application we wish to analyze.
+	 * @return void
+	 * @author Abdallah Shapsough
+	 */
 
 	public static void setNumberOfPlayers(int numPlayers, Kingdomino kingdomino) {
 		Game game = kingdomino.getCurrentGame();
@@ -39,6 +55,15 @@ public class KingdominoController {
 			Player player = new Player(game);
 		}
 	}
+	
+	/**
+	 * Determines which bonus option shall be activated or not whithin a kingdomino game.
+	 * @param bonus Selected bonus option for a game.
+	 * @param kingdomino The kingdomino application we wish to analyze.
+	 * @param selected If true, the bonus option will be added to the game.
+	 * @return void
+	 * @author Abdallah Shapsough
+	 */
 
 	public static void setBonusOption(String bonus, Kingdomino kingdomino, boolean selected) {
 		Game game = kingdomino.getCurrentGame();
@@ -56,10 +81,26 @@ public class KingdominoController {
 		}
 	}
 
+	/**
+	 * Let's us get a user and set it to a player within a kingdomino game.
+	 * @param user Selected use that will set to a player.
+	 * @param num Number of a player that will be set User user.
+	 * @param kingdomino The kingdomino application we wish to analyze.
+	 * @return void
+	 * @author Abdallah Shapsough
+	 */
 	public static void selectUser(User user, int num, Kingdomino kingdomino) {
 		kingdomino.getCurrentGame().getPlayer(num).setUser(user);
 	}
 
+	/**
+	 * Let's us set a color to a specififc player within a kingdomino game.
+	 * @param color A PlayerColor that will be set to a player.
+	 * @param num Number of a player that will be set a PlayerColor color.
+	 * @param kingdomino The kingdomino application we wish to analyze.
+	 * @return void
+	 * @author Abdallah Shapsough
+	 */
 	public static void selectColor(PlayerColor color, int num, Kingdomino kingdomino) {
 		kingdomino.getCurrentGame().getPlayer(num).setColor(color);
 	}
@@ -67,10 +108,19 @@ public class KingdominoController {
 	/*****************
 	 * * Feature 2 * *
 	 *****************/
+	
 	// {Provide user profile}
 	// As a player, I wish to use my unique user name in when a game starts. I also
 	// want the Kingdomino app to maintain my game statistics (e.g. number of games
 	// played, won, etc.).
+	
+	/**
+	 * Let's us create a new user that can be used for multiple kingdomino games. 
+	 * @param userName
+	 * @param kingdomino
+	 * @return boolean
+	 * @author Abdallah Shapsough
+	 */
 
 	public static boolean createNewUser(String userName, Kingdomino kingdomino) {
 		if (User.getWithName(userName) != null) {
@@ -99,23 +149,51 @@ public class KingdominoController {
 		kingdomino.addUser(userName);
 		return true;
 	}
+	
+	/**
+	 * Let's us clear all users within a kingdomino application.
+	 * @param kingdomino The kingdomino instance that we use.
+	 * @return void
+	 * @author Abdallah Shapsough
+	 */
 
 	public static void clearUsers(Kingdomino kingdomino) {
 		for (User user : kingdomino.getUsers()) {
 			kingdomino.removeUser(user);
 		}
 	}
+	
+	/**
+	 * Let's us browse all users in a sorted manner.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return List<User> A sorted list of users from a kingdomno instance is returned.
+	 * @author Abdallah Shapsough
+	 */
 
 	public static List<User> browseAllUsers(Kingdomino kingdomino) {
 		ArrayList<User> users = new ArrayList<User>(kingdomino.getUsers());
 		Collections.sort(users, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
 		return users;
 	}
+	
+	/**
+	 * Let's us view the amount of games won by a specific user.
+	 * @param userName Specific user we wish to view.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return int A number of games won by a specific user.
+	 * @author Abdallah Shapsough
+	 */
 
 	public static int getUserGamesWon(String userName, Kingdomino kingdomino) {
 		return User.getWithName(userName).getWonGames();
 	}
-
+	/**
+	 * Let's us view the amount of games played by a specific user.
+	 * @param userName Specific user we wish to view.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return int A number of played games by a specific user is returned.
+	 * @author Abdallah Shapsough
+	 */
 	public static int getUserGamesPlayed(String userName, Kingdomino kingdomino) {
 		return User.getWithName(userName).getPlayedGames();
 	}
@@ -128,6 +206,13 @@ public class KingdominoController {
 	// As a Kingdomino player, I want to start a new game of Kingdomino against some
 	// opponents with my castle placed on my territory with the current settings of
 	// the game. The initial order of player should be randomly determined.
+	
+	/**
+	 * Starts a new kingdomino game by initiating player's kingdoms and castles. The dominos are created and shuffled as well.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return void
+	 * @author Maxime Rieuf
+	 */
 
 	public static void startNewGame(Kingdomino kingdomino) {
 		// TODO Randomly order the players
@@ -145,6 +230,14 @@ public class KingdominoController {
 		}
 		shuffleDominos(kingdomino);
 	}
+	
+	/**
+	 * Creates all dominos for a specific game.
+	 * @param game The game for which we wish to create dominos.
+	 * @return void
+	 * @throws IllegalArgumentException
+	 * @author ECSE 223
+	 */
 
 	public static void createAllDominos(Game game) {
 		try {
@@ -169,7 +262,14 @@ public class KingdominoController {
 					"Error occured while trying to read alldominoes.dat: " + e.getMessage());
 		}
 	}
-
+	
+	/**
+	 * Helper method provided by the teaching staff. Let's us obtain a TerrainType from a string with the same name.
+	 * @param terrain
+	 * @return TerrainType A TerrainType is returned.
+	 * @throws IllegalArgumentException if an invalid TerrainType is submitted.
+	 * @author ECSE 223
+	 */
 	private static TerrainType getTerrainType(String terrain) {
 		switch (terrain) {
 		case "W":
@@ -196,6 +296,13 @@ public class KingdominoController {
 	// {Browse domino pile}
 	// As a player, I wish to browse the set of all dominos in increasing order of
 	// numbers prior to playing the game so that I can adjust my strategy
+	
+	/**
+	 * Let's a player browse the current domino pile being used.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return ArrayList<Domino> The domino list that is returned for a player to browse.
+	 * @author Abdallah Shapsough
+	 */
 
 	public static ArrayList<Domino> browseDominoPile(Kingdomino kingdomino) {
 		if (kingdomino.getCurrentGame().getAllDominos().size() == 0) {
@@ -205,12 +312,28 @@ public class KingdominoController {
 		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
 		return allDominos;
 	}
+	
+	/**
+	 * Acquires a domino with a specific ID.
+	 * @param id ID of a specific domino to 
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return Domino The domino that is associated with the ID.
+	 * @author Abdallah Shapsough
+	 */
 
 	public static Domino getDomino(int id, Kingdomino kingdomino) {
 		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
 		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
 		return allDominos.get(id - 1);
 	}
+	
+	/**
+	 * 
+	 * @param terrain 
+	 * @param kingdomino
+	 * @return List<Domino>
+	 * @author Abdallah Shapsough
+	 */
 
 	public static List<Domino> browseFilteredDominos(String terrain, Kingdomino kingdomino) {
 		ArrayList<Domino> allDominos = new ArrayList<Domino>(kingdomino.getCurrentGame().getAllDominos());
@@ -221,7 +344,7 @@ public class KingdominoController {
 				.collect(Collectors.toList()));
 		return filteredList;
 	}
-	
+
 	private static TerrainType getTerrainTypeFilter(String terrain) {
 		terrain = terrain.toLowerCase();
 		if (terrain.equals("wheatfield")) {
@@ -252,6 +375,13 @@ public class KingdominoController {
 	// {Shuffle domino pile}
 	// As a player, I want to have a randomly shuffled pile of dominos so that every
 	// game becomes unique
+	
+	/**
+	 * Shuffles the dominos in a random order for a kingdomino game. 
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return void
+	 * @author Maxime Rieuf
+	 */
 
 	public static void shuffleDominos(Kingdomino kingdomino) {
 		Game game = kingdomino.getCurrentGame();
@@ -271,7 +401,14 @@ public class KingdominoController {
 		}
 		setFirstDraft(kingdomino);
 	}
-
+	
+	/**
+	 * 
+	 * @param kingdomino
+	 * @return Draft
+	 * @author Maxime Rieuf
+	 */
+	
 	public static Draft setFirstDraft(Kingdomino kingdomino) {
 		Game game = kingdomino.getCurrentGame();
 		List<Domino> dominos = new ArrayList<Domino>(game.getAllDominos());
@@ -285,6 +422,14 @@ public class KingdominoController {
 		game.setTopDominoInPile(game.getAllDomino(0));
 		return draft;
 	}
+	
+	/**
+	 * 
+	 * @param kingdomino
+	 * @param string
+	 * @return void
+	 * @author Maxime Rieuf
+	 */
 
 	public static void getFixedOrder(Kingdomino kingdomino, String string) {
 		Game game = kingdomino.getCurrentGame();
@@ -306,6 +451,13 @@ public class KingdominoController {
 	// {Load game}
 	// As a player, I want to load a previously played game so that I can continue
 	// it from the last position
+	
+	/**
+	 * Let's a player load a previously saved game so it can be continued.
+	 * @param
+	 * @return
+	 * @author Victorai Iannotti
+	 */
 
 	/*****************
 	 * * Feature 7 * *
@@ -314,6 +466,13 @@ public class KingdominoController {
 	// {Save game}
 	// As a player, I want to save the current game if the game has not yet been
 	// finished so that I can continue it later
+	
+	/**
+	 * Let's a player save a current game so it can be continued or finished later.
+	 * @param
+	 * @return
+	 * @author Victorai Iannotti
+	 */
 
 	/*****************
 	 * * Feature 8 * *
@@ -323,6 +482,13 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically reveal the next four
 	// dominos once the previous round is finished
 
+	/**
+	 * Creates the next draft of dominos that shall be selected by players in a kingdomino game.
+	 * The dominos are, however, not yet revealed.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return void
+	 * @author Maxime Rieuf
+	 */
 	public static void createNextDraft(Kingdomino kingdomino) {
 
 		Game game = kingdomino.getCurrentGame();
@@ -350,7 +516,14 @@ public class KingdominoController {
 		}
 
 	}
-
+	
+	/**
+	 * Reveals the dominos for the current draft by setting its status.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return void
+	 * @author Maxime Rieuf
+	 */
+	
 	public static void revealNextDraft(Kingdomino kingdomino) {
 		Draft draft = kingdomino.getCurrentGame().getNextDraft();
 		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
@@ -364,6 +537,14 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically order the revealed
 	// next draft of dominos in increasing order with respect to their numbers so
 	// that I know which are the more valuable dominos
+	
+	/**
+	 * Orders the dominos in the current draft that has been revealed. The dominos are ordered 
+	 * in increasing integer value to let players know of their value and importance.
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @return void
+	 * @author Maxime Rieuf
+	 */
 
 	public static void orderNextDraft(Kingdomino kingdomino) {
 		Draft draft = kingdomino.getCurrentGame().getNextDraft();
@@ -383,6 +564,15 @@ public class KingdominoController {
 	// {Choose next domino}
 	// As a player, I wish to be able to choose a designated domino from the next
 	// draft assuming that this domino has not yet been chosen by any other players
+	
+	/**
+	 * Let's a player choose a domino from a current draft by using its number ID.
+	 * @param curPlayer The player that must chose a domino from the current draft
+	 * @param kingdomino The kingdomino instance that is used.
+	 * @param chosen Number ID of the player's chosen domino in the current draft
+	 * @return boolean Returns true if a domino has been selected, false if it hasn't
+	 * @author Abdallah Shapsough
+	 */
 
 	public static boolean ChooseNextDomino(Player curPlayer, Kingdomino kingdomino, int chosen) {
 		Game game = kingdomino.getCurrentGame();
@@ -401,67 +591,117 @@ public class KingdominoController {
 	/******************
 	 * * Feature 11 * *
 	 ******************/
+	
+	
 
 	// {Move current domino}
 	// As a player, I wish to evaluate a provisional placement of my current domino
 	// by moving the domino around into my kingdom (up, down, left, right)
 
+	/**
+	 * Removes current player's king from a selected domino, adds it in current player's kingdom and places it at (0,0).
+	 * @param kingdomino The kingdomino application from which we get our current game to analyze
+	 * @return void
+	 * @author Mathieu-Joseph Magri
+	 * 
+	 */
+	
 	public static void removeKing(Kingdomino kingdomino) {
-		Player player = kingdomino.getCurrentGame().getNextPlayer();
-		// Set the next player here
+		Player player = kingdomino.getCurrentGame().getNextPlayer(); 
 		Domino dom = player.getDominoSelection().getDomino();
 		dom.setStatus(DominoStatus.ErroneouslyPreplaced);
-		DominoInKingdom domIn = new DominoInKingdom(0, 0, player.getKingdom(), dom);
-		domIn.setDirection(DirectionKind.Right);
-		player.getKingdom().addTerritory(domIn);
+		DominoInKingdom domIn = new DominoInKingdom(0, 0, player.getKingdom(), dom); //Placing domino in player's kingdom
+		domIn.setDirection(DirectionKind.Right); 
+		player.getKingdom().addTerritory(domIn); //Adding the newly placed domino as a territory in player's kingdom
 	}
 
+	/**
+	 * Move's a domino in four ways: Up, down, left and right. Takes into account adjacency 
+	 * rules (castle and neighbor), grid size rules and overlapping rules. Updates coordinates
+	 * of the domino that has been moved.
+	 * @param kingdomino The kingdomino application from which we get our current game to analyze
+	 * @param movement The movement (Up, Down, Left, Right) that will be applied to our domino to move it.
+	 * @return void
+	 * @author Mathieu-Joseph Magri
+	 */
 	public static void moveDomino(Kingdomino kingdomino, String movement) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
-		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
-		DominoInKingdom ter = (DominoInKingdom) territories.get(territories.size() - 1);
-		switch (movement) {
-		case "left":
-			ter.setX(ter.getX() - 1);
-			if (!verifyGridSize(player.getKingdom())) {
-				ter.setX(ter.getX() + 1);
+		DominoInKingdom dom = (DominoInKingdom) player.getKingdom()
+				.getTerritory(player.getKingdom().numberOfTerritories() - 1); //Get last domino
+		int x = dom.getX();
+		int y = dom.getY();
+		String dir = null;
+		if (verifyGridSize(player.getKingdom())) { //if the grid size of a kingdom respects rules
+			switch (movement) {
+			case "left":
+				if (dom.setX(x - 1)) {
+					dir = "left";
+				}
+				break;
+			case "right":
+				if (dom.setX(x + 1)) {
+					dir = "right";
+				}
+				break;
+			case "up":
+				if (dom.setY(y + 1)) {
+					dir = "up";
+				}
+				break;
+			case "down":
+				if (dom.setY(y - 1)) {
+					dir = "down";
+				}
+				break;
 			}
-			break;
-		case "right":
-			ter.setX(ter.getX() + 1);
-			if (!verifyGridSize(player.getKingdom())) {
-				ter.setX(ter.getX() - 1);
-			}
-			break;
-		case "up":
-			ter.setY(ter.getY() + 1);
-			if (!verifyGridSize(player.getKingdom())) {
-				ter.setX(ter.getX() - 1);
-			}
-			break;
-		case "down":
-			ter.setY(ter.getY() - 1);
-			if (!verifyGridSize(player.getKingdom())) {
-				ter.setX(ter.getX() + 1);
-			}
-			break;
 		}
-		Domino dom = player.getDominoSelection().getDomino();
-		resetDominoStatus(ter, kingdomino);
+		if (dir != null) {
+			if (!verifyGridSize(player.getKingdom())) { //if the grid size of a kingdom does not respect the rules
+				if (dom.getDomino().getStatus().equals(Domino.DominoStatus.CorrectlyPreplaced)) {
+					switch (dir) {
+					case "left":
+						dom.setX(dom.getX() + 1);
+						break;
+					case "right":
+						dom.setX(dom.getX() - 1);
+						break;
+					case "up":
+						dom.setY(dom.getY() - 1);
+						break;
+					case "down":
+						dom.setY(dom.getY() + 1);
+						break;
+					}
+				}
+			}
+		}
+		resetDominoStatus(dom, kingdomino);
 	}
 
+	/**
+	 * If a domino respects placement rules withing a kingdom, its status will be updated accordingly 
+	 * with either CorrectlyPreplace or ErroneouslyPreplaced.
+	 * @param dom Domino we want to reset
+	 * @param kingdomino The kingdomino application from which we get our current game to analyze
+	 * @return void
+	 * @author Mathieu-Joseph Magri
+	 */
 	private static void resetDominoStatus(DominoInKingdom dom, Kingdomino kingdomino) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		boolean castleAdjacency = verifyCastleAdjacency(dom.getX(), dom.getY(), dom.getDirection());
-		System.out.print(castleAdjacency);
-		boolean neighborAdjacency = verifyNeighborAdjacency(player.getKingdom(), dom.getDomino(), dom.getX(), dom.getY(), dom.getDirection());
-		boolean noOverlapping = verifyNoOverlapping(dom.getDomino(), player.getKingdom(), dom.getX(), dom.getY(), dom.getDirection());
-		if( (castleAdjacency || neighborAdjacency)&&noOverlapping) {
+
+		boolean neighborAdjacency = verifyNeighborAdjacency(player.getKingdom(), dom.getDomino(), dom.getX(),
+				dom.getY(), dom.getDirection());
+		boolean noOverlapping = verifyNoOverlapping(dom.getDomino(), player.getKingdom(), dom.getX(), dom.getY(),
+				dom.getDirection());
+		if ((castleAdjacency || neighborAdjacency) && noOverlapping) {
+
 			dom.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
 		} else {
 			dom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
 		}
 	}
+
 	/******************
 	 * * Feature 12 * *
 	 ******************/
@@ -469,8 +709,17 @@ public class KingdominoController {
 	// {Rotate current domino}
 	// As a player, I wish to evaluate a provisional placement of my current domino
 	// in my kingdom by rotating it (clockwise or counter-clockwise)
+	
+	/**
+	 * Let's a player rotate a domino in either clockwise or counter-clockwise fashion. If a domino respects
+	 * placement rules, its direction will be updated accordingly. 
+	 * @param kingdomino The kingdomino application from which we get our current game to analyze
+	 * @param rotation	The selected rotation that will be applied to a selected domino.
+	 * @return void
+	 * @author Mathieu-Joseph Magri
+	 */
 
-	private static void rotateDomino(Kingdomino kingdomino, String rotation) {
+	public static void rotateDomino(Kingdomino kingdomino, String rotation) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
 		DominoInKingdom ter = (DominoInKingdom) territories.get(territories.size() - 1);
@@ -532,6 +781,7 @@ public class KingdominoController {
 		}
 		resetDominoStatus(ter, kingdomino);
 	}
+
 	/******************
 	 * * Feature 13 * *
 	 ******************/
@@ -540,20 +790,27 @@ public class KingdominoController {
 	// As a player, I wish to place my selected domino to my kingdom. If I am
 	// satisfied with its placement, and its current position respects the adjacency
 	// rules, I wish to finalize the placement
+	
+	/**
+	 * Takes a CorrectlyPreplaced domino and places it in a player's kingdom.
+	 * @param kingdomino The kingdomino application from which we get our current game to analyze
+	 * @return boolean A boolean value which indicates whether the domino has been successfully added (true) into a kingdom or not (false).
+	 * @author Mathieu-Joseph Magri
+	 */
 
 	public static boolean placeDomino(Kingdomino kingdomino) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
 		DominoInKingdom ter = (DominoInKingdom) territories.get(territories.size() - 1);
 		Domino dom = ter.getDomino();
-		if(dom.getStatus( )== DominoStatus.CorrectlyPreplaced) {
+		if (dom.getStatus() == DominoStatus.CorrectlyPreplaced) {
 			dom.setStatus(DominoStatus.PlacedInKingdom);
-			//Set the next player here
+			// Set the next player here
 			return true;
 		}
 		return false;
 	}
-	
+
 	/******************
 	 * * Feature 14 * *
 	 ******************/
@@ -612,7 +869,7 @@ public class KingdominoController {
 
 	public static boolean verifyNeighborAdjacency(Kingdom aKingdom, Domino aDomino, int x, int y,
 			DirectionKind aDirection) {
-		int counter = 0;
+
 		int x1 = 0, y1 = 0;
 		switch (aDirection) {
 		case Up:
@@ -633,69 +890,57 @@ public class KingdominoController {
 			break;
 
 		}
-		Coord tileOne = new Coord(x, y);
-		Coord tileTwo = new Coord(x1, y1);
+		Coord tileOneCoord = new Coord(x, y);
+		Coord tileTwoCoord = new Coord(x1, y1);
+
 		for (KingdomTerritory d : aKingdom.getTerritories()) {
-			if (d.getClass().toString() == "DominoInKingdom") {
-				Coord temp = new Coord(d.getX(), d.getY());
-				if (temp.adJacentTo(tileOne) || temp.adJacentTo(tileTwo)) {
-					DominoInKingdom dik = (DominoInKingdom) d;
-					int x2 = 0, y2 = 0;
-					switch (dik.getDirection()) {
+			if (d instanceof DominoInKingdom) {
+				DominoInKingdom ter = (DominoInKingdom) d;
+				if (ter.getDomino() != aDomino) {
+					Coord tempOneCoord = new Coord(ter.getX(), ter.getY());
+					int tempX = 0, tempY = 0;
+					switch (ter.getDirection()) {
 					case Up:
-						y2 = dik.getY() + 1;
-						x2 = dik.getX();
+						tempY = ter.getY() + 1;
+						tempX = ter.getX();
+						break;
 					case Left:
-						x2 = dik.getX() - 1;
-						y2 = dik.getY();
+						tempX = ter.getX() - 1;
+						tempY = ter.getY();
+						break;
 					case Right:
-						x2 = dik.getX() + 1;
-						y2 = dik.getY();
+						tempX = ter.getX() + 1;
+						tempY = ter.getY();
+						break;
 					case Down:
-						x2 = dik.getX();
-						y2 = dik.getY() - 1;
+						tempX = ter.getX();
+						tempY = ter.getY() - 1;
+						break;
 
 					}
-					Coord leftcoord, rightcoord;
-					leftcoord = new Coord(dik.getX(), dik.getY());
-					rightcoord = new Coord(x2, y2);
-					if (leftcoord.adJacentTo(tileOne)) {
-						if (dik.getDomino().getLeftTile().equals(aDomino.getLeftTile())) {
-							counter += 1;
-						} else {
-							return false;
+					Coord tempTwoCoord = new Coord(tempX, tempY);
+					if (tileOneCoord.adJacentTo(tempOneCoord)) {
+						if (ter.getDomino().getLeftTile() == aDomino.getLeftTile()) {
+							return true;
 						}
 					}
-
-					if (leftcoord.adJacentTo(tileTwo)) {
-						if (dik.getDomino().getLeftTile().equals(aDomino.getRightTile())) {
-							counter += 1;
-						} else {
-							return false;
+					if (tileOneCoord.adJacentTo(tempTwoCoord)) {
+						if (ter.getDomino().getRightTile() == aDomino.getLeftTile()) {
+							return true;
 						}
 					}
-
-					if (rightcoord.adJacentTo(tileOne)) {
-						if (dik.getDomino().getRightTile().equals(aDomino.getLeftTile())) {
-							counter += 1;
-						} else {
-							return false;
+					if (tileTwoCoord.adJacentTo(tempOneCoord)) {
+						if (ter.getDomino().getLeftTile() == aDomino.getRightTile()) {
+							return true;
 						}
 					}
-
-					if (rightcoord.adJacentTo(tileTwo)) {
-						if (dik.getDomino().getRightTile().equals(aDomino.getRightTile())) {
-							counter += 1;
-						} else {
-							return false;
+					if (tileTwoCoord.adJacentTo(tempTwoCoord)) {
+						if (ter.getDomino().getRightTile() == aDomino.getRightTile()) {
+							return true;
 						}
 					}
-
 				}
 			}
-		}
-		if (counter != 0) {
-			return true;
 		}
 		return false;
 	}
@@ -708,7 +953,8 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically check that my current
 	// domino is not overlapping with existing dominos
 
-	public static boolean verifyNoOverlapping(Domino aDomino, Kingdom aKingdom, int x, int y, DirectionKind aDirection) {
+	public static boolean verifyNoOverlapping(Domino aDomino, Kingdom aKingdom, int x, int y,
+			DirectionKind aDirection) {
 
 		class coord {
 			public int x;
@@ -723,50 +969,68 @@ public class KingdominoController {
 				return (this.x == aCoord.x && this.y == aCoord.y);
 			}
 		}
+
 		int x1 = 0, y1 = 0;
 		switch (aDirection) {
 		case Up:
 			y1 = y + 1;
 			x1 = x;
+			break;
 		case Left:
 			x1 = x - 1;
 			y1 = y;
+			break;
 		case Right:
 			x1 = x + 1;
 			y1 = y;
+			break;
 		case Down:
 			x1 = x;
 			y1 = y - 1;
+			break;
 		}
 		coord tileOne = new coord(x, y);
 		coord tileTwo = new coord(x1, y1);
+		int index = 0;
 		for (KingdomTerritory d : aKingdom.getTerritories()) {
 			coord temp = new coord(d.getX(), d.getY());
-			if (d.getClass().toString() == "DominoInKingdom") {
+			if (d instanceof DominoInKingdom) {
 				DominoInKingdom dik = (DominoInKingdom) d;
-				int x2 = 0, y2 = 0;
-				switch (dik.getDirection()) {
-				case Up:
-					y2 = dik.getY() + 1;
-					x2 = dik.getX();
-				case Left:
-					x2 = dik.getX() - 1;
-					y2 = dik.getY();
-				case Right:
-					x2 = dik.getX() + 1;
-					y2 = dik.getY();
-				case Down:
-					x2 = dik.getX();
-					y2 = dik.getY() - 1;
-				}
-				coord leftcoord, rightcoord;
-				leftcoord = new coord(dik.getX(), dik.getY());
-				rightcoord = new coord(x2, y2);
-				if (leftcoord.equalsTo(tileOne) || leftcoord.equals(tileTwo) || rightcoord.equalsTo(tileOne)
-						|| rightcoord.equalsTo(tileTwo)) {
-					return false;
+				if (!dik.getDomino().equals(aDomino)) {
+					int x2 = 0, y2 = 0;
+					switch (dik.getDirection()) {
+					case Up:
+						y2 = dik.getY() + 1;
+						x2 = dik.getX();
+						break;
+					case Left:
+						x2 = dik.getX() - 1;
+						y2 = dik.getY();
+						break;
+					case Right:
+						x2 = dik.getX() + 1;
+						y2 = dik.getY();
+						break;
+					case Down:
+						x2 = dik.getX();
+						y2 = dik.getY() - 1;
+						break;
+					}
+					coord leftcoord, rightcoord;
+					leftcoord = new coord(dik.getX(), dik.getY());
+					rightcoord = new coord(x2, y2);
+
+					boolean leftOne = ((leftcoord.x == tileOne.x) && (leftcoord.y == tileOne.y));
+					boolean leftTwo = ((leftcoord.x == tileTwo.x) && (leftcoord.y == tileTwo.y));
+					boolean rightOne = ((rightcoord.x == tileOne.x) && (rightcoord.y == tileOne.y));
+					boolean rightTwo = ((rightcoord.x == tileTwo.x) && (rightcoord.y == tileTwo.y));
+
+					if (leftOne || leftTwo || rightOne || rightTwo) {
+						return false;
+					}
 				}
 			}
+			index++;
 		}
 		return true;
 	}
@@ -780,31 +1044,38 @@ public class KingdominoController {
 	// my kingdom has not yet exceeded a square of 5x5 tiles (including my castle)
 
 	public static boolean verifyGridSize(Kingdom aKingdom) {
-		int maxX = 0;
-		int maxY = 0;
-		int minX = 0;
-		int minY = 0;
+		int maxX = -5;
+		int maxY = -5;
+		int minX = 5;
+		int minY = 5;
 		int x = 0, y = 0, x2 = 0, y2 = 0;
 		for (KingdomTerritory d : aKingdom.getTerritories()) {
-			System.out.print(d.getClass().toString());
-			if (d.getClass().toString() == "KingdomTerritoy") {
-				
+
+
+			if (d instanceof DominoInKingdom) {
+
 				DominoInKingdom dik = (DominoInKingdom) d;
+
 				x = dik.getX();
 				y = dik.getY();
+
 				switch (dik.getDirection()) {
 				case Up:
-					y2 = dik.getY() + 1;
-					x2 = dik.getX();
+					y2 = y + 1;
+					x2 = x;
+					break;
 				case Left:
-					x2 = dik.getX() - 1;
-					y2 = dik.getY();
+					x2 = x - 1;
+					y2 = y;
+					break;
 				case Right:
-					x2 = dik.getX() + 1;
-					y2 = dik.getY();
+					x2 = x + 1;
+					y2 = y;
+					break;
 				case Down:
-					x2 = dik.getX();
-					y2 = dik.getY() - 1;
+					x2 = x;
+					y2 = y - 1;
+					break;
 				}
 				if (x < minX) {
 					minX = x;
@@ -825,11 +1096,26 @@ public class KingdominoController {
 				if (y > maxY) {
 					maxY = y;
 				}
+
 				if (y2 < minY) {
 					minY = y2;
 				}
 				if (y2 > maxY) {
 					maxY = y2;
+				}
+			}
+			if (d instanceof Castle) {
+				if (d.getX() > maxX) {
+					maxX = d.getX();
+				}
+				if (d.getX() < minX) {
+					minX = d.getX();
+				}
+				if (d.getY() > maxY) {
+					maxY = d.getY();
+				}
+				if (d.getY() < minY) {
+					minY = d.getY();
 				}
 			}
 		}
@@ -849,40 +1135,1005 @@ public class KingdominoController {
 	// {Discard domino}
 	// As a player, I wish to discard a domino if it cannot be placed to my kingdom
 	// in a valid way
+	
+	/**
+	 * If a player can't place a domino in a his own domino in any maner possible, that domino gets discarded from the game.
+	 * @param kingdomino The kingdomino application from which we get our current game to analyze.
+	 * @return boolean A boolean value which indicates whether the domino has been successfully discarded (true) from a kingdom or not (false).
+	 * @author Mathieu-Joseph Magri
+	 */
+
+	public static boolean discardDomino(Kingdomino kingdomino) {
+		Player player = kingdomino.getCurrentGame().getNextPlayer();
+		if (canStillPlay(player.getKingdom())) {
+			player.getDominoSelection().getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
+			return false;
+		} else {
+			player.getDominoSelection().getDomino().setStatus(DominoStatus.Discarded);
+			return true;
+		}
+	}
+	/**
+	 * Verifies whether or not a domino can still be placed in a player's kingdom.
+	 * @param kingdom  The kingdomino application from which we get our current game to analyze.
+	 * @return boolean A boolean value which indicates whether the domino can still be placed within a player's kingdom or not.
+	 * @author Mathieu-Joseph Magri
+	 */
+	public static boolean canStillPlay(Kingdom kingdom) {
+		DominoInKingdom dom = (DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size() - 1);
+		int originalX = dom.getX();
+		int originalY = dom.getY();
+		boolean castleAdjacency;
+		boolean neighborAdjacency;
+		boolean noOverlapping;
+		boolean validGridSize;
+		for (int i = -5; i <= 5; i++) {
+			for (int j = -5; j < 5; j++) {
+				for (DirectionKind dir : DirectionKind.values()) {
+					dom.setX(i);
+					dom.setY(j);
+					castleAdjacency = verifyCastleAdjacency(dom.getX(), dom.getY(), dir);
+					neighborAdjacency = verifyNeighborAdjacency(kingdom, dom.getDomino(), dom.getX(), dom.getY(), dir);
+					noOverlapping = verifyNoOverlapping(dom.getDomino(), kingdom, dom.getX(), dom.getY(), dir);
+					validGridSize = verifyGridSize(kingdom);
+					if ((castleAdjacency || neighborAdjacency) && noOverlapping && validGridSize) {
+						dom.setX(originalX);
+						dom.setY(originalY);
+						return true;
+					}
+				}
+			}
+		}
+		dom.setX(originalX);
+		dom.setY(originalY);
+		return false;
+	}
 
 	/******************
 	 * * Feature 19 * *
 	 ******************/
 
+	
+	/**
+	 * @author kaichengwu
+	 * @param kingdomino
+	 * @return void
+	 * this method identifies the kingdom properties
+	 */
+	
 	// {Identify kingdom properties}
 	// As a player, I want the Kingdomino app to automatically determine each
 	// properties of my kingdom so that my score can be calculated
+	public static void identifyProperties(Kingdomino kingdomino) {
+		Game game = kingdomino.getCurrentGame();
+		Player player = game.getNextPlayer();
+		Kingdom kingdom = player.getKingdom();
+		
+		
+		List<KingdomTerritory> territories = new ArrayList<KingdomTerritory>(kingdom.getTerritories());
+		
+		ArrayList<HashMap<String,Object>> tiles = new ArrayList<>();
+		
+		HashMap<String,Integer> locations = new HashMap<>();
+		int index=0;
+		for(KingdomTerritory ter : territories) {
+			if(ter instanceof DominoInKingdom) {
+				DominoInKingdom domino = (DominoInKingdom) ter;
+				HashMap<String,Object> left = new HashMap<>();
+				HashMap<String,Object> right = new HashMap<>();
+				
+				int x1 = 0, y1 = 0;
+				int x = domino.getX();
+				int y = domino.getY();
+				switch (domino.getDirection()) {
+				case Up:
+					y1 = y + 1;
+					x1 = x;
+					break;
+				case Left:
+					x1 = x - 1;
+					y1 = y;
+					break;
+				case Right:
+					x1 = x + 1;
+					y1 = y;
+					break;
+				case Down:
+					x1 = x;
+					y1 = y - 1;
+					break;
+				}
+				
+				left.put("terrain", domino.getDomino().getLeftTile());
+				left.put("x", x);
+				left.put("y", y);
+				left.put("domino", domino.getDomino());
+				left.put("property", null);
+				
+				right.put("terrain", domino.getDomino().getRightTile());
+				right.put("x", x1);
+				right.put("y", y1);
+				right.put("domino", domino.getDomino());
+				right.put("property", null);
+				
+				tiles.add(left);
+				tiles.add(right);
+				
+				String locationl = Integer.toString(x) + Integer.toString(y);
+				locations.put(locationl, index);
+				index++;
+				
+				String locationr = Integer.toString(x1) + Integer.toString(y1);
+				locations.put(locationr, index);
+				index++;
+			}
+//			System.out.println("#######");
+//			System.out.println(tiles);
+//			System.out.println("#######");
+			
+		}
+//		
+		for(HashMap<String,Object> tile : tiles) {
+			
+			int leftx = Integer.parseInt(tile.get("x").toString())-1;
+			int lefty = Integer.parseInt(tile.get("y").toString());
+			String left = Integer.toString(leftx) + Integer.toString(lefty);
+			
+			int upx = Integer.parseInt(tile.get("x").toString());
+			int upy = Integer.parseInt(tile.get("y").toString())+1;
+			String up = Integer.toString(upx) + Integer.toString(upy);
+			
+			int rightx = Integer.parseInt(tile.get("x").toString())+1;
+			int righty = Integer.parseInt(tile.get("y").toString());
+			String right = Integer.toString(rightx) + Integer.toString(righty);
+			
+			int downx = Integer.parseInt(tile.get("x").toString());
+			int downy = Integer.parseInt(tile.get("y").toString())-1;
+			String down = Integer.toString(downx) + Integer.toString(downy);
+			int locationl=-1;
+			int locationu=-1;
+			int locationr=-1;
+			int locationd=-1;
+			
+			boolean l = true;
+			boolean u = true;
+			boolean r = true;
+			boolean d = true;
+			
+			if(locations.containsKey(left)) {
+				locationl = locations.get(left);
+			}else {
+				l=false;
+			}
+			if(locations.containsKey(up)) {
+				locationu = locations.get(up);
+			}else {
+				u=false;
+			}
+			
+			if(locations.containsKey(right)) {
+				locationr = locations.get(right);
+			}else {
+				r=false;
+			}
+			if(locations.containsKey(down)) {
+				locationd = locations.get(down);
+			}else {
+				d=false;
+			}
+			
+			//all cases of expanding are plotted bellow,
+			//a new tile of the same terrain type was added to a singular tile of the same type; (e.g. a tile on the left)
+			//or a new tile was added between two tiles of the same type; (e.g. a tile on top, a tile on the left)
+			//or a new tile was added between three tiles (e.g. a tile on top, a tile on the left, a tile on the right)
+			
+			boolean myLeft = l &&tiles.get(locationl).get("property")!=null && tile.get("terrain").equals(tiles.get(locationl).get("terrain"));
+			boolean myUp = u&&tiles.get(locationu).get("property")!=null && tile.get("terrain").equals(tiles.get(locationu).get("terrain"));
+			boolean myRight = r&&tiles.get(locationr).get("property")!=null  && tile.get("terrain").equals(tiles.get(locationr).get("terrain"));
+			boolean myDown = d&&tiles.get(locationd).get("property")!=null  && tile.get("terrain").equals(tiles.get(locationd).get("terrain"));
+			if(myLeft&&myRight) {
+				tile.put("property", tiles.get(locationl).get("property"));
+				Property prop = (Property)tiles.get(locationl).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationr).get("property").equals(tiles.get(locationl).get("property"))){
+					Property tem = (Property) tiles.get(locationr).get("property");
+					tem.delete();
+					tiles.get(locationr).put("property", tiles.get(locationl).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationr).get("domino"));
+					
+				}
+			}
+			if(myLeft&&myUp) {
+				tile.put("property", tiles.get(locationl).get("property"));
+				Property prop = (Property)tiles.get(locationl).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationu).get("property").equals(tiles.get(locationl).get("property"))){
+					Property tem = (Property) tiles.get(locationu).get("property");
+					tem.delete();
+					tiles.get(locationu).put("property", tiles.get(locationl).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
+					
+				}
+			}
+			if(myLeft&&myDown) {
+				tile.put("property", tiles.get(locationl).get("property"));
+				Property prop = (Property)tiles.get(locationl).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationd).get("property").equals(tiles.get(locationl).get("property"))){
+					Property tem = (Property) tiles.get(locationd).get("property");
+					tem.delete();
+					tiles.get(locationd).put("property", tiles.get(locationl).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
+					
+				}
+			}
+			if(myUp&&myRight) {
+				tile.put("property", tiles.get(locationu).get("property"));
+				Property prop = (Property)tiles.get(locationu).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationr).get("property").equals(tiles.get(locationu).get("property"))){
+					Property tem = (Property) tiles.get(locationr).get("property");
+					tem.delete();
+					tiles.get(locationr).put("property", tiles.get(locationu).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationr).get("domino"));
+					
+				}
+			}
+			if(myUp&&myDown) {
+				tile.put("property", tiles.get(locationu).get("property"));
+				Property prop = (Property)tiles.get(locationu).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationd).get("property").equals(tiles.get(locationu).get("property"))){
+					Property tem = (Property) tiles.get(locationd).get("property");
+					tem.delete();
+					tiles.get(locationd).put("property", tiles.get(locationu).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
+					
+				}
+			}
+			if(myRight&&myDown) {
+				tile.put("property", tiles.get(locationr).get("property"));
+				Property prop = (Property)tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationd).get("property");
+					tem.delete();
+					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
+					
+				}
+			}
+			if(myLeft&&myUp&&myRight) {
+				tile.put("property", tiles.get(locationr).get("property"));
+				Property prop = (Property)tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationu).get("property");
+					tem.delete();
+					tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
+					
+				}
+				if(!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationl).get("property");
+					tem.delete();
+					tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationl).get("domino"));
+					
+				}
+			}
+			if(myLeft&&myDown&&myRight) {
+				tile.put("property", tiles.get(locationr).get("property"));
+				Property prop = (Property)tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationd).get("property");
+					tem.delete();
+					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
+					
+				}
+				if(!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationl).get("property");
+					tem.delete();
+					tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationl).get("domino"));
+					
+				}
+			}
+			if(myDown&&myUp&&myRight) {
+				tile.put("property", tiles.get(locationr).get("property"));
+				Property prop = (Property)tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationu).get("property");
+					tem.delete();
+					tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
+					
+				}
+				if(!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationd).get("property");
+					tem.delete();
+					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
+					
+				}
+			}
+			if(myLeft&&myUp&&myDown) {
+				tile.put("property", tiles.get(locationd).get("property"));
+				Property prop = (Property)tiles.get(locationd).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationu).get("property").equals(tiles.get(locationd).get("property"))){
+					Property tem = (Property) tiles.get(locationu).get("property");
+					tem.delete();
+					tiles.get(locationu).put("property", tiles.get(locationd).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
+					
+				}
+				if(!tiles.get(locationl).get("property").equals(tiles.get(locationd).get("property"))){
+					Property tem = (Property) tiles.get(locationl).get("property");
+					tem.delete();
+					tiles.get(locationl).put("property", tiles.get(locationd).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationl).get("domino"));
+					
+				}
+			}
+			if(myLeft&&myUp&&myRight&&myDown) {
+				tile.put("property", tiles.get(locationr).get("property"));
+				Property prop = (Property)tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				if(!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationu).get("property");
+					tem.delete();
+					tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
+					
+				}
+				if(!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationl).get("property");
+					tem.delete();
+					tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationl).get("domino"));
+					
+				}
+				if(!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))){
+					Property tem = (Property) tiles.get(locationd).get("property");
+					tem.delete();
+					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
+					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
+					
+				}
+			}
+			if(myLeft) {
+				
+				tile.put("property", tiles.get(locationl).get("property"));
+				Property prop = (Property)tiles.get(locationl).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				continue;
+			}else if(myUp) {
+				tile.put("property", tiles.get(locationu).get("property"));
+				Property prop = (Property)tiles.get(locationu).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				continue;
+			}else if(myRight) {
+				tile.put("property", tiles.get(locationr).get("property"));
+				Property prop = (Property)tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				continue;
+			}else if(myDown) {
+				tile.put("property", tiles.get(locationd).get("property"));
+				Property prop = (Property)tiles.get(locationd).get("property");
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+				continue;
+			}else {
+				
+				tile.put("property", new Property(kingdom));
+				Property prop = (Property)tile.get("property");
+				Domino dom =(Domino)tile.get("domino");
+				prop.setLeftTile((TerrainType)tile.get("terrain"));
+				prop.addIncludedDomino((Domino)tile.get("domino"));
+			}
+		}
+		
+		//testing codes
+		//___________________________________________________________
+//		System.out.print(locations);
+//		for(int i =0;i<kingdom.getProperties().size();i++) {
+//			System.out.println("#############");
+//			System.out.println(kingdom.getProperty(i).getIncludedDominos());
+//			System.out.println("#############");
+//		}
+//		checkForConnected(player.getKingdom().getProperties(), player.getKingdom());
+//		List<Property> props = player.getKingdom().getProperties();
+//		for(int i = 0; i< props.size(); i++) {
+//			if(props.get(i).getLeftTile() == null) {
+//				props.get(i).delete();
+//				i--;
+//			}
+//		}
+	}
+	//_______another attempt of implementing the feature________
+//	public static void identifyProperties(Kingdomino kingdomino) {
+//		
+//		Player player = kingdomino.getCurrentGame().getNextPlayer();
+//		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
+//		List<Property> properties = player.getKingdom().getProperties();
+//		boolean isMatchL;
+//		boolean isMatchR;
+//		// Going through all of the territories in the kingdom
+//		for (int i = 0; i < territories.size(); i++) {
+//			// Only care about the territories that are DominoInKingdoms
+//			if (territories.get(i) instanceof DominoInKingdom) {
+//				// Working with the DominoInKingdom
+//				DominoInKingdom ter = (DominoInKingdom) territories.get(i);
+//
+//				isMatchL = false;
+//				// Looking at the left tile
+//				for (int j = 0; j < properties.size(); j++) {
+//					// If this property type matches the left tile type
+//					if (ter.getDomino().getLeftTile() == properties.get(j).getLeftTile()) {
+//						// If the domino isn't already present in the property
+//						if (!propertyContains(ter, properties.get(j))) {
+//							// If the domino left tile is adjacent to another square of a domino in property
+//							// of same type
+//							if (isLeftMatch(ter, properties.get(j), player.getKingdom())) {
+//								properties.get(j).addIncludedDomino(ter.getDomino());
+//								isMatchL = true;
+//							}
+//						} else {
+//							isMatchL = true;
+//						}
+//					}
+//
+//				}
+//				if (!isMatchL) {
+//					Property prop = new Property(player.getKingdom());
+//					prop.addIncludedDomino(ter.getDomino());
+//					prop.setLeftTile(ter.getDomino().getLeftTile());
+//					player.getKingdom().addProperty(prop);
+//				}
+//				// Looking at the right tile
+//				isMatchR = false;
+//				// Looking at the left tile
+//				for (int j = 0; j < properties.size(); j++) {
+//					// If this property type matches the left tile type
+//					if (ter.getDomino().getRightTile() == properties.get(j).getLeftTile()) {
+//						// If the domino isn't already present in the property
+//						if (!propertyContains(ter, properties.get(j))) {
+//							// If the domino left tile is adjacent to another square of a domino in property
+//							// of same type
+//							if (isRightMatch(ter, properties.get(j), player.getKingdom())) {
+//								properties.get(j).addIncludedDomino(ter.getDomino());
+//								isMatchR = true;
+//							}
+//						} else {
+//							isMatchR = true;
+//						}
+//					}
+//
+//				}
+//				if (!isMatchR) {
+//					Property prop = new Property(player.getKingdom());
+//					prop.addIncludedDomino(ter.getDomino());
+//					prop.setLeftTile(ter.getDomino().getRightTile());
+//					player.getKingdom().addProperty(prop);
+//				}
+//			}
+//		}
+//		
+////		checkForConnected(player.getKingdom().getProperties(), player.getKingdom());
+////		List<Property> props = player.getKingdom().getProperties();
+////		for(int i = 0; i< props.size(); i++) {
+////			if(props.get(i).getLeftTile() == null) {
+////				props.get(i).delete();
+////				i--;
+////			}
+////		}
+//	}
+
+	//private helper methods
+	private static void checkForConnected(List<Property> properties, Kingdom k) {
+		ArrayList<Property> propsOfType = new ArrayList<Property>();
+		for (TerrainType type : TerrainType.values()) {
+			for (Property prop : properties) {
+				if (prop.getLeftTile() == type) {
+					propsOfType.add(prop);
+				}
+			}
+			if (propsOfType.size() > 1) {
+				handleDuplicates(propsOfType, k);
+			}
+			if (!propsOfType.isEmpty()) {
+				propsOfType.clear();
+			}
+		}
+	}
+
+	private static void handleDuplicates(ArrayList<Property> propsOfType, Kingdom k) {
+		HashMap<Integer, Integer> map = new HashMap<>();
+		ArrayList<Integer> indexes = new ArrayList<>();
+		for (int i = 0; i < propsOfType.size(); i++) {
+			for (int j = 0; j < propsOfType.get(i).getIncludedDominos().size(); j++) {
+				if (!map.containsKey(propsOfType.get(i).getIncludedDomino(j).getId())) {
+					map.put(propsOfType.get(i).getIncludedDomino(j).getId(), i);
+				} else {
+					int index = map.get(propsOfType.get(i).getIncludedDomino(j).getId());
+					if (!indexes.contains(index)) {
+						indexes.add(index);
+					}
+					if (!indexes.contains(i)) {
+						indexes.add(i);
+					}
+				}
+			}
+		}
+		
+		Property prop = new Property(k);
+		for (int i : indexes) {
+			prop.setLeftTile(propsOfType.get(i).getLeftTile());
+			for (int j = 0; j < propsOfType.get(i).getIncludedDominos().size(); j++) {
+				prop.addIncludedDomino(propsOfType.get(i).getIncludedDomino(j));
+
+			}
+		}
+		List<Domino> dominos = new ArrayList<Domino>(prop.getIncludedDominos());
+
+		Collections.sort(dominos, (a, b) -> a.getId() - b.getId());
+
+		for (int i = 0; i < dominos.size(); i++) {
+			prop.addOrMoveIncludedDominoAt(dominos.get(i), i);
+
+		}
+		
+		List<Property> temp = new ArrayList<Property>(k.getProperties());
+		for (Property todelete : temp) {
+			for (int j : indexes) {
+				if (todelete.equals(propsOfType.get(j))) {
+					todelete.delete();
+				}
+			}
+		}
+
+	}
+
+	private static String getDominos(Property property) {
+		List<Domino> dominos = property.getIncludedDominos();
+		String doms = "";
+		for (Domino dominoInProp : dominos) {
+			if (!doms.equals("")) {
+				doms += ',';
+			}
+			doms += dominoInProp.getId();
+		}
+		return doms;
+	}
+
+	private static boolean propertyContains(DominoInKingdom dom, Property prop) {
+		for (Domino domInProperty : prop.getIncludedDominos()) {
+			if (dom.getDomino() == domInProperty) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean isLeftMatch(DominoInKingdom dom, Property prop, Kingdom kingdom) {
+		boolean isMatch = false;
+		TerrainType type = prop.getLeftTile();
+		// Comparing with all of the dominos in the property
+		for (Domino domInProperty : prop.getIncludedDominos()) {
+			DominoInKingdom tempTer = null;
+			// Getting the DominoInKingdom object with that domino
+			for (KingdomTerritory t : kingdom.getTerritories()) {
+				if (t instanceof DominoInKingdom) {
+					if (((DominoInKingdom) t).getDomino() == domInProperty) {
+						tempTer = (DominoInKingdom) t;
+						break;
+					}
+				}
+			}
+			Coord curCoord = new Coord(dom.getX(), dom.getY());
+			Coord toCompareCoord = new Coord(tempTer.getX(), tempTer.getY());
+			if (dom.getDomino().getLeftTile() == tempTer.getDomino().getLeftTile()
+					&& curCoord.adJacentTo(toCompareCoord)) {
+				isMatch = true;
+			}
+			switch (tempTer.getDirection()) {
+			case Up:
+				toCompareCoord = new Coord(tempTer.getX(), tempTer.getY() + 1);
+				break;
+			case Down:
+				toCompareCoord = new Coord(tempTer.getX(), tempTer.getY() - 1);
+				break;
+			case Left:
+				toCompareCoord = new Coord(tempTer.getX() - 1, tempTer.getY());
+				break;
+			case Right:
+				toCompareCoord = new Coord(tempTer.getX() + 1, tempTer.getY());
+				break;
+			}
+			if (dom.getDomino().getLeftTile() == tempTer.getDomino().getRightTile()
+					&& curCoord.adJacentTo(toCompareCoord)) {
+				isMatch = true;
+			}
+		}
+		return isMatch;
+	}
+
+	private static boolean isRightMatch(DominoInKingdom dom, Property prop, Kingdom kingdom) {
+		boolean isMatch = false;
+		TerrainType type = prop.getLeftTile();
+		// Comparing with all of the dominos in the property
+		for (Domino domInProperty : prop.getIncludedDominos()) {
+			DominoInKingdom tempTer = null;
+			// Getting the DominoInKingdom object with that domino
+			for (KingdomTerritory t : kingdom.getTerritories()) {
+				if (t instanceof DominoInKingdom) {
+					if (((DominoInKingdom) t).getDomino() == domInProperty) {
+						tempTer = (DominoInKingdom) t;
+						break;
+					}
+				}
+			}
+			Coord curCoord = null;
+			switch (dom.getDirection()) {
+			case Up:
+				curCoord = new Coord(dom.getX(), dom.getY() + 1);
+				break;
+			case Down:
+				curCoord = new Coord(dom.getX(), dom.getY() - 1);
+				break;
+			case Left:
+				curCoord = new Coord(dom.getX() - 1, dom.getY());
+				break;
+			case Right:
+				curCoord = new Coord(dom.getX() + 1, dom.getY());
+				break;
+			}
+			Coord toCompareCoord = new Coord(tempTer.getX(), tempTer.getY());
+			if (dom.getDomino().getRightTile() == tempTer.getDomino().getLeftTile()
+					&& curCoord.adJacentTo(toCompareCoord)) {
+				isMatch = true;
+			}
+			switch (tempTer.getDirection()) {
+			case Up:
+				toCompareCoord = new Coord(tempTer.getX(), tempTer.getY() + 1);
+				break;
+			case Down:
+				toCompareCoord = new Coord(tempTer.getX(), tempTer.getY() - 1);
+				break;
+			case Left:
+				toCompareCoord = new Coord(tempTer.getX() - 1, tempTer.getY());
+				break;
+			case Right:
+				toCompareCoord = new Coord(tempTer.getX() + 1, tempTer.getY());
+				break;
+			}
+			if (dom.getDomino().getRightTile() == tempTer.getDomino().getRightTile()
+					&& curCoord.adJacentTo(toCompareCoord)) {
+				isMatch = true;
+			}
+		}
+		return isMatch;
+	}
+
+//	private static void checkForConnected(List<Property> properties, Kingdom k) {
+//		ArrayList<Property> propsOfType = new ArrayList<Property>();
+//		for (TerrainType type : TerrainType.values()) {
+//			for (Property prop : properties) {
+//				if (prop.getLeftTile() == type) {
+//					propsOfType.add(prop);
+//				}
+//			}
+//			if (propsOfType.size() > 1) {
+//				handleDuplicates(propsOfType, k);
+//			}
+//			if (!propsOfType.isEmpty()) {
+//				propsOfType.clear();
+//			}
+//		}
+//	}
+
+//	private static void handleDuplicates(List<Property> propsOfType, Kingdom k) {
+//		boolean duplicate = false;
+//		Kingdom kingdom = k;
+//		ArrayList<Property> toDelete = new ArrayList<Property>();
+//		do {
+//			duplicate = false;
+//			for (int i = 0; i < propsOfType.size() - 1; i++) {
+//				for (int j = i; j < propsOfType.size(); j++) {
+//					if (matchingDomino(propsOfType.get(i), propsOfType.get(j))) {
+//						System.out.println("GAFGAFGADGDFGS");
+//						System.out.println(propsOfType.get(i).getLeftTile());
+//						kingdom = propsOfType.get(i).getKingdom();
+//						Property newProp = combineProperties(propsOfType.get(i), propsOfType.get(j));
+//						toDelete.add(propsOfType.get(i));
+//						toDelete.add(propsOfType.get(j));
+//						propsOfType.get(i).delete();
+//						propsOfType.get(j).delete();
+//						kingdom.addProperty(newProp);
+//						duplicate = true;
+//					}
+//				}
+//				for (Property p : toDelete) {
+//					deleteProperty(kingdom, p);
+//				}
+//			}
+//		} while (duplicate);
+//
+//	}
+
+//	private static void deleteProperty(Kingdom kingdom, Property p) {
+//		if (kingdom.hasProperties()) {
+//			for (Property prop : kingdom.getProperties()) {
+//				if (p.getIncludedDominos() == prop.getIncludedDominos()) {
+//					prop.delete();
+//					break;
+//				}
+//			}
+//		}
+//	}
+//
+//	private static boolean matchingDomino(Property p1, Property p2) {
+//		ArrayList<Integer> ids = new ArrayList<Integer>();
+//		for (Domino dom : p1.getIncludedDominos()) {
+//			ids.add(dom.getId());
+//		}
+//		for (Domino dom : p2.getIncludedDominos()) {
+//			if (ids.contains(dom.getId())) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+////
+//	private static Property combineProperties(Property p1, Property p2) {
+//		ArrayList<Domino> dominos = new ArrayList<Domino>();
+//		;
+//		Property p = new Property(p1.getKingdom());
+//		for (Domino dom : p1.getIncludedDominos()) {
+//			dominos.add(dom);
+//			p.addIncludedDomino(dom);
+//		}
+//		for (Domino dom : p2.getIncludedDominos()) {
+//			if (!dominos.contains(dom)) {
+//				dominos.add(dom);
+//				p.addIncludedDomino(dom);
+//			}
+//		}
+//		p.setLeftTile(p1.getLeftTile());
+//		return p;
+//	}
+	
+	
 
 	/******************
 	 * * Feature 20 * *
 	 ******************/
 
+	/**
+	 * this methods calculate the attributes of each property (num of crowns & size of property), and sets them up for furthur use
+	 * @author kaichengwu
+	 * @param kingdomino
+	 * @return void
+	 */
 	// {Calculate property score}
 	// As a player, I want the Kingdomino app to automatically calculate the score
 	// for each of my property based upon the size of that property and the number
 	// of crowns
 
+	public static void calculatePropertyAttributes(Kingdomino kingdomino) {
+		Player player = kingdomino.getCurrentGame().getNextPlayer();
+		List<Property> properties = player.getKingdom().getProperties();
+		for (Property p : properties) {
+			int inc = 0;
+			for (Domino d : p.getIncludedDominos()) {
+				
+				if(d.getLeftTile()==p.getLeftTile()) {
+					
+					p.setCrowns(p.getCrowns() + d.getLeftCrown());
+					inc ++;
+				}
+				if(d.getRightTile()==p.getLeftTile()) {
+//					System.out.print(d.getRightCrown());
+					p.setCrowns(p.getCrowns() + d.getRightCrown());
+					inc++;
+				}
+				
+			}
+			p.setSize(inc);
+			p.setScore(p.getSize()*p.getCrowns());
+		}
+	}
+
 	/******************
 	 * * Feature 21 * *
 	 ******************/
 
+	
+	/**
+	 * this feature calculates the bonus score of the player if the bonus feature harmony/middle kingdom were selected at the beginning of the game
+	 * @param kingdomino
+	 * @return void
+	 * @author kaichengwu
+	 */
 	// { Calculate bonus scores}
 	// As a player, I want the Kingdomino app to automatically calculate the bonus
 	// scores (for Harmony and middle Kingdom) if those bonus scores were selected
 	// as a game option
 
+	public static void calculateBonusScore(Kingdomino kingdomino) {
+		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+		int bonusScore = 0;
+		for (BonusOption b : kingdomino.getCurrentGame().getSelectedBonusOptions()) {
+			
+			if (b.getOptionName().equals("Harmony")) {
+				
+				bonusScore += calculateHarmony(player);
+			}
+			
+			if (b.getOptionName().equals("MiddleKingdom")) {
+				
+				bonusScore += calculateMiddleKingdom(player);
+			}
+		}
+		player.setBonusScore(bonusScore);
+	}
+
+	//if there are 13 terriotories in kingtom => harmony is achieved
+	private static int calculateHarmony(Player player) {
+		if (player.getKingdom().getTerritories().size() == 13) {
+			return 5;
+		} else {
+			return 0;
+		}
+	}
+
+	//if the castle is in the middle => middlekingdom is achieved
+	private static int calculateMiddleKingdom(Player player) {
+		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
+		
+		int minX = territories.get(0).getX();
+		int minY = territories.get(0).getY();
+		int maxX = territories.get(0).getX();
+		int maxY = territories.get(0).getY();
+
+		for (KingdomTerritory d : territories) {
+			if (d instanceof DominoInKingdom) {
+				DominoInKingdom dik = (DominoInKingdom) d;
+				int x = dik.getX();
+				int y = dik.getY();
+				int x2 = x, y2 = y;
+				switch (dik.getDirection()) {
+				case Up:
+					y2 = y + 1;
+					x2 = x;
+					break;
+				case Left:
+					x2 = x - 1;
+					y2 = y;
+					break;
+				case Right:
+					x2 = x + 1;
+					y2 = y;
+					break;
+				case Down:
+					x2 = x;
+					y2 = y - 1;
+					break;
+				}
+				if (x < minX) {
+					minX = x;
+				}
+				if (x > maxX) {
+					maxX = x;
+				}
+				if (x2 < minX) {
+					minX = x2;
+				}
+				if (x2 > maxX) {
+					maxX = x2;
+				}
+
+				if (y < minY) {
+					minY = y;
+				}
+				if (y > maxY) {
+					maxY = y;
+				}
+
+				if (y2 < minY) {
+					minY = y2;
+				}
+				if (y2 > maxY) {
+					maxY = y2;
+				}
+			}
+			if (d instanceof Castle) {
+				if (d.getX() > maxX) {
+					maxX = d.getX();
+				}
+				if (d.getX() < minX) {
+					minX = d.getX();
+				}
+				if (d.getY() > maxY) {
+					maxY = d.getY();
+				}
+				if (d.getY() < minY) {
+					minY = d.getY();
+				}
+			}
+		}
+		if (minX == (-1) * maxX && minY == (-1) * maxY) {
+			return 10;
+		} else {
+			
+			return 0;
+		}
+	}
+
+	
+	
 	/******************
 	 * * Feature 22 * *
 	 ******************/
+	
+	/**
+	 * @author kaichengwu
+	 * @param kingdomino
+	 * @return void
+	 * this features calculate the total score of the player by summing up the score of each individual property
+	 */
+	public static void calculatePlayerScore(Kingdomino kingdomino){
+		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+		int propscore = 0;
+		List<Property> myprop = player.getKingdom().getProperties();
+		for(int i=0; i<myprop.size();i++) {
+			propscore+= myprop.get(i).getScore();
+		}
 
+		player.setPropertyScore(propscore);
+		
+	}
+
+	
+	
 	// {Calculate player score}
 	// As a player, I want the Kingdomino app to automatically calculate the score
 	// for each player by summing up their property scores and their bonus scores
+//	
+//	public static void calculatePlayerScore(Kingdomino kingdomino, Player s) {
+//		//identifyProperties(kingdomino);
+//		//calculatePropertyAttributes(kingdomino);
+//		//Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+//		Player player = kingdomino.getCurrentGame().getNextPlayer();
+//		int playerScore = 0; 
+//		List<Property> props = player.getKingdom().getProperties();
+//		
+//		System.out.println(player.getKingdom().getProperty(0));
+//		System.out.println(props.size());
+////		System.out.println(props.get(1).getCrowns());
+////		System.out.println(props.get(2).getCrowns());
+//		
+//		//System.out.println();
+//		for(Property p : props) {
+//			
+//			playerScore += (p.getKingdom().getTerritories().size()) * (p.getCrowns());
+//			System.out.println(playerScore);
+//		}
+////		for(Property p : props) {
+////			playerScore += (p.getKingdom().getTerritories().size()) * (p.getCrowns());
+////			System.out.println(playerScore);
+////		}
+////		for(int i=0; i<props.size()) {
+////			
+////		}
+//		//System.out.println(playerScore);
+//		//calculateBonusScore(kingdomino);
+//		player.setPropertyScore(playerScore);
+//	}
+
 
 	/******************
 	 * * Feature 23 * *
@@ -955,338 +2206,8 @@ public class KingdominoController {
 	// tiebreak (i.e. equal score between players) by evaluating the most extended
 	// (largest) property and then the total number of crowns
 
+	// Handled in feature 23
 	// ****************************************************************************************
 
-	public static DominoInKingdom rightTile(DominoInKingdom leftTile) {
-		DominoInKingdom rightTile = new DominoInKingdom(leftTile.getX(), leftTile.getY(), leftTile.getKingdom(),
-				leftTile.getDomino());
-		TerrainType terr = leftTile.getDomino().getRightTile();
-		if (leftTile.getDirection() == DirectionKind.Up) {
-			rightTile.setY(leftTile.getY() + 1);
-		} else if (leftTile.getDirection() == DirectionKind.Down) {
-			rightTile.setY(leftTile.getY() - 1);
-		} else if (leftTile.getDirection() == DirectionKind.Left) {
-			rightTile.setX(leftTile.getX() - 1);
-		} else {
-			rightTile.setX(leftTile.getX() + 1);
-		}
-
-		return rightTile;
-	}
-
-	public static boolean isConnected(DominoInKingdom d1, DominoInKingdom d2) {
-		if (d1.getX() == d2.getX() && d1.getY() == d2.getY() - 1) {
-			return true;
-		} else if (d1.getX() == d2.getX() && d1.getY() == d2.getY() + 1) {
-			return true;
-		} else if (d1.getY() == d2.getY() && d1.getX() == d2.getX() - 1) {
-			return true;
-		} else if (d1.getY() == d2.getY() && d1.getX() == d2.getX() + 1) {
-			return true;
-		}
-
-		return false;
-	}
-
-	public static Property[] IdentifyKingdomProperties(DominoInKingdom[] playedDominoes, Kingdom aKingdom){
-		
-
-		Property[] myProperties= new Property[playedDominoes.length];
-		for(int i=0; i<playedDominoes.length; i++) {
-			Property aProperty = new Property(aKingdom);
-			if(aProperty.getIncludedDominos()==null) {
-				aProperty.addIncludedDomino(playedDominoes[i].getDomino());
-				
-			}
-				for(int j=i+1; j<playedDominoes.length; j++) {
-					if(isConnected(playedDominoes[j], playedDominoes[i])) {
-						if (playedDominoes[j].getDomino().getLeftTile()==playedDominoes[i].getDomino().getLeftTile()) {
-							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
-						}
-					}
-					else if(isConnected(playedDominoes[j], rightTile(playedDominoes[i]))) {
-						if (playedDominoes[j].getDomino().getLeftTile()==playedDominoes[i].getDomino().getRightTile()) {
-							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
-						}
-					}
-					else if(isConnected(rightTile(playedDominoes[j]), playedDominoes[i])) {
-						if (playedDominoes[j].getDomino().getRightTile()==playedDominoes[i].getDomino().getLeftTile()) {
-							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
-						}
-					}
-					else if(isConnected(rightTile(playedDominoes[j]), rightTile(playedDominoes[i]))) {
-						if (playedDominoes[j].getDomino().getRightTile()==playedDominoes[i].getDomino().getRightTile()) {
-							aProperty.addIncludedDomino(playedDominoes[j].getDomino());
-						}
-					}
-				}
-		myProperties[i]=aProperty;
-		}
-		return myProperties;
-		
-	}
-
-	public static void CalculatePropertyAttributes(Property aProperty) {
-		int numCrowns = 0;
-		int size = 0;
-		for (int i = 0; i < aProperty.numberOfIncludedDominos(); i++) {
-			if (aProperty.getLeftTile() == aProperty.getIncludedDomino(i).getLeftTile()) {
-				numCrowns += aProperty.getIncludedDomino(i).getLeftCrown();
-			} else if (aProperty.getLeftTile() == aProperty.getIncludedDomino(i).getRightTile()) {
-				numCrowns += aProperty.getIncludedDomino(i).getRightCrown();
-			}
-			if(aProperty.getIncludedDomino(i).getLeftTile()==aProperty.getIncludedDomino(i).getRightTile()) {
-				size++;
-			}
-
-			size++;
-		}
-		aProperty.setCrowns(numCrowns);
-		aProperty.setSize(size);
-	}
-
-	public static int CalculateBonusScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle castle, Kingdomino kingdomino) {
-		int bonus = 0;
-		boolean middlexl = false;
-		boolean middlexr = false;
-		boolean middleyt = false;
-		boolean middleyb = false;
-		
-		boolean middleKingdom = false;
-		boolean harmony = false;
-		
-		for(int i = 0;i<kingdomino.getCurrentGame().getSelectedBonusOptions().size();i++) {
-			if(kingdomino.getCurrentGame().getSelectedBonusOption(i).getOptionName().equals("isUsingHarmony")) {
-				harmony = true;
-			}
-			if(kingdomino.getCurrentGame().getSelectedBonusOption(i).getOptionName().equals("isUsingMiddleKingdom")) {
-				middleKingdom = true;
-			}
-			
-		}
-		
-		
-		if ((playedDominoes.length ==12) && harmony) {
-			bonus +=5;
-		}
-		
-		for (int i=0; i<playedDominoes.length; i++) {
-			if ((playedDominoes[i].getX()==castle.getX()-2)||(rightTile(playedDominoes[i]).getX()== castle.getX()-2)) {
-				middlexl = true;
-				}
-			if ((playedDominoes[i].getX()==castle.getX()+2)||(rightTile(playedDominoes[i]).getX()== castle.getX()+2)) {
-				middlexr = true;
-			}
-			if ((playedDominoes[i].getY()==castle.getY()-2)||(rightTile(playedDominoes[i]).getY()== castle.getY()-2)) {
-				middleyb = true;
-			}
-			if ((playedDominoes[i].getY()==castle.getY()+2)||(rightTile(playedDominoes[i]).getY()== castle.getY()+2)) {
-				middleyt = true;
-			}
-			
-		}
-		if((middlexl&&middlexr&&middleyb&&middleyt)&&middleKingdom) {
-			bonus+=10;
-		}
-		
-			
-		return bonus;
-		
-	}
-
-
-	public static int CalculatePlayerScore(DominoInKingdom[] playedDominoes, Kingdom aKingdom, Castle aCastle) {
-		int score = 0;
-		int pscore = 0;
-		int bonuscore = 0;
-		Property[] myProp = IdentifyKingdomProperties(playedDominoes, aKingdom);
-		for (int i = 0; i < myProp.length; i++) {
-			if (myProp[i] != null) {
-				CalculatePropertyAttributes(myProp[i]);
-				pscore = myProp[i].getCrowns() * myProp[i].getSize();
-				score += pscore;
-			}
-
-		}
-		bonuscore = CalculateBonusScore(playedDominoes, aKingdom, aCastle);
-		score += bonuscore;
-		return score;
-	}
-
-	// Feature 11, moveCurrentDomino
-	public static void moveCurrentDomino(DominoInKingdom currentDomino, DirectionKind newDirection) {
-
-		Kingdom currentKD = currentDomino.getKingdom();
-		DominoStatus newCurrentDominoStatus;
-		int currentDominoX = currentDomino.getX();
-		int currentDominoY = currentDomino.getY();
-		boolean placementError = false;
-
-		if (newDirection == DirectionKind.Up) {
-			currentDomino.setDirection(DirectionKind.Up);
-			currentDomino.setY(currentDominoY + 1);
-			currentDominoY++;
-		} else if (newDirection == DirectionKind.Down) {
-			currentDomino.setDirection(DirectionKind.Down);
-			currentDomino.setY(currentDominoY - 1);
-			currentDominoY--;
-		} else if (newDirection == DirectionKind.Left) {
-			currentDomino.setDirection(DirectionKind.Left);
-			currentDomino.setX(currentDominoX - 1);
-			currentDominoX--;
-		} else {
-			currentDomino.setDirection(DirectionKind.Right);
-			currentDomino.setX(currentDominoX + 1);
-			currentDominoX++;
-		}
-
-		if (currentDominoX == 0 && currentDominoY == 0) {
-			placementError = true;
-		} else if (currentDominoX < -9 || currentDominoX > 9) {
-			placementError = true;
-		} else if (currentDominoY < -9 || currentDominoY > 9) {
-			placementError = true;
-		} else {
-			placementError = false;
-		}
-
-		for (int i = 0; i < currentKD.getTerritories().size(); i++) {
-			if (currentDomino.getX() == currentKD.getTerritory(i).getX()
-					|| currentDomino.getY() == currentKD.getTerritory(i).getY()) {
-				placementError = true;
-			}
-		}
-
-		if (placementError = true) {
-			currentDomino.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
-		} else {
-			currentDomino.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
-		}
-
-	}
-
-	// Feature 12, rotateCurrentDomino
-	public static void rotateCurrentDomino(Boolean isClockwise, DominoInKingdom currentDomino) {
-
-		Kingdom currentKD = currentDomino.getKingdom();
-
-		if (isClockwise == true) {
-			if (currentDomino.getDirection() == DirectionKind.Up) {
-
-				currentDomino.setDirection(DirectionKind.Right);
-				currentDomino.setX(currentDomino.getX() + 1);
-				currentDomino.setY(currentDomino.getY() - 1);
-
-			} else if (currentDomino.getDirection() == DirectionKind.Down) {
-
-				currentDomino.setDirection(DirectionKind.Left);
-				currentDomino.setX(currentDomino.getX() - 1);
-				currentDomino.setY(currentDomino.getY() + 1);
-
-			} else if (currentDomino.getDirection() == DirectionKind.Left) {
-
-				currentDomino.setDirection(DirectionKind.Up);
-				currentDomino.setX(currentDomino.getX() + 1);
-				currentDomino.setY(currentDomino.getY() + 1);
-
-			} else {
-
-				currentDomino.setDirection(DirectionKind.Down);
-				currentDomino.setX(currentDomino.getX() - 1);
-				currentDomino.setY(currentDomino.getY() - 1);
-			}
-
-		} else {
-			if (currentDomino.getDirection() == DirectionKind.Up) {
-
-				currentDomino.setDirection(DirectionKind.Left);
-				currentDomino.setX(currentDomino.getX() - 1);
-				currentDomino.setY(currentDomino.getY() - 1);
-
-			} else if (currentDomino.getDirection() == DirectionKind.Down) {
-
-				currentDomino.setDirection(DirectionKind.Right);
-				currentDomino.setX(currentDomino.getX() + 1);
-				currentDomino.setY(currentDomino.getY() + 1);
-
-			} else if (currentDomino.getDirection() == DirectionKind.Left) {
-
-				currentDomino.setDirection(DirectionKind.Down);
-				currentDomino.setX(currentDomino.getX() + 1);
-				currentDomino.setY(currentDomino.getY() - 1);
-
-			} else {
-
-				currentDomino.setDirection(DirectionKind.Up);
-				currentDomino.setX(currentDomino.getX() - 1);
-				currentDomino.setY(currentDomino.getY() + 1);
-
-			}
-
-		}
-
-		int currentDominoX = currentDomino.getX();
-		int currentDominoY = currentDomino.getY();
-		boolean placementError = false;
-
-		// myCourses
-		if (currentDominoX > 4 || currentDominoX < -4 || currentDominoY > 4 || currentDominoY < -4) {
-			placementError = true;
-		} else if (currentDominoX == 0 && currentDominoY == 0) {
-			placementError = true;
-		} else if (currentDominoX < -9 || currentDominoX > 9) {
-			placementError = true;
-		} else if (currentDominoY < -9 || currentDominoY > 9) {
-			placementError = true;
-		} else {
-			placementError = false;
-		}
-
-		for (int i = 0; i < currentKD.getTerritories().size(); i++) {
-			if (currentDomino.getX() == currentKD.getTerritory(i).getX()
-					|| currentDomino.getY() == currentKD.getTerritory(i).getY()) {
-				placementError = true;
-			}
-		}
-
-		if (placementError = true) {
-			currentDomino.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
-		} else {
-			currentDomino.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
-		}
-
-	}
-
-	// Feature 13, placeCurrentDomino
-	public static void placeCurrentDomino(DominoInKingdom currentDomino) {
-
-		Kingdom currentKD = currentDomino.getKingdom();
-
-		if (currentDomino.getDomino().getStatus() == DominoStatus.CorrectlyPreplaced) {
-			currentDomino.getDomino().setStatus(DominoStatus.PlacedInKingdom);
-			currentKD.addTerritory(currentDomino); // Don't know about this tbh
-			currentDomino = new DominoInKingdom(currentDomino.getX(), currentDomino.getY(), currentDomino.getKingdom(),
-					currentDomino.getDomino());
-
-		} else {
-			throw new RuntimeException("Can't place a domino that isn't correctly preplaced!");
-		}
-	}
-
-	// Calculating the ranking of the players in the game
-
-	// Feature 18, discardDomino
-	public static void discardDomino(DominoInKingdom currentDomino) {
-
-		if (currentDomino.getDomino().getStatus() == DominoStatus.ErroneouslyPreplaced) {
-
-		} else {
-			throw new RuntimeException("Can't discard a domino that is correctly preplaced!");
-		}
-		/*
-		 * for (int i = 0; i < players.size(); i++) {
-		 * players.get(i).setCurrentRanking(i+1); }
-		 */
-	}
-
 }
+

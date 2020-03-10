@@ -94,119 +94,68 @@ import java.io.IOException;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.*;
+import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
+import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import io.cucumber.java.en.*;
 
 public class VerifyCastleAdjacencyStepDefinition {
-	int x;
-	int y;
-	int id;
-	DirectionKind direction;
-	Boolean validity;
-
+	boolean isChecked;
 	@Given("the game is initialized for castle adjacency")
 	public void the_game_is_initialized_for_castle_adjacency() {
 		Kingdomino kingdomino = new Kingdomino();
 		Game game = new Game(48, kingdomino);
 		game.setNumberOfPlayers(4);
 		kingdomino.setCurrentGame(game);
-		createAllDominoes(game);
-		User user = game.getKingdomino().addUser("User1");
-		Player player = new Player(game);
-		player.setUser(user);
+		addDefaultUsersAndPlayers(game);
+		KingdominoController.createAllDominos(game);
+		game.setNextPlayer(game.getPlayer(0));
 		KingdominoApplication.setKingdomino(kingdomino);
+	}
+
+	@Given("the current player preplaced the domino with ID {int} at position {int}:{int} and direction {string}")
+	public void the_current_player_preplaced_the_domino_with_ID_at_position_and_direction(Integer int1, Integer int2, Integer int3, String string) {
+		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+		DominoInKingdom domIn = new DominoInKingdom(int2, int3, player.getKingdom(), KingdominoApplication.getKingdomino().getCurrentGame().getAllDomino(int1-1));
+		domIn.setDirection(getDirection(string));
 	}
 
 	@When("check castle adjacency is initiated")
 	public void check_castle_adjacency_is_initiated() {
-		validity = KingdominoController.verifyCastleAdjacency(x, y, direction);
+		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+		DominoInKingdom ter = (DominoInKingdom) player.getKingdom().getTerritory(player.getKingdom().numberOfTerritories()-1);
+		isChecked = KingdominoController.verifyCastleAdjacency(ter.getX(), ter.getY(), ter.getDirection());
 	}
 
 	@Then("the castle\\/domino adjacency is {string}")
 	public void the_castle_domino_adjacency_is(String string) {
-		assertEquals(getValidity(string), this.validity);
+		String a;
+		if(isChecked) {
+			a = "valid";
+			assertEquals(string, a );
+		}else {
+			a = "invalid";
+			assertEquals(string, a );
+		}
+	}
+	
+	
+	/**********************
+	 * * Helper Methods * *
+	 **********************/
+	
+	private void addDefaultUsersAndPlayers(Game game) {
+		String[] userNames = { "User1", "User2", "User3", "User4" };
+		for (int i = 0; i < userNames.length; i++) {
+			User user = game.getKingdomino().addUser(userNames[i]);
+			Player player = new Player(game);
+			player.setUser(user);
+			player.setColor(PlayerColor.values()[i]);
+			Kingdom kingdom = new Kingdom(player);
+			new Castle(0, 0, kingdom, player);
+		}
 	}
 
-	
-	
-	
-	
-	
-	private void createAllDominoes(Game game) {
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));
-			String line = "";
-			String delimiters = "[:\\+()]";
-			while ((line = br.readLine()) != null) {
-				String[] dominoString = line.split(delimiters); // {id, leftTerrain, rightTerrain, crowns}
-				int dominoId = Integer.decode(dominoString[0]);
-				TerrainType leftTerrain = getTerrainType(dominoString[1]);
-				TerrainType rightTerrain = getTerrainType(dominoString[2]);
-				int numCrown = 0;
-				if (dominoString.length > 3) {
-					numCrown = Integer.decode(dominoString[3]);
-				}
-				new Domino(dominoId, leftTerrain, rightTerrain, numCrown, game);
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new java.lang.IllegalArgumentException(
-					"Error occured while trying to read alldominoes.dat: " + e.getMessage());
-		}
-	}
-	
-	private TerrainType getTerrainType(String terrain) {
-		switch (terrain) {
-		case "W":
-			return TerrainType.WheatField;
-		case "F":
-			return TerrainType.Forest;
-		case "M":
-			return TerrainType.Mountain;
-		case "G":
-			return TerrainType.Grass;
-		case "S":
-			return TerrainType.Swamp;
-		case "L":
-			return TerrainType.Lake;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
-		}
-	}
-	
-	private Domino getDominoByID(int id) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		for (Domino domino : game.getAllDominos()) {
-			if (domino.getId() == id) {
-				return domino;
-			}
-		}
-		throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
-	}
-	
-	/**
-	 * This is a helper method to convert the string valid/invalid to a boolean for comparison
-	 * @param string this is the validity as a string
-	 * @return boolean true or false if it's valid or not
-	 */
-	private Boolean getValidity(String string) {
-		switch (string) {
-		case "valid":
-			return true;
-		case "invalid":
-			return false;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid validity: " + string);
-		}
-
-	}
-	
-	/**
-	 * This is a helper method to go from a string of direction to the enum
-	 * @param dir direction of the domino (as a string)
-	 * @return the direction of the domino (as a DirectionKind)
-	 */
 	private DirectionKind getDirection(String dir) {
 		switch (dir) {
 		case "up":
