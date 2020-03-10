@@ -4,10 +4,13 @@ import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
+import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -236,8 +239,10 @@ public class KingdominoController {
 	// the game. The initial order of player should be randomly determined.
 
 	/**
-	 * Starts a new kingdomino game by initiating player's kingdoms and castles. The dominos are created and shuffled as well.
-	 * All scores of the each players are initialized to 0
+	 * Starts a new kingdomino game by initiating player's kingdoms and castles. The
+	 * dominos are created and shuffled as well. All scores of the each players are
+	 * initialized to 0
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
@@ -245,7 +250,7 @@ public class KingdominoController {
 	 */
 
 	public static void startNewGame(Kingdomino kingdomino) {
-		
+
 		List<Player> players = kingdomino.getCurrentGame().getPlayers();
 		for (int i = 0; i < players.size(); i++) {
 			Player player = players.get(i);
@@ -426,9 +431,12 @@ public class KingdominoController {
 	// game becomes unique
 
 	/**
-	 * Shuffles the dominos in a random order for a kingdomino game. To do so we loop through the list of dominos and at each index i,
-	 * we swap the domino with another one at a random position. That way we know that the dominos are shuffled well.
-	 * Then, we set the first draft of the kingdomino game using the method implemented later in the controller.
+	 * Shuffles the dominos in a random order for a kingdomino game. To do so we
+	 * loop through the list of dominos and at each index i, we swap the domino with
+	 * another one at a random position. That way we know that the dominos are
+	 * shuffled well. Then, we set the first draft of the kingdomino game using the
+	 * method implemented later in the controller.
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
@@ -455,7 +463,9 @@ public class KingdominoController {
 	}
 
 	/**
-	 * In this method we set the first draft of the kingdomino game by taking the first 4 dominos in the pile
+	 * In this method we set the first draft of the kingdomino game by taking the
+	 * first 4 dominos in the pile
+	 * 
 	 * @param kingdomino The kingdomino instance that is used
 	 * @return Draft The draft of 4 dominos
 	 * @author Maxime Rieuf
@@ -477,9 +487,10 @@ public class KingdominoController {
 	}
 
 	/**
-	 * This method is used for the fixed arrangement scenario. 
+	 * This method is used for the fixed arrangement scenario.
+	 * 
 	 * @param kingdomino The kingdomino instance that is used
-	 * @param string The desired arrangement string given to us in the scenario
+	 * @param string     The desired arrangement string given to us in the scenario
 	 * @return void
 	 * @author Maxime Rieuf
 	 * @gherkin ShuffleDominos.feature
@@ -492,9 +503,11 @@ public class KingdominoController {
 		string = string.replace("\"", "");
 		List<String> numbers = new ArrayList<String>(Arrays.asList(string.split(",")));
 
-		/*Here, while we loop through the desired arrangement indexes, we get the domino at the specific index in the fixed arrangement
-		 * and place it at index i. That way we get our fixed order of dominos.
-		*/
+		/*
+		 * Here, while we loop through the desired arrangement indexes, we get the
+		 * domino at the specific index in the fixed arrangement and place it at index
+		 * i. That way we get our fixed order of dominos.
+		 */
 		for (int i = 0; i < dominos.size(); i++) {
 			game.addOrMoveAllDominoAt(dominos.get(Integer.parseInt(numbers.get(i)) - 1), i);
 		}
@@ -512,10 +525,139 @@ public class KingdominoController {
 	/**
 	 * Let's a player load a previously saved game so it can be continued.
 	 * 
-	 * @param
-	 * @return
-	 * @author Victorai Iannotti
+	 * @param  kingdomino The kingdomino instance that is used 
+	 * @return void
+	 * @author Victoria Iannotti
 	 */
+
+	public static void load(Kingdomino kingdomino, String string) {
+		File file = new File(string);
+		try {
+			Scanner reader = new Scanner(file);
+			String data = reader.nextLine();
+
+			Game game = new Game(48, kingdomino);
+			kingdomino.setCurrentGame(game);
+			setNumberOfPlayers(4, kingdomino);
+			for (int i = 0; i < 4; i++) {
+				selectColor(PlayerColor.values()[i], i, kingdomino);
+			}
+			List<Player> players = kingdomino.getCurrentGame().getPlayers();
+			for (int i = 0; i < players.size(); i++) {
+				Player player = players.get(i);
+				User user = new User("P" + (i + 1), kingdomino);
+				player.setUser(user);
+				Kingdom kingdom = new Kingdom(player);
+				new Castle(0, 0, kingdom, player);
+				player.setBonusScore(0);
+				player.setPropertyScore(0);
+				player.setDominoSelection(null);
+				game.setNextPlayer(player);
+			}
+			createAllDominos(kingdomino.getCurrentGame());
+			KingdominoApplication.setKingdomino(kingdomino);
+
+			ArrayList<DominoSelection> sels = new ArrayList<DominoSelection>();
+			Draft draft = new Draft(DraftStatus.FaceUp, game);
+			String[] ids = data.split(" ");
+			for (int i = 1; i < ids.length; i++) {
+				ids[i].replaceAll("[^0-9]", "");
+				ids[i].trim();
+				String id = ids[i];
+				if (ids[i].charAt(ids[i].length() - 1) == ',') {
+					id = ids[i].substring(0, ids[i].length() - 1);
+				}
+
+				DominoSelection s = new DominoSelection(players.get(i - 1), getDomino(Integer.parseInt(id), kingdomino),
+						draft);
+				sels.add(s);
+				draft.addSelection(s);
+			}
+			game.setCurrentDraft(draft);
+			game.setNextDraft(draft);
+			for (int i = 0; i < sels.size(); i++) {
+				players.get(i).setDominoSelection(sels.get(i));
+			}
+
+			data = reader.nextLine();
+			ids = data.split(" ");
+			String id = ids[1];
+			if (ids[1].charAt(ids[1].length() - 1) == ',') {
+				id = ids[1].substring(0, ids[1].length() - 1);
+			}
+			game.setTopDominoInPile(getDomino(Integer.parseInt(id), kingdomino));
+
+			draft = new Draft(DraftStatus.FaceUp, game);
+			for (int i = 1; i < ids.length; i++) {
+				ids[i].replaceAll("[^0-9]", "");
+				ids[i].trim();
+				String id2 = ids[i];
+				if (ids[i].charAt(ids[i].length() - 1) == ',') {
+					id2 = ids[i].substring(0, ids[i].length() - 1);
+				}
+				draft.addIdSortedDomino(getDomino(Integer.parseInt(id2), kingdomino));
+			}
+			game.setNextDraft(draft);
+			game.setCurrentDraft(draft);
+
+			int playerCounter = 0;
+			while (reader.hasNextLine()) {
+				data = reader.nextLine();
+				String[] elements = data.split(" ");
+				for (int i = 1; i < elements.length; i++) {
+					addLoadDomino(elements[i], players.get(playerCounter), kingdomino);
+				}
+				playerCounter++;
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Helper method for loading
+	 * 
+	 * @param kingdomino The kingdomino instance that is used
+	 * @return boolean if ready
+	 */
+	public static boolean isReady(Kingdomino kingdomino) {
+		return (kingdomino.getCurrentGame().hasNextPlayer());
+	}
+
+	public static boolean isValidGame(Kingdomino kingdomino) {
+		return false;
+	}
+
+	private static void addLoadDomino(String element, Player player, Kingdomino kingdomino) {
+		String[] sections = element.split("@");
+		Domino domino = getDomino(Integer.parseInt(sections[0]), kingdomino);
+		String[] elements = sections[1].substring(1, sections[1].length()).split(",");
+		int x = Integer.parseInt(elements[0]);
+		int y = Integer.parseInt(elements[1]);
+		DirectionKind dir = null;
+		switch (elements[2]) {
+		case "R":
+			dir = DirectionKind.Right;
+			break;
+		case "L":
+			dir = DirectionKind.Left;
+			break;
+		case "U":
+			dir = DirectionKind.Up;
+			break;
+		case "D":
+			dir = DirectionKind.Down;
+			break;
+		}
+		Kingdom kingdom = player.getKingdom();
+		if (x < 5) {
+			DominoInKingdom domInKingdom = new DominoInKingdom(x, y, kingdom, domino);
+			domInKingdom.setDirection(dir);
+			domino.setStatus(DominoStatus.PlacedInKingdom);
+		}
+
+	}
 
 	/*****************
 	 * * Feature 7 * *
@@ -528,22 +670,49 @@ public class KingdominoController {
 	/**
 	 * Let's a player save a current game so it can be continued or finished later.
 	 * 
-	 * @param
-	 * @return
+	 * @param kingdomino The kingdomino instance that is used
+	 * @return void
 	 * @author Victorai Iannotti
 	 */
+
+	public static void save(Kingdomino kingdomino, String string) {
+		try {
+			FileWriter myWriter = new FileWriter(string);
+			myWriter.write("Files in Java might be tricky, but it is fun enough!");
+			myWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Helper method that overwrites a file if needed
+	 * 
+	 * @param string
+	 */
+	public static void overWriteFile(String string) {
+		File file = new File(string);
+		file.delete();
+		File newFile = new File(string);
+		try {
+			newFile.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/*****************
 	 * * Feature 8 * *
 	 *****************/
 
 	// {Create next draft of dominos}
-	//  As a player, I want the Kingdomino app to automatically provide the
-	//	next four dominos once the previous round is finished
+	// As a player, I want the Kingdomino app to automatically provide the
+	// next four dominos once the previous round is finished
 
 	/**
-	 * Creates the next draft of 4 dominos that shall be selected by players in a kingdomino game.
-	 * The dominos are, however, not yet revealed.
+	 * Creates the next draft of 4 dominos that shall be selected by players in a
+	 * kingdomino game. The dominos are, however, not yet revealed.
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
@@ -556,8 +725,8 @@ public class KingdominoController {
 		if (game.getAllDominos().size() > 0) {
 
 			Draft draft = new Draft(Draft.DraftStatus.FaceDown, game);
-			
-			//It takes the first 4 dominos in the pile
+
+			// It takes the first 4 dominos in the pile
 			for (int i = 0; i < 4; i++) {
 				draft.addIdSortedDomino(dominos.get(i));
 				dominos.get(i).delete();
@@ -579,7 +748,6 @@ public class KingdominoController {
 
 	}
 
-
 	/*****************
 	 * * Feature 9 * *
 	 *****************/
@@ -587,12 +755,14 @@ public class KingdominoController {
 	// {Order next draft of dominos}
 
 	// As a player, I want the Kingdomino app to automatically
-	// order and reveal the next draft of dominos in increasing order with respect to their numbers so that I
+	// order and reveal the next draft of dominos in increasing order with respect
+	// to their numbers so that I
 	// know which are the more valuable dominos
-	
+
 	/**
-	 * Orders the dominos in the current draft. The dominos are ordered 
-	 * in increasing integer value to let players know of their value and importance.
+	 * Orders the dominos in the current draft. The dominos are ordered in
+	 * increasing integer value to let players know of their value and importance.
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
@@ -609,15 +779,16 @@ public class KingdominoController {
 		}
 		draft.setDraftStatus(Draft.DraftStatus.Sorted);
 	}
-	
+
 	/**
 	 * Reveals the dominos for the current draft by setting its status.
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
 	 * @gherkin OrderAndRevealNextDraft.feature
 	 */
-	
+
 	public static void revealNextDraft(Kingdomino kingdomino) {
 		Draft draft = kingdomino.getCurrentGame().getNextDraft();
 		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
@@ -1252,7 +1423,7 @@ public class KingdominoController {
 				}
 			}
 		}
-		
+
 		return ((maxX - minX) < 5 && (maxY - minY) < 5);
 	}
 
@@ -1345,7 +1516,7 @@ public class KingdominoController {
 		Game game = kingdomino.getCurrentGame();
 		Player player = game.getNextPlayer();
 		Kingdom kingdom = player.getKingdom();
-		
+
 		List<KingdomTerritory> territories = new ArrayList<KingdomTerritory>(kingdom.getTerritories());
 
 		ArrayList<HashMap<String, Object>> tiles = new ArrayList<>();
@@ -1460,7 +1631,7 @@ public class KingdominoController {
 				// top, a tile on the left)
 				// or a new tile was added between three tiles (e.g. a tile on top, a tile on
 				// the left, a tile on the right)
-				
+
 				boolean myLeft = l && tiles.get(locationl).get("property") != null
 						&& tile.get("terrain").equals(tiles.get(locationl).get("terrain"));
 				boolean myUp = u && tiles.get(locationu).get("property") != null
@@ -1469,9 +1640,9 @@ public class KingdominoController {
 						&& tile.get("terrain").equals(tiles.get(locationr).get("terrain"));
 				boolean myDown = d && tiles.get(locationd).get("property") != null
 						&& tile.get("terrain").equals(tiles.get(locationd).get("terrain"));
-				
+
 				if (myLeft && myUp && myRight && myDown) {
-					
+
 					tile.put("property", tiles.get(locationr).get("property"));
 					Property prop = (Property) tiles.get(locationr).get("property");
 					prop.addIncludedDomino((Domino) tile.get("domino"));
@@ -1497,7 +1668,7 @@ public class KingdominoController {
 
 					}
 				}
-				
+
 				if (myLeft && myUp && myRight) {
 					tile.put("property", tiles.get(locationr).get("property"));
 					Property prop = (Property) tiles.get(locationr).get("property");
@@ -1575,7 +1746,7 @@ public class KingdominoController {
 					}
 				}
 				if (myLeft && myRight) {
-					
+
 					tile.put("property", tiles.get(locationl).get("property"));
 					Property prop = (Property) tiles.get(locationl).get("property");
 					prop.addIncludedDomino((Domino) tile.get("domino"));
@@ -1588,7 +1759,7 @@ public class KingdominoController {
 					}
 				}
 				if (myLeft && myUp) {
-					
+
 					tile.put("property", tiles.get(locationl).get("property"));
 					Property prop = (Property) tiles.get(locationl).get("property");
 					prop.addIncludedDomino((Domino) tile.get("domino"));
@@ -1601,7 +1772,7 @@ public class KingdominoController {
 					}
 				}
 				if (myLeft && myDown) {
-					
+
 					tile.put("property", tiles.get(locationl).get("property"));
 					Property prop = (Property) tiles.get(locationl).get("property");
 					prop.addIncludedDomino((Domino) tile.get("domino"));
@@ -1626,7 +1797,7 @@ public class KingdominoController {
 					}
 				}
 				if (myUp && myDown) {
-					
+
 					tile.put("property", tiles.get(locationu).get("property"));
 					Property prop = (Property) tiles.get(locationu).get("property");
 					prop.addIncludedDomino((Domino) tile.get("domino"));
@@ -1639,7 +1810,7 @@ public class KingdominoController {
 					}
 				}
 				if (myRight && myDown) {
-					
+
 					tile.put("property", tiles.get(locationr).get("property"));
 					Property prop = (Property) tiles.get(locationr).get("property");
 					prop.addIncludedDomino((Domino) tile.get("domino"));
@@ -1651,8 +1822,7 @@ public class KingdominoController {
 
 					}
 				}
-				
-				
+
 				if (myLeft) {
 
 					tile.put("property", tiles.get(locationl).get("property"));
@@ -2166,27 +2336,14 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically calculate the ranking
 	// in order to know the winner of a finished game
 
+	/**
+	 * Calculating the ranking of the players in the kingdomino game
+	 * @param kingdomino
+	 * @author Victoria Iannotti
+	 */
 	public static void calculateRanking(Kingdomino kingdomino) {
 		ArrayList<Player> players = new ArrayList<Player>(kingdomino.getCurrentGame().getPlayers());
-////		System.out.print(kingdomino.getCurrentGame().getPlayers());
-//		//sort players in arraylist based on totalscore
-//		Collections.sort(players, (a, b) -> b.getTotalScore() - a.getTotalScore());
-//		
-//		//set ranking based on position of above arraylist. does not consider resolvetiebreak yet.
-//		for(int i =0;i<players.size();i++) {
-//			for(int j = 0;j<players.size();j++) {
-//				if(kingdomino.getCurrentGame().getPlayer(i).equals(players.get(j))) {
-//					kingdomino.getCurrentGame().getPlayer(i).setCurrentRanking(j+1);
-//				}
-//			}
-//		}
-//		for(int i = 0;i<players.size();i++) {
-//			System.out.println("########");
-//			System.out.println(players.get(i).getKingdom().getProperties());
-//			System.out.println("########");
-//		}
-//		System.out.print(players);
-		
+
 		Player currentPlayer;
 		Player tempPlayer;
 		boolean tied = true;
@@ -2195,28 +2352,29 @@ public class KingdominoController {
 			for (int j = i + 1; j < players.size(); j++) {
 				tempPlayer = players.get(j);
 				if (tempPlayer.getTotalScore() == currentPlayer.getTotalScore()) {
-					
+
 					switch (resolveTiebreak(tempPlayer, currentPlayer)) {
 					case 1:
-						
+
 						players.set(i, tempPlayer);
 						players.set(j, currentPlayer);
 						currentPlayer = tempPlayer;
-						tied=false;
+						tied = false;
 						break;
 					case 2:
 						players.set(i, tempPlayer);
 						players.set(j, currentPlayer);
 						currentPlayer = tempPlayer;
-						tied=false;
+						tied = false;
 						break;
 					case -1:
 						players.set(i, tempPlayer);
 						players.set(j, currentPlayer);
 						currentPlayer = tempPlayer;
-						tied=false;
+						tied = false;
 						break;
-				} }else if (tempPlayer.getTotalScore() > currentPlayer.getTotalScore()) {
+					}
+				} else if (tempPlayer.getTotalScore() > currentPlayer.getTotalScore()) {
 					players.set(i, tempPlayer);
 					players.set(j, currentPlayer);
 					currentPlayer = tempPlayer;
@@ -2257,6 +2415,12 @@ public class KingdominoController {
 	// tiebreak (i.e. equal score between players) by evaluating the most extended
 	// (largest) property and then the total number of crowns
 
+	/**
+	 * Method for resolving ties between players
+	 * @param p1 first player
+	 * @param p2 second player
+	 * @return int depending on the outcome of the resolution
+	 */
 	private static int resolveTiebreak(Player p1, Player p2) {
 		if (getLargestPropertySize(p1.getKingdom().getProperties()) > getLargestPropertySize(
 				p2.getKingdom().getProperties())) {
@@ -2274,6 +2438,11 @@ public class KingdominoController {
 		return 0;
 	}
 
+	/**
+	 * Helper method for getting the largest property
+	 * @param properties
+	 * @return integer
+	 */
 	private static int getLargestPropertySize(List<Property> properties) {
 		int largestSize = 0;
 		if (properties == null) {
@@ -2287,6 +2456,11 @@ public class KingdominoController {
 		return largestSize;
 	}
 
+	/**
+	 * Helper method for getting the number of crowns
+	 * @param properties all the properties of the player in question
+	 * @return integer
+	 */
 	private static int getNumberCrowns(List<Property> properties) {
 		int numCrowns = 0;
 		for (Property property : properties) {
@@ -2294,8 +2468,5 @@ public class KingdominoController {
 		}
 		return numCrowns;
 	}
-
-	// Handled in feature 23
-	// ****************************************************************************************
 
 }
