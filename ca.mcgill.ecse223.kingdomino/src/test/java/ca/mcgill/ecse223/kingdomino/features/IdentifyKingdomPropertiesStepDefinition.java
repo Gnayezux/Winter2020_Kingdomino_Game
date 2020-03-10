@@ -35,6 +35,9 @@ import io.cucumber.java.en.When;
 
 public class IdentifyKingdomPropertiesStepDefinition {
 
+	/**
+	 * @author Kaichengwu
+	 */
 	@Given("the game is initialized for identify properties")
 	public void the_game_is_initialized_for_identify_properties() {
 		Kingdomino kingdomino = new Kingdomino();
@@ -58,11 +61,17 @@ public class IdentifyKingdomPropertiesStepDefinition {
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
+	/**
+	 * @author Kaichengwu
+	 */
 	@When("the properties of the player are identified")
 	public void the_properties_of_the_player_are_identified() {
 		KingdominoController.identifyProperties(KingdominoApplication.getKingdomino());
 	}
 
+	/**
+	 * @author Kaichengwu
+	 */
 	@Then("the player shall have the following properties:")
 	public void the_player_shall_have_the_following_properties(io.cucumber.datatable.DataTable dataTable) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
@@ -84,6 +93,7 @@ public class IdentifyKingdomPropertiesStepDefinition {
 		}
 	}
 
+	//HELPER METHODS
 	private boolean hasProperty(String type, HashSet<Integer> dominosExpected, List<Property> properties) {
 //		System.out.println(dominosExpected);
 		boolean found = false;
