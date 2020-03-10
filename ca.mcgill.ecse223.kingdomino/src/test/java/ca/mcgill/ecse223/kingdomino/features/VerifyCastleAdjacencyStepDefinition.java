@@ -99,8 +99,12 @@ import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import io.cucumber.java.en.*;
 
+
 public class VerifyCastleAdjacencyStepDefinition {
 	boolean isChecked;
+	/**
+	 * @author Zeyang Xu
+	 */
 	@Given("the game is initialized for castle adjacency")
 	public void the_game_is_initialized_for_castle_adjacency() {
 		Kingdomino kingdomino = new Kingdomino();
@@ -112,7 +116,9 @@ public class VerifyCastleAdjacencyStepDefinition {
 		game.setNextPlayer(game.getPlayer(0));
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
-
+	/**
+	 * @author Zeyang Xu
+	 */
 	@Given("the current player preplaced the domino with ID {int} at position {int}:{int} and direction {string}")
 	public void the_current_player_preplaced_the_domino_with_ID_at_position_and_direction(Integer int1, Integer int2, Integer int3, String string) {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
@@ -120,6 +126,9 @@ public class VerifyCastleAdjacencyStepDefinition {
 		domIn.setDirection(getDirection(string));
 	}
 
+	/**
+	 * @author Zeyang Xu
+	 */
 	@When("check castle adjacency is initiated")
 	public void check_castle_adjacency_is_initiated() {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
@@ -127,6 +136,9 @@ public class VerifyCastleAdjacencyStepDefinition {
 		isChecked = KingdominoController.verifyCastleAdjacency(ter.getX(), ter.getY(), ter.getDirection());
 	}
 
+	/**
+	 * @author Zeyang Xu
+	 */
 	@Then("the castle\\/domino adjacency is {string}")
 	public void the_castle_domino_adjacency_is(String string) {
 		String a;

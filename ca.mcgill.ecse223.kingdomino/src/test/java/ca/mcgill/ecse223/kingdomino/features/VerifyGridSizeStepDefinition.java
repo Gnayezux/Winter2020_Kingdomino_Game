@@ -14,6 +14,9 @@ import io.cucumber.java.en.*;
 public class VerifyGridSizeStepDefinition {
 	boolean valid = false;
 
+	/**
+	 * @author Zeyang Xu
+	 */
 	@Given("the game is initialized for verify grid size")
 	public void the_game_is_initialized_for_verify_grid_size() {
 		Kingdomino kingdomino = new Kingdomino();
@@ -27,6 +30,9 @@ public class VerifyGridSizeStepDefinition {
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
+	/**
+	 * @author Zeyang Xu
+	 */
 	@When("validation of the grid size is initiated")
 	public void validation_of_the_grid_size_is_initiated() {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
@@ -34,6 +40,9 @@ public class VerifyGridSizeStepDefinition {
 				.verifyGridSize(KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer().getKingdom());
 	}
 
+	/**
+	 * @author Zeyang Xu
+	 */
 	@Then("the grid size of the player's kingdom shall be {string}")
 	public void the_grid_size_of_the_player_s_kingdom_shall_be(String string) {
 		String isValid;
@@ -46,6 +55,9 @@ public class VerifyGridSizeStepDefinition {
 
 	}
 
+	/**
+	 * @author Zeyang Xu
+	 */
 	@Given("the  player preplaces domino {int} to their kingdom at position {int}:{int} with direction {string}")
 	public void the_player_preplaces_domino_to_their_kingdom_at_position_with_direction(Integer int1, Integer int2,
 			Integer int3, String string) {

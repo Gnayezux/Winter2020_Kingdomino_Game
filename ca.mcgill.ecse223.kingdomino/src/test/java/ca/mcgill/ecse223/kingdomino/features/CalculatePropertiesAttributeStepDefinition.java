@@ -31,6 +31,9 @@ import io.cucumber.java.en.When;
 
 public class CalculatePropertiesAttributeStepDefinition {
 
+	/**
+	 * @author Kaichengwu
+	 */
 	@Given("the game is initialized for calculate property attributes")
 	public void the_game_is_initialized_for_calculate_property_attributes() {
 		Kingdomino kingdomino = new Kingdomino();
@@ -54,6 +57,9 @@ public class CalculatePropertiesAttributeStepDefinition {
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
+	/**
+	 * @author Kaichengwu
+	 */
 	@When("calculate property attributes is initiated")
 	public void calculate_property_attributes_is_initiated() {
 		KingdominoController.identifyProperties(KingdominoApplication.getKingdomino());
@@ -64,12 +70,18 @@ public class CalculatePropertiesAttributeStepDefinition {
 		
 	}
 
+	/**
+	 * @author Kaichengwu
+	 */
 	@Then("the player shall have a total of {int} properties")
 	public void the_player_shall_have_a_total_of_properties(Integer int1) {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
 		assertEquals((int) int1, player.getKingdom().getProperties().size());
 	}
 
+	/**
+	 * @author Kaichengwu
+	 */
 	@Then("the player shall have properties with the following attributes:")
 	public void the_player_shall_have_properties_with_the_following_attributes(
 			io.cucumber.datatable.DataTable dataTable) {
@@ -83,7 +95,7 @@ public class CalculatePropertiesAttributeStepDefinition {
 		}
 	}
 
-	
+	//HELPER METHODS
 	private String getDominos(Property property) {
 		List<Domino> dominos = property.getIncludedDominos();
 		String doms = "";
