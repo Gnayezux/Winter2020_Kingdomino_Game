@@ -4,10 +4,13 @@ import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
+import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -507,8 +510,133 @@ public class KingdominoController {
 	 * 
 	 * @param
 	 * @return
-	 * @author Victorai Iannotti
+	 * @author Victoria Iannotti
+	 * @throws IOException
 	 */
+
+	public static void load(Kingdomino kingdomino, String string) {
+		File file = new File(string);
+		try {
+			Scanner reader = new Scanner(file);
+			String data = reader.nextLine();
+
+			Game game = new Game(48, kingdomino);
+			kingdomino.setCurrentGame(game);
+			setNumberOfPlayers(4, kingdomino);
+			for (int i = 0; i < 4; i++) {
+				selectColor(PlayerColor.values()[i], i, kingdomino);
+			}
+			List<Player> players = kingdomino.getCurrentGame().getPlayers();
+			for (int i = 0; i < players.size(); i++) {
+				Player player = players.get(i);
+				User user = new User("P" + (i + 1), kingdomino);
+				player.setUser(user);
+				Kingdom kingdom = new Kingdom(player);
+				new Castle(0, 0, kingdom, player);
+				player.setBonusScore(0);
+				player.setPropertyScore(0);
+				player.setDominoSelection(null);
+				game.setNextPlayer(player);
+			}
+			createAllDominos(kingdomino.getCurrentGame());
+			KingdominoApplication.setKingdomino(kingdomino);
+
+			ArrayList<DominoSelection> sels = new ArrayList<DominoSelection>();
+			Draft draft = new Draft(DraftStatus.FaceUp, game);
+			String[] ids = data.split(" ");
+			for (int i = 1; i < ids.length; i++) {
+				ids[i].replaceAll("[^0-9]", "");
+				ids[i].trim();
+				String id = ids[i];
+				if (ids[i].charAt(ids[i].length() - 1) == ',') {
+					id = ids[i].substring(0, ids[i].length() - 1);
+				}
+
+				DominoSelection s = new DominoSelection(players.get(i - 1), getDomino(Integer.parseInt(id), kingdomino),
+						draft);
+				sels.add(s);
+				draft.addSelection(s);
+			}
+			game.setCurrentDraft(draft);
+			game.setNextDraft(draft);
+			for (int i = 0; i < sels.size(); i++) {
+				players.get(i).setDominoSelection(sels.get(i));
+			}
+
+			data = reader.nextLine();
+			ids = data.split(" ");
+			String id = ids[1];
+			if (ids[1].charAt(ids[1].length() - 1) == ',') {
+				id = ids[1].substring(0, ids[1].length() - 1);
+			}
+			game.setTopDominoInPile(getDomino(Integer.parseInt(id), kingdomino));
+
+			draft = new Draft(DraftStatus.FaceUp, game);
+			for (int i = 1; i < ids.length; i++) {
+				ids[i].replaceAll("[^0-9]", "");
+				ids[i].trim();
+				String id2 = ids[i];
+				if (ids[i].charAt(ids[i].length() - 1) == ',') {
+					id2 = ids[i].substring(0, ids[i].length() - 1);
+				}
+				draft.addIdSortedDomino(getDomino(Integer.parseInt(id2), kingdomino));
+			}
+			game.setNextDraft(draft);
+			game.setCurrentDraft(draft);
+
+			int playerCounter = 0;
+			while (reader.hasNextLine()) {
+				data = reader.nextLine();
+				String[] elements = data.split(" ");
+				for (int i = 1; i < elements.length; i++) {
+					addLoadDomino(elements[i], players.get(playerCounter), kingdomino);
+				}
+				playerCounter++;
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static boolean isReady(Kingdomino kingdomino) {
+		return (kingdomino.getCurrentGame().hasNextPlayer());
+	}
+
+	public static boolean isValidGame(Kingdomino kingdomino) {
+		return false;
+	}
+
+	private static void addLoadDomino(String element, Player player, Kingdomino kingdomino) {
+		String[] sections = element.split("@");
+		Domino domino = getDomino(Integer.parseInt(sections[0]), kingdomino);
+		String[] elements = sections[1].substring(1, sections[1].length()).split(",");
+		int x = Integer.parseInt(elements[0]);	
+		int y = Integer.parseInt(elements[1]);
+		DirectionKind dir = null;
+		switch (elements[2]) {
+		case "R":
+			dir = DirectionKind.Right;
+			break;
+		case "L":
+			dir = DirectionKind.Left;
+			break;
+		case "U":
+			dir = DirectionKind.Up;
+			break;
+		case "D":
+			dir = DirectionKind.Down;
+			break;
+		}
+		Kingdom kingdom = player.getKingdom();
+		if(x<5) {
+			DominoInKingdom domInKingdom = new DominoInKingdom(x, y, kingdom, domino);
+			domInKingdom.setDirection(dir);
+			domino.setStatus(DominoStatus.PlacedInKingdom);
+		}
+		
+		
+	}
 
 	/*****************
 	 * * Feature 7 * *
@@ -518,12 +646,33 @@ public class KingdominoController {
 	// As a player, I want to save the current game if the game has not yet been
 	// finished so that I can continue it later
 
+	public static void save(Kingdomino kingdomino, String string) {
+		try {
+			FileWriter myWriter = new FileWriter(string);
+			myWriter.write("Files in Java might be tricky, but it is fun enough!");
+			myWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void overWriteFile(String string) {
+		File file = new File(string);
+		file.delete();
+		File newFile = new File(string);
+		try {
+			newFile.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Let's a player save a current game so it can be continued or finished later.
 	 * 
 	 * @param
 	 * @return
-	 * @author Victorai Iannotti
+	 * @author Victoria Iannotti
 	 */
 
 	/*****************
@@ -1242,12 +1391,6 @@ public class KingdominoController {
 				}
 			}
 		}
-		System.out.print((maxY - minY) < 5);
-		System.out.print(maxY);
-		System.out.print(minY);
-		System.out.print((maxX - minX) < 5);
-		System.out.print(maxX);
-		System.out.print(minX);
 		return ((maxX - minX) < 5 && (maxY - minY) < 5);
 	}
 
@@ -1858,94 +2001,6 @@ public class KingdominoController {
 		return isMatch;
 	}
 
-//	private static void checkForConnected(List<Property> properties, Kingdom k) {
-//		ArrayList<Property> propsOfType = new ArrayList<Property>();
-//		for (TerrainType type : TerrainType.values()) {
-//			for (Property prop : properties) {
-//				if (prop.getLeftTile() == type) {
-//					propsOfType.add(prop);
-//				}
-//			}
-//			if (propsOfType.size() > 1) {
-//				handleDuplicates(propsOfType, k);
-//			}
-//			if (!propsOfType.isEmpty()) {
-//				propsOfType.clear();
-//			}
-//		}
-//	}
-
-//	private static void handleDuplicates(List<Property> propsOfType, Kingdom k) {
-//		boolean duplicate = false;
-//		Kingdom kingdom = k;
-//		ArrayList<Property> toDelete = new ArrayList<Property>();
-//		do {
-//			duplicate = false;
-//			for (int i = 0; i < propsOfType.size() - 1; i++) {
-//				for (int j = i; j < propsOfType.size(); j++) {
-//					if (matchingDomino(propsOfType.get(i), propsOfType.get(j))) {
-//						System.out.println("GAFGAFGADGDFGS");
-//						System.out.println(propsOfType.get(i).getLeftTile());
-//						kingdom = propsOfType.get(i).getKingdom();
-//						Property newProp = combineProperties(propsOfType.get(i), propsOfType.get(j));
-//						toDelete.add(propsOfType.get(i));
-//						toDelete.add(propsOfType.get(j));
-//						propsOfType.get(i).delete();
-//						propsOfType.get(j).delete();
-//						kingdom.addProperty(newProp);
-//						duplicate = true;
-//					}
-//				}
-//				for (Property p : toDelete) {
-//					deleteProperty(kingdom, p);
-//				}
-//			}
-//		} while (duplicate);
-//
-//	}
-
-//	private static void deleteProperty(Kingdom kingdom, Property p) {
-//		if (kingdom.hasProperties()) {
-//			for (Property prop : kingdom.getProperties()) {
-//				if (p.getIncludedDominos() == prop.getIncludedDominos()) {
-//					prop.delete();
-//					break;
-//				}
-//			}
-//		}
-//	}
-//
-//	private static boolean matchingDomino(Property p1, Property p2) {
-//		ArrayList<Integer> ids = new ArrayList<Integer>();
-//		for (Domino dom : p1.getIncludedDominos()) {
-//			ids.add(dom.getId());
-//		}
-//		for (Domino dom : p2.getIncludedDominos()) {
-//			if (ids.contains(dom.getId())) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-////
-//	private static Property combineProperties(Property p1, Property p2) {
-//		ArrayList<Domino> dominos = new ArrayList<Domino>();
-//		;
-//		Property p = new Property(p1.getKingdom());
-//		for (Domino dom : p1.getIncludedDominos()) {
-//			dominos.add(dom);
-//			p.addIncludedDomino(dom);
-//		}
-//		for (Domino dom : p2.getIncludedDominos()) {
-//			if (!dominos.contains(dom)) {
-//				dominos.add(dom);
-//				p.addIncludedDomino(dom);
-//			}
-//		}
-//		p.setLeftTile(p1.getLeftTile());
-//		return p;
-//	}
-
 	/******************
 	 * * Feature 20 * *
 	 ******************/
@@ -1977,7 +2032,6 @@ public class KingdominoController {
 					inc++;
 				}
 				if (d.getRightTile() == p.getLeftTile()) {
-//					System.out.print(d.getRightCrown());
 					p.setCrowns(p.getCrowns() + d.getRightCrown());
 					inc++;
 				}
@@ -2163,7 +2217,6 @@ public class KingdominoController {
 			for (int j = i + 1; j < players.size(); j++) {
 				tempPlayer = players.get(j);
 				if (tempPlayer.getTotalScore() == currentPlayer.getTotalScore()) {
-					System.out.println("jdjdjdjdjdjd");
 					switch (resolveTiebreak(tempPlayer, currentPlayer)) {
 					case 1:
 						players.set(i, tempPlayer);
