@@ -19,7 +19,6 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 public class ResolveTiebreakStepDefinition {
-	
 	@Given("the game is initialized for resolve tiebreak")
 	public void the_game_is_initialized_for_resolve_tiebreak() {
 		Kingdomino kingdomino = new Kingdomino();

@@ -21,14 +21,15 @@ public class KingdominoController {
 	/*****************
 	 * * Feature 1 * *
 	 *****************/
-	
+
 	// {Set game options}
 	// As a player, I want to configure the designated options of the Kingdomino
 	// game including the number of players (2, 3 or 4) and the bonus scoring
 	// options
-	
+
 	/**
 	 * Let's us start a kingdomino game with desired configurations.
+	 * 
 	 * @param kingdomino The kingdomino application we wish to analyze.
 	 * @return void
 	 * @author Abdallah Shapsough
@@ -39,9 +40,10 @@ public class KingdominoController {
 		kingdomino.setCurrentGame(game);
 
 	}
-	
+
 	/**
 	 * Let's us choose the number of players we want in a kingdomino game.
+	 * 
 	 * @param numPlayers Number of players present in a kingdomino game.
 	 * @param kingdomino The kingdomino application we wish to analyze.
 	 * @return void
@@ -55,12 +57,14 @@ public class KingdominoController {
 			Player player = new Player(game);
 		}
 	}
-	
+
 	/**
-	 * Determines which bonus option shall be activated or not whithin a kingdomino game.
-	 * @param bonus Selected bonus option for a game.
+	 * Determines which bonus option shall be activated or not whithin a kingdomino
+	 * game.
+	 * 
+	 * @param bonus      Selected bonus option for a game.
 	 * @param kingdomino The kingdomino application we wish to analyze.
-	 * @param selected If true, the bonus option will be added to the game.
+	 * @param selected   If true, the bonus option will be added to the game.
 	 * @return void
 	 * @author Abdallah Shapsough
 	 */
@@ -83,8 +87,9 @@ public class KingdominoController {
 
 	/**
 	 * Let's us get a user and set it to a player within a kingdomino game.
-	 * @param user Selected use that will set to a player.
-	 * @param num Number of a player that will be set User user.
+	 * 
+	 * @param user       Selected use that will set to a player.
+	 * @param num        Number of a player that will be set User user.
 	 * @param kingdomino The kingdomino application we wish to analyze.
 	 * @return void
 	 * @author Abdallah Shapsough
@@ -95,8 +100,9 @@ public class KingdominoController {
 
 	/**
 	 * Let's us set a color to a specififc player within a kingdomino game.
-	 * @param color A PlayerColor that will be set to a player.
-	 * @param num Number of a player that will be set a PlayerColor color.
+	 * 
+	 * @param color      A PlayerColor that will be set to a player.
+	 * @param num        Number of a player that will be set a PlayerColor color.
 	 * @param kingdomino The kingdomino application we wish to analyze.
 	 * @return void
 	 * @author Abdallah Shapsough
@@ -108,14 +114,15 @@ public class KingdominoController {
 	/*****************
 	 * * Feature 2 * *
 	 *****************/
-	
+
 	// {Provide user profile}
 	// As a player, I wish to use my unique user name in when a game starts. I also
 	// want the Kingdomino app to maintain my game statistics (e.g. number of games
 	// played, won, etc.).
-	
+
 	/**
-	 * Let's us create a new user that can be used for multiple kingdomino games. 
+	 * Let's us create a new user that can be used for multiple kingdomino games.
+	 * 
 	 * @param userName
 	 * @param kingdomino
 	 * @return boolean
@@ -149,9 +156,10 @@ public class KingdominoController {
 		kingdomino.addUser(userName);
 		return true;
 	}
-	
+
 	/**
 	 * Let's us clear all users within a kingdomino application.
+	 * 
 	 * @param kingdomino The kingdomino instance that we use.
 	 * @return void
 	 * @author Abdallah Shapsough
@@ -162,11 +170,13 @@ public class KingdominoController {
 			kingdomino.removeUser(user);
 		}
 	}
-	
+
 	/**
 	 * Let's us browse all users in a sorted manner.
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
-	 * @return List<User> A sorted list of users from a kingdomno instance is returned.
+	 * @return List<User> A sorted list of users from a kingdomno instance is
+	 *         returned.
 	 * @author Abdallah Shapsough
 	 */
 
@@ -175,10 +185,11 @@ public class KingdominoController {
 		Collections.sort(users, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
 		return users;
 	}
-	
+
 	/**
 	 * Let's us view the amount of games won by a specific user.
-	 * @param userName Specific user we wish to view.
+	 * 
+	 * @param userName   Specific user we wish to view.
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return int A number of games won by a specific user.
 	 * @author Abdallah Shapsough
@@ -187,9 +198,11 @@ public class KingdominoController {
 	public static int getUserGamesWon(String userName, Kingdomino kingdomino) {
 		return User.getWithName(userName).getWonGames();
 	}
+
 	/**
 	 * Let's us view the amount of games played by a specific user.
-	 * @param userName Specific user we wish to view.
+	 * 
+	 * @param userName   Specific user we wish to view.
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return int A number of played games by a specific user is returned.
 	 * @author Abdallah Shapsough
@@ -206,9 +219,11 @@ public class KingdominoController {
 	// As a Kingdomino player, I want to start a new game of Kingdomino against some
 	// opponents with my castle placed on my territory with the current settings of
 	// the game. The initial order of player should be randomly determined.
-	
+
 	/**
-	 * Starts a new kingdomino game by initiating player's kingdoms and castles. The dominos are created and shuffled as well.
+	 * Starts a new kingdomino game by initiating player's kingdoms and castles. The
+	 * dominos are created and shuffled as well.
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
@@ -230,9 +245,10 @@ public class KingdominoController {
 		}
 		shuffleDominos(kingdomino);
 	}
-	
+
 	/**
 	 * Creates all dominos for a specific game.
+	 * 
 	 * @param game The game for which we wish to create dominos.
 	 * @return void
 	 * @throws IllegalArgumentException
@@ -262,9 +278,11 @@ public class KingdominoController {
 					"Error occured while trying to read alldominoes.dat: " + e.getMessage());
 		}
 	}
-	
+
 	/**
-	 * Helper method provided by the teaching staff. Let's us obtain a TerrainType from a string with the same name.
+	 * Helper method provided by the teaching staff. Let's us obtain a TerrainType
+	 * from a string with the same name.
+	 * 
 	 * @param terrain
 	 * @return TerrainType A TerrainType is returned.
 	 * @throws IllegalArgumentException if an invalid TerrainType is submitted.
@@ -296,11 +314,13 @@ public class KingdominoController {
 	// {Browse domino pile}
 	// As a player, I wish to browse the set of all dominos in increasing order of
 	// numbers prior to playing the game so that I can adjust my strategy
-	
+
 	/**
 	 * Let's a player browse the current domino pile being used.
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
-	 * @return ArrayList<Domino> The domino list that is returned for a player to browse.
+	 * @return ArrayList<Domino> The domino list that is returned for a player to
+	 *         browse.
 	 * @author Abdallah Shapsough
 	 */
 
@@ -312,10 +332,11 @@ public class KingdominoController {
 		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
 		return allDominos;
 	}
-	
+
 	/**
 	 * Acquires a domino with a specific ID.
-	 * @param id ID of a specific domino to 
+	 * 
+	 * @param id         ID of a specific domino to
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return Domino The domino that is associated with the ID.
 	 * @author Abdallah Shapsough
@@ -326,10 +347,10 @@ public class KingdominoController {
 		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
 		return allDominos.get(id - 1);
 	}
-	
+
 	/**
 	 * 
-	 * @param terrain 
+	 * @param terrain
 	 * @param kingdomino
 	 * @return List<Domino>
 	 * @author Abdallah Shapsough
@@ -375,9 +396,10 @@ public class KingdominoController {
 	// {Shuffle domino pile}
 	// As a player, I want to have a randomly shuffled pile of dominos so that every
 	// game becomes unique
-	
+
 	/**
-	 * Shuffles the dominos in a random order for a kingdomino game. 
+	 * Shuffles the dominos in a random order for a kingdomino game.
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
@@ -401,14 +423,14 @@ public class KingdominoController {
 		}
 		setFirstDraft(kingdomino);
 	}
-	
+
 	/**
 	 * 
 	 * @param kingdomino
 	 * @return Draft
 	 * @author Maxime Rieuf
 	 */
-	
+
 	public static Draft setFirstDraft(Kingdomino kingdomino) {
 		Game game = kingdomino.getCurrentGame();
 		List<Domino> dominos = new ArrayList<Domino>(game.getAllDominos());
@@ -422,7 +444,7 @@ public class KingdominoController {
 		game.setTopDominoInPile(game.getAllDomino(0));
 		return draft;
 	}
-	
+
 	/**
 	 * 
 	 * @param kingdomino
@@ -451,9 +473,10 @@ public class KingdominoController {
 	// {Load game}
 	// As a player, I want to load a previously played game so that I can continue
 	// it from the last position
-	
+
 	/**
 	 * Let's a player load a previously saved game so it can be continued.
+	 * 
 	 * @param
 	 * @return
 	 * @author Victorai Iannotti
@@ -466,9 +489,10 @@ public class KingdominoController {
 	// {Save game}
 	// As a player, I want to save the current game if the game has not yet been
 	// finished so that I can continue it later
-	
+
 	/**
 	 * Let's a player save a current game so it can be continued or finished later.
+	 * 
 	 * @param
 	 * @return
 	 * @author Victorai Iannotti
@@ -483,8 +507,9 @@ public class KingdominoController {
 	// dominos once the previous round is finished
 
 	/**
-	 * Creates the next draft of dominos that shall be selected by players in a kingdomino game.
-	 * The dominos are, however, not yet revealed.
+	 * Creates the next draft of dominos that shall be selected by players in a
+	 * kingdomino game. The dominos are, however, not yet revealed.
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
@@ -516,14 +541,15 @@ public class KingdominoController {
 		}
 
 	}
-	
+
 	/**
 	 * Reveals the dominos for the current draft by setting its status.
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
 	 */
-	
+
 	public static void revealNextDraft(Kingdomino kingdomino) {
 		Draft draft = kingdomino.getCurrentGame().getNextDraft();
 		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
@@ -537,10 +563,12 @@ public class KingdominoController {
 	// As a player, I want the Kingdomino app to automatically order the revealed
 	// next draft of dominos in increasing order with respect to their numbers so
 	// that I know which are the more valuable dominos
-	
+
 	/**
-	 * Orders the dominos in the current draft that has been revealed. The dominos are ordered 
-	 * in increasing integer value to let players know of their value and importance.
+	 * Orders the dominos in the current draft that has been revealed. The dominos
+	 * are ordered in increasing integer value to let players know of their value
+	 * and importance.
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
 	 * @return void
 	 * @author Maxime Rieuf
@@ -564,13 +592,16 @@ public class KingdominoController {
 	// {Choose next domino}
 	// As a player, I wish to be able to choose a designated domino from the next
 	// draft assuming that this domino has not yet been chosen by any other players
-	
+
 	/**
 	 * Let's a player choose a domino from a current draft by using its number ID.
-	 * @param curPlayer The player that must chose a domino from the current draft
+	 * 
+	 * @param curPlayer  The player that must chose a domino from the current draft
 	 * @param kingdomino The kingdomino instance that is used.
-	 * @param chosen Number ID of the player's chosen domino in the current draft
-	 * @return boolean Returns true if a domino has been selected, false if it hasn't
+	 * @param chosen     Number ID of the player's chosen domino in the current
+	 *                   draft
+	 * @return boolean Returns true if a domino has been selected, false if it
+	 *         hasn't
 	 * @author Abdallah Shapsough
 	 */
 
@@ -591,47 +622,52 @@ public class KingdominoController {
 	/******************
 	 * * Feature 11 * *
 	 ******************/
-	
-	
 
 	// {Move current domino}
 	// As a player, I wish to evaluate a provisional placement of my current domino
 	// by moving the domino around into my kingdom (up, down, left, right)
 
 	/**
-	 * Removes current player's king from a selected domino, adds it in current player's kingdom and places it at (0,0).
-	 * @param kingdomino The kingdomino application from which we get our current game to analyze
+	 * Removes current player's king from a selected domino, adds it in current
+	 * player's kingdom and places it at (0,0).
+	 * 
+	 * @param kingdomino The kingdomino application from which we get our current
+	 *                   game to analyze
 	 * @return void
 	 * @author Mathieu-Joseph Magri
 	 * 
 	 */
-	
+
 	public static void removeKing(Kingdomino kingdomino) {
-		Player player = kingdomino.getCurrentGame().getNextPlayer(); 
+		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		Domino dom = player.getDominoSelection().getDomino();
 		dom.setStatus(DominoStatus.ErroneouslyPreplaced);
-		DominoInKingdom domIn = new DominoInKingdom(0, 0, player.getKingdom(), dom); //Placing domino in player's kingdom
-		domIn.setDirection(DirectionKind.Right); 
-		player.getKingdom().addTerritory(domIn); //Adding the newly placed domino as a territory in player's kingdom
+		DominoInKingdom domIn = new DominoInKingdom(0, 0, player.getKingdom(), dom); // Placing domino in player's
+																						// kingdom
+		domIn.setDirection(DirectionKind.Right);
+		player.getKingdom().addTerritory(domIn); // Adding the newly placed domino as a territory in player's kingdom
 	}
 
 	/**
-	 * Move's a domino in four ways: Up, down, left and right. Takes into account adjacency 
-	 * rules (castle and neighbor), grid size rules and overlapping rules. Updates coordinates
-	 * of the domino that has been moved.
-	 * @param kingdomino The kingdomino application from which we get our current game to analyze
-	 * @param movement The movement (Up, Down, Left, Right) that will be applied to our domino to move it.
+	 * Move's a domino in four ways: Up, down, left and right. Takes into account
+	 * adjacency rules (castle and neighbor), grid size rules and overlapping rules.
+	 * Updates coordinates of the domino that has been moved.
+	 * 
+	 * @param kingdomino The kingdomino application from which we get our current
+	 *                   game to analyze
+	 * @param movement   The movement (Up, Down, Left, Right) that will be applied
+	 *                   to our domino to move it.
 	 * @return void
 	 * @author Mathieu-Joseph Magri
 	 */
 	public static void moveDomino(Kingdomino kingdomino, String movement) {
 		Player player = kingdomino.getCurrentGame().getNextPlayer();
 		DominoInKingdom dom = (DominoInKingdom) player.getKingdom()
-				.getTerritory(player.getKingdom().numberOfTerritories() - 1); //Get last domino
+				.getTerritory(player.getKingdom().numberOfTerritories() - 1); // Get last domino
 		int x = dom.getX();
 		int y = dom.getY();
 		String dir = null;
-		if (verifyGridSize(player.getKingdom())) { //if the grid size of a kingdom respects rules
+		if (verifyGridSize(player.getKingdom())) { // if the grid size of a kingdom respects rules
 			switch (movement) {
 			case "left":
 				if (dom.setX(x - 1)) {
@@ -656,7 +692,7 @@ public class KingdominoController {
 			}
 		}
 		if (dir != null) {
-			if (!verifyGridSize(player.getKingdom())) { //if the grid size of a kingdom does not respect the rules
+			if (!verifyGridSize(player.getKingdom())) { // if the grid size of a kingdom does not respect the rules
 				if (dom.getDomino().getStatus().equals(Domino.DominoStatus.CorrectlyPreplaced)) {
 					switch (dir) {
 					case "left":
@@ -679,10 +715,12 @@ public class KingdominoController {
 	}
 
 	/**
-	 * If a domino respects placement rules withing a kingdom, its status will be updated accordingly 
-	 * with either CorrectlyPreplace or ErroneouslyPreplaced.
-	 * @param dom Domino we want to reset
-	 * @param kingdomino The kingdomino application from which we get our current game to analyze
+	 * If a domino respects placement rules withing a kingdom, its status will be
+	 * updated accordingly with either CorrectlyPreplace or ErroneouslyPreplaced.
+	 * 
+	 * @param dom        Domino we want to reset
+	 * @param kingdomino The kingdomino application from which we get our current
+	 *                   game to analyze
 	 * @return void
 	 * @author Mathieu-Joseph Magri
 	 */
@@ -707,12 +745,16 @@ public class KingdominoController {
 	// {Rotate current domino}
 	// As a player, I wish to evaluate a provisional placement of my current domino
 	// in my kingdom by rotating it (clockwise or counter-clockwise)
-	
+
 	/**
-	 * Let's a player rotate a domino in either clockwise or counter-clockwise fashion. If a domino respects
-	 * placement rules, its direction will be updated accordingly. 
-	 * @param kingdomino The kingdomino application from which we get our current game to analyze
-	 * @param rotation	The selected rotation that will be applied to a selected domino.
+	 * Let's a player rotate a domino in either clockwise or counter-clockwise
+	 * fashion. If a domino respects placement rules, its direction will be updated
+	 * accordingly.
+	 * 
+	 * @param kingdomino The kingdomino application from which we get our current
+	 *                   game to analyze
+	 * @param rotation   The selected rotation that will be applied to a selected
+	 *                   domino.
 	 * @return void
 	 * @author Mathieu-Joseph Magri
 	 */
@@ -788,11 +830,14 @@ public class KingdominoController {
 	// As a player, I wish to place my selected domino to my kingdom. If I am
 	// satisfied with its placement, and its current position respects the adjacency
 	// rules, I wish to finalize the placement
-	
+
 	/**
 	 * Takes a CorrectlyPreplaced domino and places it in a player's kingdom.
-	 * @param kingdomino The kingdomino application from which we get our current game to analyze
-	 * @return boolean A boolean value which indicates whether the domino has been successfully added (true) into a kingdom or not (false).
+	 * 
+	 * @param kingdomino The kingdomino application from which we get our current
+	 *                   game to analyze
+	 * @return boolean A boolean value which indicates whether the domino has been
+	 *         successfully added (true) into a kingdom or not (false).
 	 * @author Mathieu-Joseph Magri
 	 */
 
@@ -1124,11 +1169,15 @@ public class KingdominoController {
 	// {Discard domino}
 	// As a player, I wish to discard a domino if it cannot be placed to my kingdom
 	// in a valid way
-	
+
 	/**
-	 * If a player can't place a domino in a his own domino in any maner possible, that domino gets discarded from the game.
-	 * @param kingdomino The kingdomino application from which we get our current game to analyze.
-	 * @return boolean A boolean value which indicates whether the domino has been successfully discarded (true) from a kingdom or not (false).
+	 * If a player can't place a domino in a his own domino in any maner possible,
+	 * that domino gets discarded from the game.
+	 * 
+	 * @param kingdomino The kingdomino application from which we get our current
+	 *                   game to analyze.
+	 * @return boolean A boolean value which indicates whether the domino has been
+	 *         successfully discarded (true) from a kingdom or not (false).
 	 * @author Mathieu-Joseph Magri
 	 */
 
@@ -1142,10 +1191,14 @@ public class KingdominoController {
 			return true;
 		}
 	}
+
 	/**
 	 * Verifies whether or not a domino can still be placed in a player's kingdom.
-	 * @param kingdom  The kingdomino application from which we get our current game to analyze.
-	 * @return boolean A boolean value which indicates whether the domino can still be placed within a player's kingdom or not.
+	 * 
+	 * @param kingdom The kingdomino application from which we get our current game
+	 *                to analyze.
+	 * @return boolean A boolean value which indicates whether the domino can still
+	 *         be placed within a player's kingdom or not.
 	 * @author Mathieu-Joseph Magri
 	 */
 	public static boolean canStillPlay(Kingdom kingdom) {
@@ -1182,14 +1235,12 @@ public class KingdominoController {
 	 * * Feature 19 * *
 	 ******************/
 
-	
 	/**
 	 * @author kaichengwu
 	 * @param kingdomino
-	 * @return void
-	 * this method identifies the kingdom properties
+	 * @return void this method identifies the kingdom properties
 	 */
-	
+
 	// {Identify kingdom properties}
 	// As a player, I want the Kingdomino app to automatically determine each
 	// properties of my kingdom so that my score can be calculated
@@ -1197,20 +1248,19 @@ public class KingdominoController {
 		Game game = kingdomino.getCurrentGame();
 		Player player = game.getNextPlayer();
 		Kingdom kingdom = player.getKingdom();
-		
-		
+
 		List<KingdomTerritory> territories = new ArrayList<KingdomTerritory>(kingdom.getTerritories());
-		
-		ArrayList<HashMap<String,Object>> tiles = new ArrayList<>();
-		
-		HashMap<String,Integer> locations = new HashMap<>();
-		int index=0;
-		for(KingdomTerritory ter : territories) {
-			if(ter instanceof DominoInKingdom) {
+
+		ArrayList<HashMap<String, Object>> tiles = new ArrayList<>();
+
+		HashMap<String, Integer> locations = new HashMap<>();
+		int index = 0;
+		for (KingdomTerritory ter : territories) {
+			if (ter instanceof DominoInKingdom) {
 				DominoInKingdom domino = (DominoInKingdom) ter;
-				HashMap<String,Object> left = new HashMap<>();
-				HashMap<String,Object> right = new HashMap<>();
-				
+				HashMap<String, Object> left = new HashMap<>();
+				HashMap<String, Object> right = new HashMap<>();
+
 				int x1 = 0, y1 = 0;
 				int x = domino.getX();
 				int y = domino.getY();
@@ -1232,26 +1282,26 @@ public class KingdominoController {
 					y1 = y - 1;
 					break;
 				}
-				
+
 				left.put("terrain", domino.getDomino().getLeftTile());
 				left.put("x", x);
 				left.put("y", y);
 				left.put("domino", domino.getDomino());
 				left.put("property", null);
-				
+
 				right.put("terrain", domino.getDomino().getRightTile());
 				right.put("x", x1);
 				right.put("y", y1);
 				right.put("domino", domino.getDomino());
 				right.put("property", null);
-				
+
 				tiles.add(left);
 				tiles.add(right);
-				
+
 				String locationl = Integer.toString(x) + Integer.toString(y);
 				locations.put(locationl, index);
 				index++;
-				
+
 				String locationr = Integer.toString(x1) + Integer.toString(y1);
 				locations.put(locationr, index);
 				index++;
@@ -1259,274 +1309,281 @@ public class KingdominoController {
 //			System.out.println("#######");
 //			System.out.println(tiles);
 //			System.out.println("#######");
-			
+
 		}
 //		
-		for(HashMap<String,Object> tile : tiles) {
-			
-			int leftx = Integer.parseInt(tile.get("x").toString())-1;
+		for (HashMap<String, Object> tile : tiles) {
+
+			int leftx = Integer.parseInt(tile.get("x").toString()) - 1;
 			int lefty = Integer.parseInt(tile.get("y").toString());
 			String left = Integer.toString(leftx) + Integer.toString(lefty);
-			
+
 			int upx = Integer.parseInt(tile.get("x").toString());
-			int upy = Integer.parseInt(tile.get("y").toString())+1;
+			int upy = Integer.parseInt(tile.get("y").toString()) + 1;
 			String up = Integer.toString(upx) + Integer.toString(upy);
-			
-			int rightx = Integer.parseInt(tile.get("x").toString())+1;
+
+			int rightx = Integer.parseInt(tile.get("x").toString()) + 1;
 			int righty = Integer.parseInt(tile.get("y").toString());
 			String right = Integer.toString(rightx) + Integer.toString(righty);
-			
+
 			int downx = Integer.parseInt(tile.get("x").toString());
-			int downy = Integer.parseInt(tile.get("y").toString())-1;
+			int downy = Integer.parseInt(tile.get("y").toString()) - 1;
 			String down = Integer.toString(downx) + Integer.toString(downy);
-			int locationl=-1;
-			int locationu=-1;
-			int locationr=-1;
-			int locationd=-1;
-			
+			int locationl = -1;
+			int locationu = -1;
+			int locationr = -1;
+			int locationd = -1;
+
 			boolean l = true;
 			boolean u = true;
 			boolean r = true;
 			boolean d = true;
-			
-			if(locations.containsKey(left)) {
+
+			if (locations.containsKey(left)) {
 				locationl = locations.get(left);
-			}else {
-				l=false;
+			} else {
+				l = false;
 			}
-			if(locations.containsKey(up)) {
+			if (locations.containsKey(up)) {
 				locationu = locations.get(up);
-			}else {
-				u=false;
+			} else {
+				u = false;
 			}
-			
-			if(locations.containsKey(right)) {
+
+			if (locations.containsKey(right)) {
 				locationr = locations.get(right);
-			}else {
-				r=false;
+			} else {
+				r = false;
 			}
-			if(locations.containsKey(down)) {
+			if (locations.containsKey(down)) {
 				locationd = locations.get(down);
-			}else {
-				d=false;
+			} else {
+				d = false;
 			}
-			
-			//all cases of expanding are plotted bellow,
-			//a new tile of the same terrain type was added to a singular tile of the same type; (e.g. a tile on the left)
-			//or a new tile was added between two tiles of the same type; (e.g. a tile on top, a tile on the left)
-			//or a new tile was added between three tiles (e.g. a tile on top, a tile on the left, a tile on the right)
-			
-			boolean myLeft = l &&tiles.get(locationl).get("property")!=null && tile.get("terrain").equals(tiles.get(locationl).get("terrain"));
-			boolean myUp = u&&tiles.get(locationu).get("property")!=null && tile.get("terrain").equals(tiles.get(locationu).get("terrain"));
-			boolean myRight = r&&tiles.get(locationr).get("property")!=null  && tile.get("terrain").equals(tiles.get(locationr).get("terrain"));
-			boolean myDown = d&&tiles.get(locationd).get("property")!=null  && tile.get("terrain").equals(tiles.get(locationd).get("terrain"));
-			if(myLeft&&myRight) {
+
+			// all cases of expanding are plotted bellow,
+			// a new tile of the same terrain type was added to a singular tile of the same
+			// type; (e.g. a tile on the left)
+			// or a new tile was added between two tiles of the same type; (e.g. a tile on
+			// top, a tile on the left)
+			// or a new tile was added between three tiles (e.g. a tile on top, a tile on
+			// the left, a tile on the right)
+
+			boolean myLeft = l && tiles.get(locationl).get("property") != null
+					&& tile.get("terrain").equals(tiles.get(locationl).get("terrain"));
+			boolean myUp = u && tiles.get(locationu).get("property") != null
+					&& tile.get("terrain").equals(tiles.get(locationu).get("terrain"));
+			boolean myRight = r && tiles.get(locationr).get("property") != null
+					&& tile.get("terrain").equals(tiles.get(locationr).get("terrain"));
+			boolean myDown = d && tiles.get(locationd).get("property") != null
+					&& tile.get("terrain").equals(tiles.get(locationd).get("terrain"));
+			if (myLeft && myRight) {
 				tile.put("property", tiles.get(locationl).get("property"));
-				Property prop = (Property)tiles.get(locationl).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
-				if(!tiles.get(locationr).get("property").equals(tiles.get(locationl).get("property"))){
+				Property prop = (Property) tiles.get(locationl).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
+				if (!tiles.get(locationr).get("property").equals(tiles.get(locationl).get("property"))) {
 					Property tem = (Property) tiles.get(locationr).get("property");
 					tem.delete();
 					tiles.get(locationr).put("property", tiles.get(locationl).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationr).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationr).get("domino"));
+
 				}
 			}
-			if(myLeft&&myUp) {
+			if (myLeft && myUp) {
 				tile.put("property", tiles.get(locationl).get("property"));
-				Property prop = (Property)tiles.get(locationl).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
-				if(!tiles.get(locationu).get("property").equals(tiles.get(locationl).get("property"))){
+				Property prop = (Property) tiles.get(locationl).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
+				if (!tiles.get(locationu).get("property").equals(tiles.get(locationl).get("property"))) {
 					Property tem = (Property) tiles.get(locationu).get("property");
 					tem.delete();
 					tiles.get(locationu).put("property", tiles.get(locationl).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
+
 				}
 			}
-			if(myLeft&&myDown) {
+			if (myLeft && myDown) {
 				tile.put("property", tiles.get(locationl).get("property"));
-				Property prop = (Property)tiles.get(locationl).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
-				if(!tiles.get(locationd).get("property").equals(tiles.get(locationl).get("property"))){
+				Property prop = (Property) tiles.get(locationl).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
+				if (!tiles.get(locationd).get("property").equals(tiles.get(locationl).get("property"))) {
 					Property tem = (Property) tiles.get(locationd).get("property");
 					tem.delete();
 					tiles.get(locationd).put("property", tiles.get(locationl).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
+
 				}
 			}
-			if(myUp&&myRight) {
+			if (myUp && myRight) {
 				tile.put("property", tiles.get(locationu).get("property"));
-				Property prop = (Property)tiles.get(locationu).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
-				if(!tiles.get(locationr).get("property").equals(tiles.get(locationu).get("property"))){
+				Property prop = (Property) tiles.get(locationu).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
+				if (!tiles.get(locationr).get("property").equals(tiles.get(locationu).get("property"))) {
 					Property tem = (Property) tiles.get(locationr).get("property");
 					tem.delete();
 					tiles.get(locationr).put("property", tiles.get(locationu).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationr).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationr).get("domino"));
+
 				}
 			}
-			if(myUp&&myDown) {
+			if (myUp && myDown) {
 				tile.put("property", tiles.get(locationu).get("property"));
-				Property prop = (Property)tiles.get(locationu).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
-				if(!tiles.get(locationd).get("property").equals(tiles.get(locationu).get("property"))){
+				Property prop = (Property) tiles.get(locationu).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
+				if (!tiles.get(locationd).get("property").equals(tiles.get(locationu).get("property"))) {
 					Property tem = (Property) tiles.get(locationd).get("property");
 					tem.delete();
 					tiles.get(locationd).put("property", tiles.get(locationu).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
+
 				}
 			}
-			if(myRight&&myDown) {
+			if (myRight && myDown) {
 				tile.put("property", tiles.get(locationr).get("property"));
-				Property prop = (Property)tiles.get(locationr).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
-				if(!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))){
+				Property prop = (Property) tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
+				if (!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))) {
 					Property tem = (Property) tiles.get(locationd).get("property");
 					tem.delete();
 					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
+
 				}
 			}
-			if(myLeft&&myUp&&myRight) {
+			if (myLeft && myUp && myRight) {
 				tile.put("property", tiles.get(locationr).get("property"));
-				Property prop = (Property)tiles.get(locationr).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
-				if(!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))){
+				Property prop = (Property) tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
+				if (!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))) {
 					Property tem = (Property) tiles.get(locationu).get("property");
 					tem.delete();
 					tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
+
 				}
-				if(!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))){
+				if (!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))) {
 					Property tem = (Property) tiles.get(locationl).get("property");
 					tem.delete();
 					tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationl).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationl).get("domino"));
+
 				}
 			}
-			if(myLeft&&myDown&&myRight) {
+			if (myLeft && myDown && myRight) {
 				tile.put("property", tiles.get(locationr).get("property"));
-				Property prop = (Property)tiles.get(locationr).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
-				if(!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))){
+				Property prop = (Property) tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
+				if (!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))) {
 					Property tem = (Property) tiles.get(locationd).get("property");
 					tem.delete();
 					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
+
 				}
-				if(!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))){
+				if (!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))) {
 					Property tem = (Property) tiles.get(locationl).get("property");
 					tem.delete();
 					tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationl).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationl).get("domino"));
+
 				}
 			}
-			if(myDown&&myUp&&myRight) {
+			if (myDown && myUp && myRight) {
 				tile.put("property", tiles.get(locationr).get("property"));
-				Property prop = (Property)tiles.get(locationr).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
-				if(!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))){
+				Property prop = (Property) tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
+				if (!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))) {
 					Property tem = (Property) tiles.get(locationu).get("property");
 					tem.delete();
 					tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
+
 				}
-				if(!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))){
+				if (!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))) {
 					Property tem = (Property) tiles.get(locationd).get("property");
 					tem.delete();
 					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
+
 				}
 			}
-			if(myLeft&&myUp&&myDown) {
+			if (myLeft && myUp && myDown) {
 				tile.put("property", tiles.get(locationd).get("property"));
-				Property prop = (Property)tiles.get(locationd).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
-				if(!tiles.get(locationu).get("property").equals(tiles.get(locationd).get("property"))){
+				Property prop = (Property) tiles.get(locationd).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
+				if (!tiles.get(locationu).get("property").equals(tiles.get(locationd).get("property"))) {
 					Property tem = (Property) tiles.get(locationu).get("property");
 					tem.delete();
 					tiles.get(locationu).put("property", tiles.get(locationd).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
+
 				}
-				if(!tiles.get(locationl).get("property").equals(tiles.get(locationd).get("property"))){
+				if (!tiles.get(locationl).get("property").equals(tiles.get(locationd).get("property"))) {
 					Property tem = (Property) tiles.get(locationl).get("property");
 					tem.delete();
 					tiles.get(locationl).put("property", tiles.get(locationd).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationl).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationl).get("domino"));
+
 				}
 			}
-			if(myLeft&&myUp&&myRight&&myDown) {
+			if (myLeft && myUp && myRight && myDown) {
 				tile.put("property", tiles.get(locationr).get("property"));
-				Property prop = (Property)tiles.get(locationr).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
-				if(!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))){
+				Property prop = (Property) tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
+				if (!tiles.get(locationu).get("property").equals(tiles.get(locationr).get("property"))) {
 					Property tem = (Property) tiles.get(locationu).get("property");
 					tem.delete();
 					tiles.get(locationu).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationu).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationu).get("domino"));
+
 				}
-				if(!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))){
+				if (!tiles.get(locationl).get("property").equals(tiles.get(locationr).get("property"))) {
 					Property tem = (Property) tiles.get(locationl).get("property");
 					tem.delete();
 					tiles.get(locationl).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationl).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationl).get("domino"));
+
 				}
-				if(!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))){
+				if (!tiles.get(locationd).get("property").equals(tiles.get(locationr).get("property"))) {
 					Property tem = (Property) tiles.get(locationd).get("property");
 					tem.delete();
 					tiles.get(locationd).put("property", tiles.get(locationr).get("property"));
-					prop.addIncludedDomino((Domino)tiles.get(locationd).get("domino"));
-					
+					prop.addIncludedDomino((Domino) tiles.get(locationd).get("domino"));
+
 				}
 			}
-			if(myLeft) {
-				
+			if (myLeft) {
+
 				tile.put("property", tiles.get(locationl).get("property"));
-				Property prop = (Property)tiles.get(locationl).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
+				Property prop = (Property) tiles.get(locationl).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
 				continue;
-			}else if(myUp) {
+			} else if (myUp) {
 				tile.put("property", tiles.get(locationu).get("property"));
-				Property prop = (Property)tiles.get(locationu).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
+				Property prop = (Property) tiles.get(locationu).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
 				continue;
-			}else if(myRight) {
+			} else if (myRight) {
 				tile.put("property", tiles.get(locationr).get("property"));
-				Property prop = (Property)tiles.get(locationr).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
+				Property prop = (Property) tiles.get(locationr).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
 				continue;
-			}else if(myDown) {
+			} else if (myDown) {
 				tile.put("property", tiles.get(locationd).get("property"));
-				Property prop = (Property)tiles.get(locationd).get("property");
-				prop.addIncludedDomino((Domino)tile.get("domino"));
+				Property prop = (Property) tiles.get(locationd).get("property");
+				prop.addIncludedDomino((Domino) tile.get("domino"));
 				continue;
-			}else {
-				
+			} else {
+
 				tile.put("property", new Property(kingdom));
-				Property prop = (Property)tile.get("property");
-				Domino dom =(Domino)tile.get("domino");
-				prop.setLeftTile((TerrainType)tile.get("terrain"));
-				prop.addIncludedDomino((Domino)tile.get("domino"));
+				Property prop = (Property) tile.get("property");
+				Domino dom = (Domino) tile.get("domino");
+				prop.setLeftTile((TerrainType) tile.get("terrain"));
+				prop.addIncludedDomino((Domino) tile.get("domino"));
 			}
 		}
-		
-		//testing codes
-		//___________________________________________________________
+
+		// testing codes
+		// ___________________________________________________________
 //		System.out.print(locations);
 //		for(int i =0;i<kingdom.getProperties().size();i++) {
 //			System.out.println("#############");
@@ -1542,7 +1599,7 @@ public class KingdominoController {
 //			}
 //		}
 	}
-	//_______another attempt of implementing the feature________
+	// _______another attempt of implementing the feature________
 //	public static void identifyProperties(Kingdomino kingdomino) {
 //		
 //		Player player = kingdomino.getCurrentGame().getNextPlayer();
@@ -1621,7 +1678,7 @@ public class KingdominoController {
 ////		}
 //	}
 
-	//private helper methods
+	// private helper methods
 	private static void checkForConnected(List<Property> properties, Kingdom k) {
 		ArrayList<Property> propsOfType = new ArrayList<Property>();
 		for (TerrainType type : TerrainType.values()) {
@@ -1657,7 +1714,7 @@ public class KingdominoController {
 				}
 			}
 		}
-		
+
 		Property prop = new Property(k);
 		for (int i : indexes) {
 			prop.setLeftTile(propsOfType.get(i).getLeftTile());
@@ -1674,7 +1731,7 @@ public class KingdominoController {
 			prop.addOrMoveIncludedDominoAt(dominos.get(i), i);
 
 		}
-		
+
 		List<Property> temp = new ArrayList<Property>(k.getProperties());
 		for (Property todelete : temp) {
 			for (int j : indexes) {
@@ -1894,15 +1951,15 @@ public class KingdominoController {
 //		p.setLeftTile(p1.getLeftTile());
 //		return p;
 //	}
-	
-	
 
 	/******************
 	 * * Feature 20 * *
 	 ******************/
 
 	/**
-	 * this methods calculate the attributes of each property (num of crowns & size of property), and sets them up for furthur use
+	 * this methods calculate the attributes of each property (num of crowns & size
+	 * of property), and sets them up for furthur use
+	 * 
 	 * @author kaichengwu
 	 * @param kingdomino
 	 * @return void
@@ -1918,21 +1975,21 @@ public class KingdominoController {
 		for (Property p : properties) {
 			int inc = 0;
 			for (Domino d : p.getIncludedDominos()) {
-				
-				if(d.getLeftTile()==p.getLeftTile()) {
-					
+
+				if (d.getLeftTile() == p.getLeftTile()) {
+
 					p.setCrowns(p.getCrowns() + d.getLeftCrown());
-					inc ++;
+					inc++;
 				}
-				if(d.getRightTile()==p.getLeftTile()) {
+				if (d.getRightTile() == p.getLeftTile()) {
 //					System.out.print(d.getRightCrown());
 					p.setCrowns(p.getCrowns() + d.getRightCrown());
 					inc++;
 				}
-				
+
 			}
 			p.setSize(inc);
-			p.setScore(p.getSize()*p.getCrowns());
+			p.setScore(p.getSize() * p.getCrowns());
 		}
 	}
 
@@ -1940,9 +1997,10 @@ public class KingdominoController {
 	 * * Feature 21 * *
 	 ******************/
 
-	
 	/**
-	 * this feature calculates the bonus score of the player if the bonus feature harmony/middle kingdom were selected at the beginning of the game
+	 * this feature calculates the bonus score of the player if the bonus feature
+	 * harmony/middle kingdom were selected at the beginning of the game
+	 * 
 	 * @param kingdomino
 	 * @return void
 	 * @author kaichengwu
@@ -1956,21 +2014,21 @@ public class KingdominoController {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
 		int bonusScore = 0;
 		for (BonusOption b : kingdomino.getCurrentGame().getSelectedBonusOptions()) {
-			
+
 			if (b.getOptionName().equals("Harmony")) {
-				
+
 				bonusScore += calculateHarmony(player);
 			}
-			
+
 			if (b.getOptionName().equals("MiddleKingdom")) {
-				
+
 				bonusScore += calculateMiddleKingdom(player);
 			}
 		}
 		player.setBonusScore(bonusScore);
 	}
 
-	//if there are 13 terriotories in kingtom => harmony is achieved
+	// if there are 13 terriotories in kingtom => harmony is achieved
 	private static int calculateHarmony(Player player) {
 		if (player.getKingdom().getTerritories().size() == 13) {
 			return 5;
@@ -1979,10 +2037,10 @@ public class KingdominoController {
 		}
 	}
 
-	//if the castle is in the middle => middlekingdom is achieved
+	// if the castle is in the middle => middlekingdom is achieved
 	private static int calculateMiddleKingdom(Player player) {
 		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
-		
+
 		int minX = territories.get(0).getX();
 		int minY = territories.get(0).getY();
 		int maxX = territories.get(0).getX();
@@ -2057,72 +2115,32 @@ public class KingdominoController {
 		if (minX == (-1) * maxX && minY == (-1) * maxY) {
 			return 10;
 		} else {
-			
+
 			return 0;
 		}
 	}
 
-	
-	
 	/******************
 	 * * Feature 22 * *
 	 ******************/
-	
+
 	/**
 	 * @author kaichengwu
 	 * @param kingdomino
-	 * @return void
-	 * this features calculate the total score of the player by summing up the score of each individual property
+	 * @return void this features calculate the total score of the player by summing
+	 *         up the score of each individual property
 	 */
-	public static void calculatePlayerScore(Kingdomino kingdomino){
+	public static void calculatePlayerScore(Kingdomino kingdomino) {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
 		int propscore = 0;
 		List<Property> myprop = player.getKingdom().getProperties();
-		for(int i=0; i<myprop.size();i++) {
-			propscore+= myprop.get(i).getScore();
+		for (int i = 0; i < myprop.size(); i++) {
+			propscore += myprop.get(i).getScore();
 		}
 
 		player.setPropertyScore(propscore);
-		
+
 	}
-
-	
-	
-	// {Calculate player score}
-	// As a player, I want the Kingdomino app to automatically calculate the score
-	// for each player by summing up their property scores and their bonus scores
-//	
-//	public static void calculatePlayerScore(Kingdomino kingdomino, Player s) {
-//		//identifyProperties(kingdomino);
-//		//calculatePropertyAttributes(kingdomino);
-//		//Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
-//		Player player = kingdomino.getCurrentGame().getNextPlayer();
-//		int playerScore = 0; 
-//		List<Property> props = player.getKingdom().getProperties();
-//		
-//		System.out.println(player.getKingdom().getProperty(0));
-//		System.out.println(props.size());
-////		System.out.println(props.get(1).getCrowns());
-////		System.out.println(props.get(2).getCrowns());
-//		
-//		//System.out.println();
-//		for(Property p : props) {
-//			
-//			playerScore += (p.getKingdom().getTerritories().size()) * (p.getCrowns());
-//			System.out.println(playerScore);
-//		}
-////		for(Property p : props) {
-////			playerScore += (p.getKingdom().getTerritories().size()) * (p.getCrowns());
-////			System.out.println(playerScore);
-////		}
-////		for(int i=0; i<props.size()) {
-////			
-////		}
-//		//System.out.println(playerScore);
-//		//calculateBonusScore(kingdomino);
-//		player.setPropertyScore(playerScore);
-//	}
-
 
 	/******************
 	 * * Feature 23 * *
@@ -2133,57 +2151,46 @@ public class KingdominoController {
 	// in order to know the winner of a finished game
 
 	public static void calculateRanking(Kingdomino kingdomino) {
-		List<Player> players = kingdomino.getCurrentGame().getPlayers();
+		ArrayList<Player> players = new ArrayList<Player>();
+		for (Player p : kingdomino.getCurrentGame().getPlayers()) {
+			players.add(p);
+		}
 		Player currentPlayer;
 		Player tempPlayer;
 		for (int i = 0; i < players.size() - 1; i++) {
 			currentPlayer = players.get(i);
 			for (int j = i + 1; j < players.size(); j++) {
 				tempPlayer = players.get(j);
-				if (tempPlayer.getTotalScore() > currentPlayer.getTotalScore()) {
+				if (tempPlayer.getTotalScore() == currentPlayer.getTotalScore()) {
+					System.out.println("jdjdjdjdjdjd");
+					switch (resolveTiebreak(tempPlayer, currentPlayer)) {
+					case 1:
+						players.set(i, tempPlayer);
+						players.set(j, currentPlayer);
+						currentPlayer = tempPlayer;
+						break;
+					case 2:
+						players.set(i, tempPlayer);
+						players.set(j, currentPlayer);
+						currentPlayer = tempPlayer;
+						break;
+					case -1:
+						players.set(i, tempPlayer);
+						players.set(j, currentPlayer);
+						currentPlayer = tempPlayer;
+						break;
+					}
+				} else if (tempPlayer.getTotalScore() > currentPlayer.getTotalScore()) {
 					players.set(i, tempPlayer);
 					players.set(j, currentPlayer);
 					currentPlayer = tempPlayer;
-				} else if (tempPlayer.getTotalScore() == currentPlayer.getTotalScore()) {
-					if (getLargestPropertySize(tempPlayer.getKingdom().getProperties()) > getLargestPropertySize(
-							currentPlayer.getKingdom().getProperties())) {
-						players.set(i, tempPlayer);
-						players.set(j, currentPlayer);
-						currentPlayer = tempPlayer;
-					} else if (getNumberCrowns(tempPlayer.getKingdom().getProperties()) > getNumberCrowns(
-							currentPlayer.getKingdom().getProperties())) {
-						players.set(i, tempPlayer);
-						players.set(j, currentPlayer);
-						currentPlayer = tempPlayer;
-					}
 				}
 			}
 		}
-	}
+		for (int i = 0; i < players.size(); i++) {
+			players.get(i).setCurrentRanking(i + 1);
+		}
 
-	private static int getLargestPropertySize(List<Property> properties) {
-		if (properties == null) {
-			return 0;
-		}
-		Property largestProperty = properties.get(0);
-		if (properties.size() == 1) {
-			return largestProperty.getSize();
-		}
-		for (int i = 1; i < properties.size(); i++) {
-			if (properties.get(i).getSize() > largestProperty.getSize()) {
-				largestProperty = properties.get(i);
-			}
-		}
-		return largestProperty.getSize();
-
-	}
-
-	private static int getNumberCrowns(List<Property> properties) {
-		int numCrowns = 0;
-		for (Property property : properties) {
-			numCrowns += property.getCrowns();
-		}
-		return numCrowns;
 	}
 
 	/******************
@@ -2195,8 +2202,45 @@ public class KingdominoController {
 	// tiebreak (i.e. equal score between players) by evaluating the most extended
 	// (largest) property and then the total number of crowns
 
+	private static int resolveTiebreak(Player p1, Player p2) {
+		if (getLargestPropertySize(p1.getKingdom().getProperties()) > getLargestPropertySize(
+				p2.getKingdom().getProperties())) {
+			return 1;
+		} else if (getLargestPropertySize(p1.getKingdom().getProperties()) < getLargestPropertySize(
+				p2.getKingdom().getProperties())) {
+			return 2;
+		}
+		if (getNumberCrowns(p1.getKingdom().getProperties()) > getNumberCrowns(p2.getKingdom().getProperties())) {
+			return 1;
+		} else if (getNumberCrowns(p1.getKingdom().getProperties()) < getNumberCrowns(
+				p2.getKingdom().getProperties())) {
+			return 2;
+		}
+		return 0;
+	}
+
+	private static int getLargestPropertySize(List<Property> properties) {
+		int largestSize = 0;
+		if (properties == null) {
+			return 0;
+		}
+		for (Property p : properties) {
+			if (p.getSize() > largestSize) {
+				largestSize = p.getSize();
+			}
+		}
+		return largestSize;
+	}
+
+	private static int getNumberCrowns(List<Property> properties) {
+		int numCrowns = 0;
+		for (Property property : properties) {
+			numCrowns += property.getCrowns();
+		}
+		return numCrowns;
+	}
+
 	// Handled in feature 23
 	// ****************************************************************************************
 
 }
-
