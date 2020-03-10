@@ -1,3 +1,4 @@
+
 package ca.mcgill.ecse223.kingdomino.features;
 
 import static org.junit.Assert.assertEquals;
@@ -86,3 +87,4 @@ public class VerifyGridSizeStepDefinition {
 	}
 
 }
+		
