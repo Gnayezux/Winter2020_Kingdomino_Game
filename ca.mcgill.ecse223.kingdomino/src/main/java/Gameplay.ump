@@ -3,14 +3,21 @@ namespace ca.mcgill.ecse223.kingdomino.model;
 class Gameplay {
 
     gamestatus {
-        // TODO: complete gameplay state machine
+    	Starting{
+    		startGame -> Initializing;
+    	}
         Initializing {
             CreatingFirstDraft {
                 entry/{shuffleDominoPile(); createNextDraft(); orderNextDraft();}
                 draftReady -> /{revealNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
             }
             SelectingFirstDomino {
-            // TODO add transitions with triggers, guards, actions, and target states
+            	nextPlayerFirstSelection [isValidSelection()]-> /{nextPlayerTurn();} Initializing.SelectingFirstDomino;
+            	firstSelectionComplete [isCurrentPlayerTheLastInTurn()] -> Initializing.PlacingFirstDomino;
+            	exit/{generatePlayerOrder();}
+            }
+            PlacingFirstDomino {
+            
             }
         }
     }
@@ -24,6 +31,9 @@ class Gameplay {
        	case "CreatingFirstDraft":
        	    gamestatus = Gamestatus.Initializing;
        	    gamestatusInitializing = GamestatusInitializing.CreatingFirstDraft;
+       	    setGamestatusInitializing(GamestatusInitializing.CreatingFirstDraft);
+       	    break;
+       	case "SelectingFirstDomino":
        	// TODO add further cases here to set desired state
        	default:
        	    throw new RuntimeException("Invalid gamestatus string was provided: " + status);
@@ -44,6 +54,10 @@ class Gameplay {
         return false;
     }
     
+    public boolean isValidSelection() {
+        // TODO: implement this
+        return false;
+    }
     // You may need to add more guards here
         
         
@@ -52,24 +66,29 @@ class Gameplay {
      */
     
     public void shuffleDominoPile() {
-        // TODO: implement this
-    }
-    
-    public void generateInitialPlayerOrder() {
-        // TODO: implement this
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.doAction("ShuffleDominoPile");
     }
     
     public void createNextDraft() {
-        // TODO: implement this
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.doAction("CreateNextDraft");
     }
     
     public void orderNextDraft() {
-        // TODO: implement this
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.doAction("OrderNextDraft");
     }
     
     public void revealNextDraft() {
-        // TODO: implement this
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.doAction("RevealNextDraft");
     }
     
+    public void generateInitialPlayerOrder() {
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.doAction("GenerateInitialPlayerOrder");
+    }
+    
+    public void nextPlayerTurn(){
+    }
+    
+    public void generatePlayerOrder(){
+    }
     // You may need to add more actions here
 }

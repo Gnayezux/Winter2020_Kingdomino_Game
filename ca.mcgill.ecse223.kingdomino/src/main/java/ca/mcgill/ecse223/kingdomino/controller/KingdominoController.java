@@ -21,6 +21,68 @@ public class KingdominoController {
 
 	}
 
+	public static void doAction(String action) {
+		Kingdomino k = KingdominoApplication.getKingdomino();
+		Gameplay g = KingdominoApplication.getGameplay();
+		switch(action) {
+		case "ShuffleDominoPile":
+			System.out.println("shuffling");
+			shuffleDominos(k);
+			break;
+		case "CreateNextDraft":
+			createNextDraft(k); 
+			break;
+		case "OrderNextDraft":
+			orderNextDraft(k);
+			g.draftReady();
+			break;
+		case "RevealNextDraft":
+			revealNextDraft(k);
+			break;
+		case "GenerateInitialPlayerOrder":
+			generateInitialPlayerOrder(k);
+			//createNextDraft(k);
+			break;
+		}
+	}
+	
+	public static void generateInitialPlayerOrder(Kingdomino kingdomino) {
+		Game game = kingdomino.getCurrentGame();
+		ArrayList <Integer> numbers = new ArrayList<Integer>();
+		boolean taken;
+		while(numbers.size()<4) {
+			Integer temp = (int)(Math.random() * ((3 - 0) + 1));
+			taken = false;
+			for(int j = 0; j<numbers.size(); j++) {
+				if(numbers.get(j).compareTo(temp)==0) {
+					taken = true;
+				}
+			}
+			if(!taken) {
+				numbers.add(temp);
+			}
+		}
+		List<Player> players = game.getPlayers();
+		for(int i = 0; i<players.size(); i++) {
+			game.addOrMovePlayerAt(players.get(i), numbers.get(i).intValue());
+		}
+		game.setNextPlayer(game.getPlayer(0));
+	}
+	
+	/**
+	 * Method for arranging player list in Game class to prepare for the next draft
+	 * @param kingdomino
+	 */
+	public static void arrangePlayers(Kingdomino kingdomino) {
+		Game game = kingdomino.getCurrentGame();
+		Draft draft = game.getNextDraft();
+		ArrayList<DominoSelection> selections = new ArrayList<DominoSelection>(draft.getSelections());
+		int i =0;
+		for(DominoSelection selection : selections) {
+			game.addOrMovePlayerAt(selection.getPlayer(), i);
+			i++;
+		}
+	}
 	/*****************
 	 * * Feature 1 * *
 	 *****************/
@@ -28,7 +90,7 @@ public class KingdominoController {
 	// {Set game options}
 	// As a player, I want to configure the designated options of the Kingdomino
 	// game including the number of players (2, 3 or 4) and the bonus scoring
-	// options
+	// options 
 
 	/**
 	 * Let's us start a kingdomino game with desired configurations.
