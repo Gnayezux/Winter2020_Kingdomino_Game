@@ -12,7 +12,9 @@ public class KingdominoApplication {
 	private static Kingdomino kingdomino;
 
 	public static void main(String[] args) {
+
 		Kingdomino wtf = getKingdomino();
+
 		KingdominoController.load(wtf, "D:" + File.separator+"kingdomino_test_game_2.mov"); //Change this directory to the directory to load game file
 		KingdominoController.identifyProperties(wtf);
 		wtf.getCurrentGame().setNextPlayer(wtf.getCurrentGame().getPlayer(2));
@@ -26,7 +28,7 @@ public class KingdominoApplication {
 		KingdominoController.calculatePropertyAttributes(wtf);
 		KingdominoController.calculatePropertyAttributes(wtf);
 		KingdominoController.calculatePlayerScore(wtf);
-		KingdominoController.save(wtf, "D:" + File.separator+"WTF.mov");
+		KingdominoController.save(wtf, "D:" + File.separator+"WTF.mov");//Change this directory to the directory to save game file
 		System.out.println("Game file successfully created.");
 	}
 

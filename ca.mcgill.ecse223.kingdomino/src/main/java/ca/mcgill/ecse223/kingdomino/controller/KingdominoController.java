@@ -536,6 +536,7 @@ public class KingdominoController {
 		try {
 			Scanner reader = new Scanner(file);
 			String data = reader.nextLine();
+			System.out.print(data);
 
 			Game game = new Game(48, kingdomino);
 			kingdomino.setCurrentGame(game);
@@ -682,18 +683,42 @@ public class KingdominoController {
 	public static void save(Kingdomino kingdomino, String string) {
 		File file = new File(string);
 		if (file.exists()) {
-		try {
 			overWriteFile(string);
+			helpsavegame(file,kingdomino);
+			
+		} else {
+			helpsavegame(file,kingdomino);
+			}
+			
+		}
+	/**
+	 * Helper method that save the game to a file if needed
+	 * 
+	 * @param file
+	 * @param kingdomino
+	 */
+	public static void helpsavegame(File file, Kingdomino kingdomino) {
+		try {
+			file.createNewFile();
 			BufferedWriter out = new BufferedWriter(new FileWriter(file));				
+			String currentsel = "C: ";
+			List<Player> players = kingdomino.getCurrentGame().getPlayers();
+			for (Player i: players) {
+				currentsel = currentsel + i.getDominoSelection().getDomino().getId() + ", ";
+			}
+			currentsel = currentsel.substring(0, currentsel.length()-2);
+			out.write(currentsel);
+			out.newLine();
 			String unused = "U: ";
 			List<Domino> dominos = kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDominos();
 			for (int i = 0; i<dominos.size();i++) {
 				unused = unused+dominos.get(i).getId() + ", ";
 			}
+			
 			unused = unused.substring(0, unused.length()-2);
 			out.write(unused);
 			out.newLine();
-			List<Player> players = kingdomino.getCurrentGame().getPlayers();
+			
 			for (Player i:players) {
 				String playerdominos = i.getUser().getName() + ": ";
 				for(KingdomTerritory kt: i.getKingdom().getTerritories()) {
@@ -711,51 +736,13 @@ public class KingdominoController {
 				}
 				
 			out.flush();
-			out.close();
+			out.close();	
+		}
 			
-		} catch (IOException e) {
+			 catch (IOException e) {
 			e.printStackTrace();
 			}
-		} else {
-			try {
-				file.createNewFile();
-				BufferedWriter out = new BufferedWriter(new FileWriter(file));				
-				String unused = "U: ";
-				List<Domino> dominos = kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDominos();
-				for (int i = 0; i<dominos.size();i++) {
-					unused = unused+dominos.get(i).getId() + ", ";
-				}
-				unused = unused.substring(0, unused.length()-2);
-				out.write(unused);
-				out.newLine();
-				List<Player> players = kingdomino.getCurrentGame().getPlayers();
-				for (Player i:players) {
-					String playerdominos = i.getUser().getName() + ": ";
-					for(KingdomTerritory kt: i.getKingdom().getTerritories()) {
-						if (!kt.getClass().equals(Castle.class)) {
-						DominoInKingdom dik = (DominoInKingdom)kt;
-						playerdominos = playerdominos + dik.getDomino().getId() + "@(" + kt.getX() + "," + kt.getY() + ","
-						+ dik.getDirection().toString().substring(0, 1) + ")" +", ";
-						} else {
-							continue;
-						}
-						}
-					playerdominos = playerdominos.substring(0, playerdominos.length()-2);
-					out.write(playerdominos);
-					out.newLine();
-					}
-					
-				out.flush();
-				out.close();	
-			}
-				
-				 catch (IOException e) {
-				e.printStackTrace();
-				}
-			}
-			
-		}
-
+	}
 	/**
 	 * Helper method that overwrites a file if needed
 	 * 
@@ -771,7 +758,8 @@ public class KingdominoController {
 			e.printStackTrace();
 		}
 	}
-
+	
+	
 	/*****************
 	 * * Feature 8 * *
 	 *****************/
