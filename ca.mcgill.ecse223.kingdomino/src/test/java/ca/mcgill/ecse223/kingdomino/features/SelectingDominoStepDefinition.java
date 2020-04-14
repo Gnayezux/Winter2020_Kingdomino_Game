@@ -1,6 +1,5 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
-import static org.junit.Assert.assertEquals;
 import java.util.*;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
@@ -14,7 +13,7 @@ public class SelectingDominoStepDefinition {
 		KingdominoController.browseDominoPile();
 		Gameplay g = new Gameplay();
 		KingdominoApplication.setGameplay(g);
-		KingdominoApplication.getGameplay().setGamestatus("SelectingFirstDomino");
+		KingdominoApplication.getGameplay().setGamestatus("SelectingDomino");
 	}
 
 	@Given("the order of players is {string}")
@@ -33,9 +32,10 @@ public class SelectingDominoStepDefinition {
 		List<String> dominoString = new ArrayList<String>(Arrays.asList(string.split(",")));
 		Draft draft = new Draft(Draft.DraftStatus.Sorted, game);
 		for (String s : dominoString) {
-			draft.addIdSortedDomino(KingdominoController.getDominoByID(Integer.parseInt(s)));
+			draft.addIdSortedDomino(HelperClass.getDominoByID(Integer.parseInt(s)));
 		}
 		game.setNextDraft(draft); // Hardcode what the draft is depending on the test
+		game.setTopDominoInPile(HelperClass.getDominoByID(5));
 	}
 
 	@Given("the {string} is selecting his\\/her domino with ID {int}")
@@ -51,14 +51,18 @@ public class SelectingDominoStepDefinition {
 		}
 	}
 
-
-
 	@Given("the {string} player is selecting his\\/her first domino of the game with ID {int}")
 	public void the_player_is_selecting_his_her_first_domino_of_the_game_with_ID(String string, Integer int1) {
-
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		List<Player> players = game.getPlayers();
+		for(Player p: players) {
+			if(p.getColor() == HelperClass.getColor(string)) {
+				game.setNextPlayer(p);
+				KingdominoController.selectDomino(int1);
+				break;
+			}
+		}
 	}
-
 	
-
 
 }

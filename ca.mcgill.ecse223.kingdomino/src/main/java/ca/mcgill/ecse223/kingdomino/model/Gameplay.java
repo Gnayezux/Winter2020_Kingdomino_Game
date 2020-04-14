@@ -14,7 +14,7 @@ public class Gameplay
   //Gameplay State Machines
   public enum Gamestatus { Setup, Initializing, Playing }
   public enum GamestatusInitializing { Null, CreatingFirstDraft, SelectingFirstDomino }
-  public enum GamestatusPlaying { Null, PlacingDomino, SelectingDomino }
+  public enum GamestatusPlaying { Null, PlacingDomino, SelectingDomino, CreatingDraft, EndingGame }
   private Gamestatus gamestatus;
   private GamestatusInitializing gamestatusInitializing;
   private GamestatusPlaying gamestatusPlaying;
@@ -80,6 +80,7 @@ public class Gameplay
     boolean wasEventProcessed = false;
     
     GamestatusInitializing aGamestatusInitializing = gamestatusInitializing;
+    GamestatusPlaying aGamestatusPlaying = gamestatusPlaying;
     switch (aGamestatusInitializing)
     {
       case CreatingFirstDraft:
@@ -93,14 +94,28 @@ public class Gameplay
         // Other states do respond to this event
     }
 
+    switch (aGamestatusPlaying)
+    {
+      case CreatingDraft:
+        exitGamestatusPlaying();
+        // line 33 "../../../../../Gameplay.ump"
+        generatePlayerOrder();
+        setGamestatusPlaying(GamestatusPlaying.PlacingDomino);
+        wasEventProcessed = true;
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
     return wasEventProcessed;
   }
 
-  public boolean firstSelectionComplete()
+  public boolean selectionComplete()
   {
     boolean wasEventProcessed = false;
     
     GamestatusInitializing aGamestatusInitializing = gamestatusInitializing;
+    GamestatusPlaying aGamestatusPlaying = gamestatusPlaying;
     switch (aGamestatusInitializing)
     {
       case SelectingFirstDomino:
@@ -118,6 +133,23 @@ public class Gameplay
         // Other states do respond to this event
     }
 
+    switch (aGamestatusPlaying)
+    {
+      case SelectingDomino:
+        if (isSelectionValid())
+        {
+          exitGamestatusPlaying();
+        // line 28 "../../../../../Gameplay.ump"
+          nextPlayer();
+          setGamestatusPlaying(GamestatusPlaying.PlacingDomino);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
     return wasEventProcessed;
   }
 
@@ -126,6 +158,7 @@ public class Gameplay
     boolean wasEventProcessed = false;
     
     GamestatusInitializing aGamestatusInitializing = gamestatusInitializing;
+    GamestatusPlaying aGamestatusPlaying = gamestatusPlaying;
     switch (aGamestatusInitializing)
     {
       case SelectingFirstDomino:
@@ -135,6 +168,23 @@ public class Gameplay
         // line 16 "../../../../../Gameplay.ump"
           setNextDraft(); generatePlayerOrder();
           setGamestatusPlaying(GamestatusPlaying.PlacingDomino);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
+    switch (aGamestatusPlaying)
+    {
+      case SelectingDomino:
+        if (isCurrentPlayerTheLastInTurn()&&isSelectionValid())
+        {
+          exitGamestatusPlaying();
+        // line 29 "../../../../../Gameplay.ump"
+          setNextDraft(); generatePlayerOrder();
+          setGamestatusPlaying(GamestatusPlaying.CreatingDraft);
           wasEventProcessed = true;
           break;
         }
@@ -154,12 +204,110 @@ public class Gameplay
     switch (aGamestatusPlaying)
     {
       case PlacingDomino:
-        if (isDominoCorrectlyPreplaced())
+        if (isDominoCorrectlyPreplaced()&&!(isCurrentTurnTheLastInGame()))
         {
           exitGamestatusPlaying();
         // line 21 "../../../../../Gameplay.ump"
           placeDomino();
           setGamestatusPlaying(GamestatusPlaying.SelectingDomino);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
+    return wasEventProcessed;
+  }
+
+  public boolean discard()
+  {
+    boolean wasEventProcessed = false;
+    
+    GamestatusPlaying aGamestatusPlaying = gamestatusPlaying;
+    switch (aGamestatusPlaying)
+    {
+      case PlacingDomino:
+        if (isImpossibleToPlace()&&!(isCurrentTurnTheLastInGame()))
+        {
+          exitGamestatusPlaying();
+        // line 22 "../../../../../Gameplay.ump"
+          discardDomino();
+          setGamestatusPlaying(GamestatusPlaying.SelectingDomino);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
+    return wasEventProcessed;
+  }
+
+  public boolean placeLast()
+  {
+    boolean wasEventProcessed = false;
+    
+    GamestatusPlaying aGamestatusPlaying = gamestatusPlaying;
+    switch (aGamestatusPlaying)
+    {
+      case PlacingDomino:
+        if (isDominoCorrectlyPreplaced()&&isCurrentTurnTheLastInGame())
+        {
+          exitGamestatusPlaying();
+        // line 23 "../../../../../Gameplay.ump"
+          placeDomino(); nextPlayer();
+          setGamestatusPlaying(GamestatusPlaying.PlacingDomino);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
+    return wasEventProcessed;
+  }
+
+  public boolean discardLast()
+  {
+    boolean wasEventProcessed = false;
+    
+    GamestatusPlaying aGamestatusPlaying = gamestatusPlaying;
+    switch (aGamestatusPlaying)
+    {
+      case PlacingDomino:
+        if (isImpossibleToPlace()&&isCurrentTurnTheLastInGame())
+        {
+          exitGamestatusPlaying();
+        // line 24 "../../../../../Gameplay.ump"
+          discardDomino(); nextPlayer();
+          setGamestatusPlaying(GamestatusPlaying.PlacingDomino);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
+    return wasEventProcessed;
+  }
+
+  public boolean endGame()
+  {
+    boolean wasEventProcessed = false;
+    
+    GamestatusPlaying aGamestatusPlaying = gamestatusPlaying;
+    switch (aGamestatusPlaying)
+    {
+      case PlacingDomino:
+        if (isCurrentTurnTheLastInGame()&&isCurrentPlayerTheLastInTurn())
+        {
+          exitGamestatusPlaying();
+          setGamestatusPlaying(GamestatusPlaying.EndingGame);
           wasEventProcessed = true;
           break;
         }
@@ -238,6 +386,12 @@ public class Gameplay
       case SelectingDomino:
         setGamestatusPlaying(GamestatusPlaying.Null);
         break;
+      case CreatingDraft:
+        setGamestatusPlaying(GamestatusPlaying.Null);
+        break;
+      case EndingGame:
+        setGamestatusPlaying(GamestatusPlaying.Null);
+        break;
     }
   }
 
@@ -245,6 +399,19 @@ public class Gameplay
   {
     gamestatusPlaying = aGamestatusPlaying;
     if (gamestatus != Gamestatus.Playing && aGamestatusPlaying != GamestatusPlaying.Null) { setGamestatus(Gamestatus.Playing); }
+
+    // entry actions and do activities
+    switch(gamestatusPlaying)
+    {
+      case CreatingDraft:
+        // line 32 "../../../../../Gameplay.ump"
+        setNextDraft(); orderNextDraft(); revealNextDraft();
+        break;
+      case EndingGame:
+        // line 36 "../../../../../Gameplay.ump"
+        calculatingScores();
+        break;
+    }
   }
 
   public void delete()
@@ -254,7 +421,7 @@ public class Gameplay
   /**
    * Setter for test setup
    */
-  // line 33 "../../../../../Gameplay.ump"
+  // line 46 "../../../../../Gameplay.ump"
    public void setGamestatus(String status){
     switch (status) {
        	case "CreatingFirstDraft":
@@ -275,6 +442,18 @@ public class Gameplay
        	    gamestatusPlaying = GamestatusPlaying.PlacingDomino;
        	    setGamestatusPlaying(GamestatusPlaying.PlacingDomino);
        	    break;
+       	case "SelectingDomino":
+       		gamestatus = Gamestatus.Playing;
+       	    gamestatusInitializing = GamestatusInitializing.Null;
+       	    gamestatusPlaying = GamestatusPlaying.SelectingDomino;
+       	    setGamestatusPlaying(GamestatusPlaying.SelectingDomino);
+       	    break;
+       	case "CreatingDraft":
+       		gamestatus = Gamestatus.Playing;
+       	    gamestatusInitializing = GamestatusInitializing.Null;
+       	    gamestatusPlaying = GamestatusPlaying.CreatingDraft;
+       	    setGamestatusPlaying(GamestatusPlaying.CreatingDraft);
+       	    break;       	    
        	default:
        	    throw new RuntimeException("Invalid gamestatus string was provided: " + status);
        	}
@@ -284,25 +463,29 @@ public class Gameplay
   /**
    * Guards
    */
-  // line 62 "../../../../../Gameplay.ump"
+  // line 87 "../../../../../Gameplay.ump"
    public boolean isCurrentPlayerTheLastInTurn(){
     return ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isCurrentPlayerTheLastInTurn();
   }
 
-  // line 66 "../../../../../Gameplay.ump"
+  // line 91 "../../../../../Gameplay.ump"
    public boolean isCurrentTurnTheLastInGame(){
-    // TODO: implement this
-        return false;
+    return ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isCurrentTurnTheLastInGame();
   }
 
-  // line 71 "../../../../../Gameplay.ump"
+  // line 95 "../../../../../Gameplay.ump"
    public boolean isSelectionValid(){
     return ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isSelectionValid();
   }
 
-  // line 75 "../../../../../Gameplay.ump"
+  // line 99 "../../../../../Gameplay.ump"
    public boolean isDominoCorrectlyPreplaced(){
     return ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isDominoCorrectlyPreplaced();
+  }
+
+  // line 103 "../../../../../Gameplay.ump"
+   public boolean isImpossibleToPlace(){
+    return !ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isPossibleToPlace();
   }
 
 
@@ -310,45 +493,55 @@ public class Gameplay
    * You may need to add more guards here
    * Actions
    */
-  // line 85 "../../../../../Gameplay.ump"
+  // line 113 "../../../../../Gameplay.ump"
    public void shuffleDominos(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.shuffleDominos();
   }
 
-  // line 89 "../../../../../Gameplay.ump"
+  // line 117 "../../../../../Gameplay.ump"
    public void setNextDraft(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.setNextDraft();
   }
 
-  // line 93 "../../../../../Gameplay.ump"
+  // line 121 "../../../../../Gameplay.ump"
    public void orderNextDraft(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.orderNextDraft();
         draftReady();
   }
 
-  // line 98 "../../../../../Gameplay.ump"
+  // line 126 "../../../../../Gameplay.ump"
    public void revealNextDraft(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.revealNextDraft();
   }
 
-  // line 102 "../../../../../Gameplay.ump"
+  // line 130 "../../../../../Gameplay.ump"
    public void generateInitialPlayerOrder(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.generateInitialPlayerOrder();
   }
 
-  // line 106 "../../../../../Gameplay.ump"
+  // line 134 "../../../../../Gameplay.ump"
    public void nextPlayer(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.nextPlayer();
   }
 
-  // line 110 "../../../../../Gameplay.ump"
+  // line 138 "../../../../../Gameplay.ump"
    public void generatePlayerOrder(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.generatePlayerOrder();
   }
 
-  // line 114 "../../../../../Gameplay.ump"
+  // line 142 "../../../../../Gameplay.ump"
    public void placeDomino(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.placeDomino();
+  }
+
+  // line 146 "../../../../../Gameplay.ump"
+   public void discardDomino(){
+    ca.mcgill.ecse223.kingdomino.controller.KingdominoController.discardDomino();
+  }
+
+  // line 150 "../../../../../Gameplay.ump"
+   public void calculatingScores(){
+    ca.mcgill.ecse223.kingdomino.controller.KingdominoController.calculateRanking();
   }
 
 }

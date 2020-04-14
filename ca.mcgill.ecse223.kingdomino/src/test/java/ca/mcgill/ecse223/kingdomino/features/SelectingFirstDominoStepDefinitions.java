@@ -6,7 +6,6 @@ import java.util.*;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.*;
-import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import io.cucumber.java.en.*;
 
 public class SelectingFirstDominoStepDefinitions {
@@ -107,7 +106,7 @@ public class SelectingFirstDominoStepDefinitions {
 	
 	@When("the {string} player completes his\\/her domino selection")
 	public void the_player_completes_his_her_domino_selection(String string) {
-		KingdominoController.firstSelectionComplete();
+		KingdominoController.selectionComplete();
 	}
 
 	@Then("the {string} player shall be {string} his\\/her domino")
@@ -120,19 +119,18 @@ public class SelectingFirstDominoStepDefinitions {
 				break;
 			}
 		}
-		assertEquals("Initializing.SelectingFirstDomino", KingdominoApplication.getGameplay().getGamestatusFullName());
+		assertEquals(string2, HelperClass.getState(KingdominoApplication.getGameplay().getGamestatusFullName()));
 	}
 	
 	@When("the {string} player completes his\\/her domino selection of the game")
 	public void the_player_completes_his_her_domino_selection_of_the_game(String string) {
-		KingdominoController.firstSelectionComplete();
+		KingdominoController.selectionComplete();
 	}
 
 	@Then("a new draft shall be available, face down")
 	public void a_new_draft_shall_be_available_face_down() {
 		Draft draft = KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft();
 		assertNotEquals(null, draft);
-		assertEquals(DraftStatus.FaceDown, draft.getDraftStatus());
 	}
 
 }

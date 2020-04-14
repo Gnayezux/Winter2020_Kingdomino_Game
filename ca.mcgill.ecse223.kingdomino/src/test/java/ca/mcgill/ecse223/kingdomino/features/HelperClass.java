@@ -18,33 +18,43 @@ import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 public class HelperClass {
 	public static void testSetup() {
 		KingdominoController.startGameSetup();
-	    KingdominoController.setNumberOfPlayers(4);
-	    KingdominoController.createPlayersAndKingdoms();
+		KingdominoController.setNumberOfPlayers(4);
+		KingdominoController.createPlayersAndKingdoms();
 	}
-	
+
 	public static TerrainType getTerrainType(String terrain) {
-		terrain = terrain.toLowerCase();
-		if (terrain.equals("wheatfield")) {
-			terrain = "wheat";
+		terrain = terrain.toUpperCase();
+		if (terrain.equals("WHEATFIELD") || terrain.equals("WHEAT")) {
+			terrain = "W";
+		} else if (terrain.equals("FOREST")) {
+			terrain = "F";
+		} else if (terrain.equals("MOUNTAIN")) {
+			terrain = "M";
+		} else if (terrain.equals("GRASS")) {
+			terrain = "G";
+		} else if (terrain.equals("SWAMP")) {
+			terrain = "S";
+		} else if (terrain.equals("LAKE")) {
+			terrain = "L";
 		}
 		switch (terrain) {
-		case "wheat":
+		case "W":
 			return TerrainType.WheatField;
-		case "forest":
+		case "F":
 			return TerrainType.Forest;
-		case "mountain":
+		case "M":
 			return TerrainType.Mountain;
-		case "grass":
+		case "G":
 			return TerrainType.Grass;
-		case "swamp":
+		case "S":
 			return TerrainType.Swamp;
-		case "lake":
+		case "L":
 			return TerrainType.Lake;
 		default:
 			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
 		}
 	}
-	
+
 	public static PlayerColor getColor(String color) {
 		switch (color) {
 		case "pink":
@@ -59,7 +69,7 @@ public class HelperClass {
 			throw new java.lang.IllegalArgumentException("Invalid color: " + color);
 		}
 	}
-	
+
 	public static DirectionKind getDirection(String dir) {
 		switch (dir) {
 		case "up":
@@ -75,21 +85,22 @@ public class HelperClass {
 		}
 	}
 
-	public static DominoStatus getDominoStatus(String status) {
+	public static DominoStatus getDominoStatus(String s) {
+		String status = s.toLowerCase();
 		switch (status) {
-		case "inPile":
+		case "inpile":
 			return DominoStatus.InPile;
 		case "excluded":
 			return DominoStatus.Excluded;
-		case "inCurrentDraft":
+		case "incurrentdraft":
 			return DominoStatus.InCurrentDraft;
-		case "inNextDraft":
+		case "innextdraft":
 			return DominoStatus.InNextDraft;
-		case "ErroneouslyPreplaced":
+		case "erroneouslypreplaced":
 			return DominoStatus.ErroneouslyPreplaced;
-		case "CorrectlyPreplaced":
+		case "correctlypreplaced":
 			return DominoStatus.CorrectlyPreplaced;
-		case "placedInKingdom":
+		case "placedinkingdom":
 			return DominoStatus.PlacedInKingdom;
 		case "discarded":
 			return DominoStatus.Discarded;
@@ -97,7 +108,7 @@ public class HelperClass {
 			throw new java.lang.IllegalArgumentException("Invalid domino status: " + status);
 		}
 	}
-	
+
 	public static Domino getDominoByID(int id) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		if (!game.hasAllDominos()) {
@@ -107,7 +118,7 @@ public class HelperClass {
 		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
 		return allDominos.get(id - 1);
 	}
-	
+
 	private static void createAllDominos() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		try {
@@ -130,6 +141,21 @@ public class HelperClass {
 			e.printStackTrace();
 			throw new java.lang.IllegalArgumentException(
 					"Error occured while trying to read alldominoes.dat: " + e.getMessage());
+		}
+	}
+
+	public static String getState(String s) {
+		switch (s) {
+			case ("Initializing.SelectingFirstDomino"):
+				return "selecting";
+			case ("Playing.SelectingDomino"):
+				return "selecting";
+			case ("Playing.PlacingDomino"):
+				return "placing";
+			case ("Playing.EndingGame"):
+				return "ending";
+			default:
+				return "";
 		}
 	}
 }

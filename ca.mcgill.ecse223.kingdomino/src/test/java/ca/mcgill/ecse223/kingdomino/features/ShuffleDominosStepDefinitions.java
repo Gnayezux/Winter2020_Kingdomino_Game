@@ -4,7 +4,6 @@ import java.util.*;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.*;
-import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 import io.cucumber.java.en.*;
 import static org.junit.Assert.*;
 

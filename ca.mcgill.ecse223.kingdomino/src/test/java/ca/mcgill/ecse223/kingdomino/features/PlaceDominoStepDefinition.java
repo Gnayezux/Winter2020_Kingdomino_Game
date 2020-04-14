@@ -2,6 +2,7 @@ package ca.mcgill.ecse223.kingdomino.features;
 
 import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
+import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.*;
 import io.cucumber.java.en.*;
@@ -15,13 +16,22 @@ public class PlaceDominoStepDefinition {
 	 */
 	@Given("the {string}'s kingdom has the following dominoes:")
 	public void the_s_kingdom_has_the_following_dominoes(String string, io.cucumber.datatable.DataTable dataTable) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		List<Player> players = KingdominoApplication.getKingdomino().getCurrentGame().getPlayers();
-	    for (Player p : players) {
-			if (p.getColor() == HelperClass.getColor(string)) {
-				game.setNextPlayer(p);
-				break;
-			}
+		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+		List<Map<String, String>> valueMaps = dataTable.asMaps();
+		for (Map<String, String> map : valueMaps) {
+			// Get values from cucumber table
+			Integer id = Integer.decode(map.get("domino"));
+			DirectionKind dir = HelperClass.getDirection(map.get("dominodir"));
+			Integer posx = Integer.decode(map.get("posx"));
+			Integer posy = Integer.decode(map.get("posy"));
+
+			// Add the domino to a player's kingdom
+			Domino dominoToPlace = HelperClass.getDominoByID(id);
+			Kingdom kingdom = player.getKingdom();
+
+			DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
+			domInKingdom.setDirection(dir);
+			dominoToPlace.setStatus(DominoStatus.PlacedInKingdom);
 		}
 	}
 

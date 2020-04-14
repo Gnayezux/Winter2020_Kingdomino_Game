@@ -12,15 +12,28 @@ class Gameplay {
                 draftReady -> /{revealNextDraft(); setNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
             }
             SelectingFirstDomino {
-            	firstSelectionComplete [isSelectionValid()] -> /{nextPlayer();} Initializing.SelectingFirstDomino;
+            	selectionComplete [isSelectionValid()] -> /{nextPlayer();} Initializing.SelectingFirstDomino;
             	endOfTurn [isCurrentPlayerTheLastInTurn() && isSelectionValid()] -> /{setNextDraft(); generatePlayerOrder();} Playing.PlacingDomino;
             }
         }
         Playing {
         	PlacingDomino {
-        		readyToPlace [isDominoCorrectlyPreplaced()] -> /{placeDomino();} Playing.SelectingDomino;
+        		readyToPlace [isDominoCorrectlyPreplaced() && !isCurrentTurnTheLastInGame()] -> /{placeDomino();} Playing.SelectingDomino;
+        		discard [isImpossibleToPlace() && !isCurrentTurnTheLastInGame()] -> /{discardDomino();} Playing.SelectingDomino;
+        		placeLast [isDominoCorrectlyPreplaced() && isCurrentTurnTheLastInGame()] -> /{placeDomino(); nextPlayer();} Playing.PlacingDomino;
+        		discardLast [isImpossibleToPlace() && isCurrentTurnTheLastInGame()] -> /{discardDomino(); nextPlayer();} Playing.PlacingDomino;
+        		endGame [isCurrentTurnTheLastInGame() && isCurrentPlayerTheLastInTurn()] -> Playing.EndingGame;
         	}
         	SelectingDomino {
+        		selectionComplete [isSelectionValid()] -> /{nextPlayer();} Playing.PlacingDomino;
+        		endOfTurn [isCurrentPlayerTheLastInTurn() && isSelectionValid()] -> /{setNextDraft(); generatePlayerOrder();} Playing.CreatingDraft;
+        	}
+        	CreatingDraft {
+        		entry/{setNextDraft(); orderNextDraft(); revealNextDraft();}
+                draftReady -> /{generatePlayerOrder();} Playing.PlacingDomino;
+        	}
+        	EndingGame {
+        		entry/{calculatingScores();}
         	}
         }
     }
@@ -49,6 +62,18 @@ class Gameplay {
        	    gamestatusPlaying = GamestatusPlaying.PlacingDomino;
        	    setGamestatusPlaying(GamestatusPlaying.PlacingDomino);
        	    break;
+       	case "SelectingDomino":
+       		gamestatus = Gamestatus.Playing;
+       	    gamestatusInitializing = GamestatusInitializing.Null;
+       	    gamestatusPlaying = GamestatusPlaying.SelectingDomino;
+       	    setGamestatusPlaying(GamestatusPlaying.SelectingDomino);
+       	    break;
+       	case "CreatingDraft":
+       		gamestatus = Gamestatus.Playing;
+       	    gamestatusInitializing = GamestatusInitializing.Null;
+       	    gamestatusPlaying = GamestatusPlaying.CreatingDraft;
+       	    setGamestatusPlaying(GamestatusPlaying.CreatingDraft);
+       	    break;       	    
        	default:
        	    throw new RuntimeException("Invalid gamestatus string was provided: " + status);
        	}
@@ -63,8 +88,7 @@ class Gameplay {
     }
         
     public boolean isCurrentTurnTheLastInGame() {
-        // TODO: implement this
-        return false;
+        return ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isCurrentTurnTheLastInGame();
     }
     
     public boolean isSelectionValid() {
@@ -73,6 +97,10 @@ class Gameplay {
     
     public boolean isDominoCorrectlyPreplaced(){
     	return ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isDominoCorrectlyPreplaced();
+    }
+    
+    public boolean isImpossibleToPlace(){
+    	return !ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isPossibleToPlace();
     }
     // You may need to add more guards here
         
@@ -112,6 +140,14 @@ class Gameplay {
 
 	public void placeDomino(){
 		ca.mcgill.ecse223.kingdomino.controller.KingdominoController.placeDomino();
+	}
+	
+	public void discardDomino(){
+		ca.mcgill.ecse223.kingdomino.controller.KingdominoController.discardDomino();
+	}
+	
+	public void calculatingScores(){
+		ca.mcgill.ecse223.kingdomino.controller.KingdominoController.calculateRanking();
 	}
     // You may need to add more actions here
 }
