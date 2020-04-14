@@ -14,12 +14,8 @@ public class OrderAndRevealNextDraftStepDefinition {
 	 */
 	@Given("the game is initialized for order next draft of dominoes")
 	public void the_game_is_initialized_for_order_next_draft_of_dominoes() {
-		Kingdomino kingdomino = new Kingdomino();
-		Game newGame = new Game(48, kingdomino);
-		newGame.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(newGame);
-		KingdominoController.createAllDominos(newGame);
-		KingdominoApplication.setKingdomino(kingdomino);
+		HelperClass.testSetup();
+		KingdominoController.browseDominoPile();
 	}
 
 	/**
@@ -52,7 +48,7 @@ public class OrderAndRevealNextDraftStepDefinition {
 	 */
 	@When("the ordering of the dominoes in the next draft is initiated")
 	public void the_ordering_of_the_dominoes_in_the_next_draft_is_initiated() {
-		KingdominoController.orderNextDraft(KingdominoApplication.getKingdomino());
+		KingdominoController.orderNextDraft();
 	}
 
 	/**
@@ -89,13 +85,8 @@ public class OrderAndRevealNextDraftStepDefinition {
 	 */
 	@Given("the game is initialized for reveal next draft of dominoes")
 	public void the_game_is_initialized_for_reveal_next_draft_of_dominoes() {
-		Kingdomino kingdomino = new Kingdomino();
-		Game newGame = new Game(48, kingdomino);
-		newGame.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(newGame);
-		KingdominoController.createAllDominos(newGame);
-		KingdominoApplication.setKingdomino(kingdomino);
-
+		HelperClass.testSetup();
+		KingdominoController.browseDominoPile();
 	}
 
 	/**
@@ -103,7 +94,8 @@ public class OrderAndRevealNextDraftStepDefinition {
 	 */
 	@Given("the dominoes in next draft are sorted")
 	public void the_dominoes_in_next_draft_are_sorted() {
-		// sorted automatically for us
+		KingdominoController.setNextDraft();
+		KingdominoController.orderNextDraft();
 	}
 
 	/**
@@ -111,7 +103,7 @@ public class OrderAndRevealNextDraftStepDefinition {
 	 */
 	@When("the revealing of the dominoes in the next draft is initiated")
 	public void the_revealing_of_the_dominoes_in_the_next_draft_is_initiated() {
-		KingdominoController.revealNextDraft(KingdominoApplication.getKingdomino());
+		KingdominoController.revealNextDraft();
 
 	}
 

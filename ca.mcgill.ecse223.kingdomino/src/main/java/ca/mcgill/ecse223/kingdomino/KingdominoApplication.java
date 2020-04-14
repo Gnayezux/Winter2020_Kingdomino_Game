@@ -1,5 +1,6 @@
 package ca.mcgill.ecse223.kingdomino;
 
+import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 
@@ -10,6 +11,7 @@ public class KingdominoApplication {
 
 	public static void main(String[] args) {
 		System.out.println("Hello World!");
+		KingdominoController.shuffleDominos();
 	}
 
 	public static Kingdomino getKingdomino() {

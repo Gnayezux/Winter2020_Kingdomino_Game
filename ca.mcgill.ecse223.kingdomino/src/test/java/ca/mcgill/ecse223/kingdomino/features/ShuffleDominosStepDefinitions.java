@@ -1,28 +1,12 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
+import java.util.*;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
-import ca.mcgill.ecse223.kingdomino.model.Domino;
-import ca.mcgill.ecse223.kingdomino.model.Draft;
-import ca.mcgill.ecse223.kingdomino.model.Game;
+import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
-import ca.mcgill.ecse223.kingdomino.model.TerrainType;
-import ca.mcgill.ecse223.kingdomino.model.User;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import io.cucumber.java.en.*;
+import static org.junit.Assert.*;
 
 public class ShuffleDominosStepDefinitions {
 
@@ -31,11 +15,8 @@ public class ShuffleDominosStepDefinitions {
 	 */
 	@Given("the game is initialized for shuffle dominoes")
 	public void the_game_is_initialized_for_shuffle_dominoes() {
-	    Kingdomino kingdomino = new Kingdomino();
-		Game newGame = new Game(48, kingdomino);
-		kingdomino.setCurrentGame(newGame);
-		KingdominoController.createAllDominos(newGame);
-		KingdominoApplication.setKingdomino(kingdomino);
+	    KingdominoController.startGameSetup();
+	    KingdominoController.setNumberOfPlayers(4);
 	}
 
 	/**
@@ -51,7 +32,9 @@ public class ShuffleDominosStepDefinitions {
 	 */
 	@When("the shuffling of dominoes is initiated")
 	public void the_shuffling_of_dominoes_is_initiated() {
-		KingdominoController.shuffleDominos(KingdominoApplication.getKingdomino());
+		KingdominoController.shuffleDominos();
+		KingdominoController.setNextDraft();
+		//System.out.println(KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft().hasIdSortedDominos());
 	}
 
 	/**
@@ -59,7 +42,8 @@ public class ShuffleDominosStepDefinitions {
 	 */
 	@Then("the first draft shall exist")
 	public void the_first_draft_shall_exist() {
-		assertEquals(true, KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft().hasIdSortedDominos());
+		Draft draft = KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft();
+		assertTrue(draft.hasIdSortedDominos());
 	}
 
 	/**
@@ -89,7 +73,8 @@ public class ShuffleDominosStepDefinitions {
 	 */
 	@When("I initiate to arrange the domino in the fixed order {string}")
 	public void i_initiate_to_arrange_the_domino_in_the_fixed_order(String string) {
-		KingdominoController.getFixedOrder(KingdominoApplication.getKingdomino(), string);
+		KingdominoController.setPileOrder(string);
+		KingdominoController.setNextDraft();
 	}
 
 	/**

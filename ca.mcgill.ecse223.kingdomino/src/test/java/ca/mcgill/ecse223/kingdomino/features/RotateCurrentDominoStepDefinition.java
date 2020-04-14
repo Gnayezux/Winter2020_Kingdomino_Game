@@ -33,24 +33,8 @@ public class RotateCurrentDominoStepDefinition {
 	 */
 	@Given("the game is initialized for rotate current domino")
 	public void the_game_is_initialized_for_rotate_current_domino() {
-	    Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		kingdomino.setCurrentGame(game);
-		KingdominoController.setNumberOfPlayers(4, kingdomino);
-		for (int i = 0; i < 4; i++) {
-			KingdominoController.selectColor(PlayerColor.values()[i], i, kingdomino);
-		}
-		List<Player> players = kingdomino.getCurrentGame().getPlayers();
-		for (int i = 0; i < players.size(); i++) {
-			Player player = players.get(i);
-			Kingdom kingdom = new Kingdom(player);
-			new Castle(0, 0, kingdom, player);
-			player.setBonusScore(0);
-			player.setPropertyScore(0);
-			player.setDominoSelection(null);
-		}
-		KingdominoController.createAllDominos(kingdomino.getCurrentGame());
-		KingdominoApplication.setKingdomino(kingdomino);
+		HelperClass.testSetup();
+		KingdominoController.shuffleDominos();
 	}
 
 	/**
@@ -58,7 +42,7 @@ public class RotateCurrentDominoStepDefinition {
 	 */
 	@When("{string} requests to rotate the domino with {string}")
 	public void requests_to_rotate_the_domino_with(String string, String string2) {
-		KingdominoController.rotateDomino(KingdominoApplication.getKingdomino(), string2);
+		KingdominoController.rotateDomino(string2);
 	}
 
 	/**

@@ -55,7 +55,7 @@ public class DiscardDominoStepDefinitions {
 			player.setDominoSelection(null);
 			game.setNextPlayer(players.get(0));
 		}
-		KingdominoController.createAllDominos(kingdomino.getCurrentGame());
+		KingdominoController.shuffleDominos();
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
@@ -64,22 +64,22 @@ public class DiscardDominoStepDefinitions {
 	 */
 	@Given("the player's kingdom has the following dominoes:")
 	public void the_player_s_kingdom_has_the_following_dominoes(io.cucumber.datatable.DataTable dataTable) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		List<Map<String, String>> valueMaps = dataTable.asMaps();
-		for (Map<String, String> map : valueMaps) {
-			// Get values from cucumber table
-			Integer id = Integer.decode(map.get("id"));
-			DirectionKind dir = getDirection(map.get("dominodir"));
-			Integer posx = Integer.decode(map.get("posx"));
-			Integer posy = Integer.decode(map.get("posy"));
-
-			// Add the domino to a player's kingdom
-			Domino dominoToPlace = getdominoByID(id);
-			Kingdom kingdom = game.getPlayer(0).getKingdom();
-			DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
-			domInKingdom.setDirection(dir);
-			dominoToPlace.setStatus(DominoStatus.PlacedInKingdom);
-		}
+//		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+//		List<Map<String, String>> valueMaps = dataTable.asMaps();
+//		for (Map<String, String> map : valueMaps) {
+//			// Get values from cucumber table
+//			Integer id = Integer.decode(map.get("id"));
+//			DirectionKind dir = getDirection(map.get("dominodir"));
+//			Integer posx = Integer.decode(map.get("posx"));
+//			Integer posy = Integer.decode(map.get("posy"));
+//
+//			// Add the domino to a player's kingdom
+//			Domino dominoToPlace = HelperClass.getDominoByID(id);
+//			Kingdom kingdom = game.getPlayer(0).getKingdom();
+//			DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
+//			domInKingdom.setDirection(dir);
+//			dominoToPlace.setStatus(DominoStatus.PlacedInKingdom);
+//		}
 	}
 
 	/**

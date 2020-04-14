@@ -12,8 +12,7 @@ public class SetGameOptionsStepDefinition {
 	 */
 	@Given("the game is initialized for set game options")
 	public void the_game_is_initialized_for_set_game_options() {
-		Kingdomino kingdomino = new Kingdomino();
-		KingdominoApplication.setKingdomino(kingdomino);
+		// Begininning of the game... Nothing needs to be done
 	}
 
 	/**
@@ -21,7 +20,7 @@ public class SetGameOptionsStepDefinition {
 	 */
 	@When("set game options is initiated")
 	public void set_game_options_is_initiated() {
-		KingdominoController.setGameOptions(KingdominoApplication.getKingdomino());
+		KingdominoController.startGameSetup();
 	}
 
 	/**
@@ -29,7 +28,7 @@ public class SetGameOptionsStepDefinition {
 	 */
 	@When("the number of players is set to {int}")
 	public void the_number_of_players_is_set_to(Integer int1) {
-		KingdominoController.setNumberOfPlayers(int1, KingdominoApplication.getKingdomino());
+		KingdominoController.setNumberOfPlayers(int1);
 	}
 
 	/**
@@ -43,7 +42,7 @@ public class SetGameOptionsStepDefinition {
 		} else {
 			bonusActive = false;
 		}
-		KingdominoController.setBonusOption("Harmony", KingdominoApplication.getKingdomino(), bonusActive);
+		KingdominoController.setBonusOption("Harmony", bonusActive);
 	}
 
 	/**
@@ -57,7 +56,7 @@ public class SetGameOptionsStepDefinition {
 		} else {
 			bonusActive = false;
 		}
-		KingdominoController.setBonusOption("MiddleKingdom", KingdominoApplication.getKingdomino(), bonusActive);
+		KingdominoController.setBonusOption("MiddleKingdom", bonusActive);
 	}
 
 	/**
@@ -80,7 +79,6 @@ public class SetGameOptionsStepDefinition {
 				bonusActive = true;
 			}
 		}
-		
 		if(string.equals("is")) {
 			assertEquals(bonusActive, true);
 		}else if(string.contentEquals("is not")) {

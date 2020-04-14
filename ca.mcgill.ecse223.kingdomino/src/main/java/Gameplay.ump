@@ -3,22 +3,25 @@ namespace ca.mcgill.ecse223.kingdomino.model;
 class Gameplay {
 
     gamestatus {
-    	Starting{
-    		startGame -> Initializing;
+    	Setup{
+    		start -> Initializing.CreatingFirstDraft;
     	}
-        Initializing {
+		Initializing {
             CreatingFirstDraft {
-                entry/{shuffleDominoPile(); createNextDraft(); orderNextDraft();}
-                draftReady -> /{revealNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
+                entry/{shuffleDominos(); setNextDraft(); orderNextDraft();}
+                draftReady -> /{revealNextDraft(); setNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
             }
             SelectingFirstDomino {
-            	nextPlayerFirstSelection [isValidSelection()]-> /{nextPlayerTurn();} Initializing.SelectingFirstDomino;
-            	firstSelectionComplete [isCurrentPlayerTheLastInTurn()] -> Initializing.PlacingFirstDomino;
-            	exit/{generatePlayerOrder();}
+            	firstSelectionComplete [isSelectionValid()] -> /{nextPlayer();} Initializing.SelectingFirstDomino;
+            	endOfTurn [isCurrentPlayerTheLastInTurn() && isSelectionValid()] -> /{setNextDraft(); generatePlayerOrder();} Playing.PlacingDomino;
             }
-            PlacingFirstDomino {
-            
-            }
+        }
+        Playing {
+        	PlacingDomino {
+        		readyToPlace [isDominoCorrectlyPreplaced()] -> /{placeDomino();} Playing.SelectingDomino;
+        	}
+        	SelectingDomino {
+        	}
         }
     }
 
@@ -31,10 +34,21 @@ class Gameplay {
        	case "CreatingFirstDraft":
        	    gamestatus = Gamestatus.Initializing;
        	    gamestatusInitializing = GamestatusInitializing.CreatingFirstDraft;
+       	    gamestatusPlaying = GamestatusPlaying.Null;
        	    setGamestatusInitializing(GamestatusInitializing.CreatingFirstDraft);
        	    break;
        	case "SelectingFirstDomino":
-       	// TODO add further cases here to set desired state
+       		gamestatus = Gamestatus.Initializing;
+       	    gamestatusInitializing = GamestatusInitializing.SelectingFirstDomino;
+       	    gamestatusPlaying = GamestatusPlaying.Null;
+       	    setGamestatusInitializing(GamestatusInitializing.SelectingFirstDomino);
+       	    break;
+       	case "PlacingDomino":
+       		gamestatus = Gamestatus.Playing;
+       	    gamestatusInitializing = GamestatusInitializing.Null;
+       	    gamestatusPlaying = GamestatusPlaying.PlacingDomino;
+       	    setGamestatusPlaying(GamestatusPlaying.PlacingDomino);
+       	    break;
        	default:
        	    throw new RuntimeException("Invalid gamestatus string was provided: " + status);
        	}
@@ -45,8 +59,7 @@ class Gameplay {
      */
     
     public boolean isCurrentPlayerTheLastInTurn() {
-        // TODO: implement this
-        return false;
+        return ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isCurrentPlayerTheLastInTurn();
     }
         
     public boolean isCurrentTurnTheLastInGame() {
@@ -54,9 +67,12 @@ class Gameplay {
         return false;
     }
     
-    public boolean isValidSelection() {
-        // TODO: implement this
-        return false;
+    public boolean isSelectionValid() {
+        return ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isSelectionValid();
+    }
+    
+    public boolean isDominoCorrectlyPreplaced(){
+    	return ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isDominoCorrectlyPreplaced();
     }
     // You may need to add more guards here
         
@@ -64,31 +80,38 @@ class Gameplay {
     /*
      * Actions
      */
-    
-    public void shuffleDominoPile() {
-        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.doAction("ShuffleDominoPile");
+
+    public void shuffleDominos() {
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.shuffleDominos();
     }
     
-    public void createNextDraft() {
-        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.doAction("CreateNextDraft");
+    public void setNextDraft() {
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.setNextDraft();
     }
     
     public void orderNextDraft() {
-        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.doAction("OrderNextDraft");
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.orderNextDraft();
+        draftReady();
     }
     
     public void revealNextDraft() {
-        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.doAction("RevealNextDraft");
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.revealNextDraft();
     }
     
     public void generateInitialPlayerOrder() {
-        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.doAction("GenerateInitialPlayerOrder");
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.generateInitialPlayerOrder();
     }
     
-    public void nextPlayerTurn(){
+    public void nextPlayer() {
+    	ca.mcgill.ecse223.kingdomino.controller.KingdominoController.nextPlayer();
     }
     
-    public void generatePlayerOrder(){
+    public void generatePlayerOrder() {
+		ca.mcgill.ecse223.kingdomino.controller.KingdominoController.generatePlayerOrder(); 
     }
+
+	public void placeDomino(){
+		ca.mcgill.ecse223.kingdomino.controller.KingdominoController.placeDomino();
+	}
     // You may need to add more actions here
 }

@@ -22,34 +22,14 @@ import io.cucumber.java.en.*;
 public class InitializingGameStepDefinition {
 	@Given("the game has not been started")
 	public void the_game_has_not_been_started() {
-		Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		kingdomino.setCurrentGame(game);
-		KingdominoController.setNumberOfPlayers(4, kingdomino);
-		for (int i = 0; i < 4; i++) {
-			KingdominoController.selectColor(PlayerColor.values()[i], i, kingdomino);
-		}
-		List<Player> players = kingdomino.getCurrentGame().getPlayers();
-		for (int i = 0; i < players.size(); i++) {
-			Player player = players.get(i);
-			Kingdom kingdom = new Kingdom(player);
-			new Castle(0, 0, kingdom, player);
-			player.setBonusScore(0);
-			player.setPropertyScore(0);
-			player.setDominoSelection(null);
-			game.setNextPlayer(players.get(0));
-		}
-		KingdominoController.createAllDominos(kingdomino.getCurrentGame());
-		KingdominoApplication.setKingdomino(kingdomino);
+		HelperClass.testSetup();
 		Gameplay g = new Gameplay();
 		KingdominoApplication.setGameplay(g);
 	}
 
 	@When("start of the game is initiated")
 	public void start_of_the_game_is_initiated() {
-		System.out.println(KingdominoApplication.getGameplay());
 		KingdominoApplication.getGameplay().setGamestatus("CreatingFirstDraft");
-		System.out.println(KingdominoApplication.getGameplay().getGamestatusFullName());
 	}
 
 	@Then("the pile shall be shuffled")
@@ -66,7 +46,6 @@ public class InitializingGameStepDefinition {
 
 	@Then("the first draft shall be on the table")
 	public void the_first_draft_shall_be_on_the_table() {
-		assertNotEquals(KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft(), null);
 		Draft nextDraft = KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft();
 		assertNotEquals(null, nextDraft);
 	}
