@@ -10,8 +10,7 @@ public class KingdominoApplication {
 	private static Gameplay gameplay;
 
 	public static void main(String[] args) {
-		System.out.println("Hello World!");
-		KingdominoController.shuffleDominos();
+		new KingdominoController();
 	}
 
 	public static Kingdomino getKingdomino() {

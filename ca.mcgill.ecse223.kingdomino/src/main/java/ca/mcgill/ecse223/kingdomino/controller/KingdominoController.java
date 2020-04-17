@@ -5,16 +5,29 @@ import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
+import ca.mcgill.ecse223.kingdomino.view.*;
+
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class KingdominoController {
 
+	private KingdominoBoardGame boardGame;
+	
 	public KingdominoController() {
-
+		boardGame = new KingdominoBoardGame(this);
 	}
 
+	public static void startGame() {
+		startGameSetup();
+		setNumberOfPlayers(4);
+		createPlayersAndKingdoms();
+		Gameplay gameplay = new Gameplay();
+		KingdominoApplication.setGameplay(gameplay);
+		gameplay.start();
+	}
+	
 	public static void shuffleDominos() {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
@@ -217,7 +230,7 @@ public class KingdominoController {
 	public static void selectionComplete() {
 		KingdominoApplication.getGameplay().endOfTurn();
 		KingdominoApplication.getGameplay().selectionComplete();
-		
+
 	}
 
 	public static void nextPlayer() {
@@ -481,10 +494,9 @@ public class KingdominoController {
 		boolean noOverlapping = verifyNoOverlapping(dom.getDomino(), player.getKingdom(), dom.getX(), dom.getY(),
 				dom.getDirection());
 		if ((castleAdjacency || neighborAdjacency) && noOverlapping) {
-			System.out.println("correct");
 			dom.getDomino().setStatus(DominoStatus.CorrectlyPreplaced);
 		} else {
-			//System.out.println("here");
+			// System.out.println("here");
 			dom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
 		}
 	}
@@ -572,7 +584,7 @@ public class KingdominoController {
 		}
 		return false;
 	}
-	
+
 	public static void placing() {
 		KingdominoApplication.getGameplay().readyToPlace();
 		KingdominoApplication.getGameplay().placeLast();
@@ -841,7 +853,7 @@ public class KingdominoController {
 	}
 
 	/******************************************/
-	
+
 	public static void discardDomino() {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
 		if (isPossibleToPlace()) {
@@ -856,43 +868,44 @@ public class KingdominoController {
 		KingdominoApplication.getGameplay().discard();
 		KingdominoApplication.getGameplay().endGame();
 	}
-	
+
 	public static boolean isPossibleToPlace() {
 		Kingdom kingdom = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer().getKingdom();
-		if(kingdom.getTerritory(kingdom.getTerritories().size() - 1) instanceof  DominoInKingdom) {
-		DominoInKingdom dom = (DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size() - 1);
-		int originalX = dom.getX();
-		int originalY = dom.getY();
-		boolean castleAdjacency;
-		boolean neighborAdjacency;
-		boolean noOverlapping;
-		boolean validGridSize;
-		for (int i = -5; i <= 5; i++) {
-			for (int j = -5; j < 5; j++) {
-				for (DirectionKind dir : DirectionKind.values()) {
-					dom.setX(i);
-					dom.setY(j);
-					castleAdjacency = verifyCastleAdjacency(dom.getX(), dom.getY(), dir);
-					neighborAdjacency = verifyNeighborAdjacency(kingdom, dom.getDomino(), dom.getX(), dom.getY(), dir);
-					noOverlapping = verifyNoOverlapping(dom.getDomino(), kingdom, dom.getX(), dom.getY(), dir);
-					validGridSize = verifyGridSize(kingdom);
-					if ((castleAdjacency || neighborAdjacency) && noOverlapping && validGridSize) {
-						dom.setX(originalX);
-						dom.setY(originalY);
-						return true;
+		if (kingdom.getTerritory(kingdom.getTerritories().size() - 1) instanceof DominoInKingdom) {
+			DominoInKingdom dom = (DominoInKingdom) kingdom.getTerritory(kingdom.getTerritories().size() - 1);
+			int originalX = dom.getX();
+			int originalY = dom.getY();
+			boolean castleAdjacency;
+			boolean neighborAdjacency;
+			boolean noOverlapping;
+			boolean validGridSize;
+			for (int i = -5; i <= 5; i++) {
+				for (int j = -5; j < 5; j++) {
+					for (DirectionKind dir : DirectionKind.values()) {
+						dom.setX(i);
+						dom.setY(j);
+						castleAdjacency = verifyCastleAdjacency(dom.getX(), dom.getY(), dir);
+						neighborAdjacency = verifyNeighborAdjacency(kingdom, dom.getDomino(), dom.getX(), dom.getY(),
+								dir);
+						noOverlapping = verifyNoOverlapping(dom.getDomino(), kingdom, dom.getX(), dom.getY(), dir);
+						validGridSize = verifyGridSize(kingdom);
+						if ((castleAdjacency || neighborAdjacency) && noOverlapping && validGridSize) {
+							dom.setX(originalX);
+							dom.setY(originalY);
+							return true;
+						}
 					}
 				}
 			}
-		}
-		dom.setX(originalX);
-		dom.setY(originalY);
+			dom.setX(originalX);
+			dom.setY(originalY);
 		}
 		return false;
 	}
 
 	public static boolean isCurrentTurnTheLastInGame() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		if(game.getTopDominoInPile()==null) {
+		if (game.getTopDominoInPile() == null) {
 			return true;
 		} else {
 			return false;
@@ -900,7 +913,15 @@ public class KingdominoController {
 	}
 
 	/******************************************/
-	
+
+	public static void updateScore() {
+		System.out.println("updating");
+		KingdominoController.identifyProperties();
+		KingdominoController.calculatePropertyAttributes();
+		KingdominoController.calculateBonusScore();
+		KingdominoController.calculatePlayerScore();
+	}
+
 	public static void identifyProperties() {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
 		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
@@ -913,57 +934,59 @@ public class KingdominoController {
 			if (territories.get(i) instanceof DominoInKingdom) {
 				// Working with the DominoInKingdom
 				DominoInKingdom ter = (DominoInKingdom) territories.get(i);
-
-				isMatchL = false;
-				// Looking at the left tile
-				for (int j = 0; j < properties.size(); j++) {
-					// If this property type matches the left tile type
-					if (ter.getDomino().getLeftTile() == properties.get(j).getLeftTile()) {
-						// If the domino isn't already present in the property
-						if (!propertyContains(ter, properties.get(j))) {
-							// If the domino left tile is adjacent to another square of a domino in property
-							// of same type
-							if (isLeftMatch(ter, properties.get(j), player.getKingdom())) {
-								properties.get(j).addIncludedDomino(ter.getDomino());
+				System.out.println(ter.getDomino().getStatus());
+				if (ter.getDomino().getStatus() != DominoStatus.Discarded) {
+					isMatchL = false;
+					// Looking at the left tile
+					for (int j = 0; j < properties.size(); j++) {
+						// If this property type matches the left tile type
+						if (ter.getDomino().getLeftTile() == properties.get(j).getLeftTile()) {
+							// If the domino isn't already present in the property
+							if (!propertyContains(ter, properties.get(j))) {
+								// If the domino left tile is adjacent to another square of a domino in property
+								// of same type
+								if (isLeftMatch(ter, properties.get(j), player.getKingdom())) {
+									properties.get(j).addIncludedDomino(ter.getDomino());
+									isMatchL = true;
+								}
+							} else {
 								isMatchL = true;
 							}
-						} else {
-							isMatchL = true;
 						}
-					}
 
-				}
-				if (!isMatchL) {
-					Property prop = new Property(player.getKingdom());
-					prop.addIncludedDomino(ter.getDomino());
-					prop.setLeftTile(ter.getDomino().getLeftTile());
-					player.getKingdom().addProperty(prop);
-				}
-				// Looking at the right tile
-				isMatchR = false;
-				// Looking at the left tile
-				for (int j = 0; j < properties.size(); j++) {
-					// If this property type matches the left tile type
-					if (ter.getDomino().getRightTile() == properties.get(j).getLeftTile()) {
-						// If the domino isn't already present in the property
-						if (!propertyContains(ter, properties.get(j))) {
-							// If the domino left tile is adjacent to another square of a domino in property
-							// of same type
-							if (isRightMatch(ter, properties.get(j), player.getKingdom())) {
-								properties.get(j).addIncludedDomino(ter.getDomino());
+					}
+					if (!isMatchL) {
+						Property prop = new Property(player.getKingdom());
+						prop.addIncludedDomino(ter.getDomino());
+						prop.setLeftTile(ter.getDomino().getLeftTile());
+						player.getKingdom().addProperty(prop);
+					}
+					// Looking at the right tile
+					isMatchR = false;
+					// Looking at the left tile
+					for (int j = 0; j < properties.size(); j++) {
+						// If this property type matches the left tile type
+						if (ter.getDomino().getRightTile() == properties.get(j).getLeftTile()) {
+							// If the domino isn't already present in the property
+							if (!propertyContains(ter, properties.get(j))) {
+								// If the domino left tile is adjacent to another square of a domino in property
+								// of same type
+								if (isRightMatch(ter, properties.get(j), player.getKingdom())) {
+									properties.get(j).addIncludedDomino(ter.getDomino());
+									isMatchR = true;
+								}
+							} else {
 								isMatchR = true;
 							}
-						} else {
-							isMatchR = true;
 						}
-					}
 
-				}
-				if (!isMatchR) {
-					Property prop = new Property(player.getKingdom());
-					prop.addIncludedDomino(ter.getDomino());
-					prop.setLeftTile(ter.getDomino().getRightTile());
-					player.getKingdom().addProperty(prop);
+					}
+					if (!isMatchR) {
+						Property prop = new Property(player.getKingdom());
+						prop.addIncludedDomino(ter.getDomino());
+						prop.setLeftTile(ter.getDomino().getRightTile());
+						player.getKingdom().addProperty(prop);
+					}
 				}
 			}
 		}
@@ -1285,6 +1308,7 @@ public class KingdominoController {
 		List<Property> myprop = player.getKingdom().getProperties();
 		for (int i = 0; i < myprop.size(); i++) {
 			propscore += myprop.get(i).getScore();
+			System.out.println(propscore);
 		}
 
 		player.setPropertyScore(propscore);
@@ -1292,7 +1316,8 @@ public class KingdominoController {
 	}
 
 	public static void calculateRanking() {
-		ArrayList<Player> players = new ArrayList<Player>(KingdominoApplication.getKingdomino().getCurrentGame().getPlayers());
+		ArrayList<Player> players = new ArrayList<Player>(
+				KingdominoApplication.getKingdomino().getCurrentGame().getPlayers());
 
 		Player currentPlayer;
 		Player tempPlayer;

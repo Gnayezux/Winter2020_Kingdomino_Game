@@ -208,7 +208,7 @@ public class Gameplay
         {
           exitGamestatusPlaying();
         // line 21 "../../../../../Gameplay.ump"
-          placeDomino();
+          placeDomino(); updateScore();
           setGamestatusPlaying(GamestatusPlaying.SelectingDomino);
           wasEventProcessed = true;
           break;
@@ -233,7 +233,7 @@ public class Gameplay
         {
           exitGamestatusPlaying();
         // line 22 "../../../../../Gameplay.ump"
-          discardDomino();
+          discardDomino(); updateScore();
           setGamestatusPlaying(GamestatusPlaying.SelectingDomino);
           wasEventProcessed = true;
           break;
@@ -258,7 +258,7 @@ public class Gameplay
         {
           exitGamestatusPlaying();
         // line 23 "../../../../../Gameplay.ump"
-          placeDomino(); nextPlayer();
+          placeDomino(); updateScore(); nextPlayer();
           setGamestatusPlaying(GamestatusPlaying.PlacingDomino);
           wasEventProcessed = true;
           break;
@@ -283,7 +283,7 @@ public class Gameplay
         {
           exitGamestatusPlaying();
         // line 24 "../../../../../Gameplay.ump"
-          discardDomino(); nextPlayer();
+          discardDomino(); updateScore(); nextPlayer();
           setGamestatusPlaying(GamestatusPlaying.PlacingDomino);
           wasEventProcessed = true;
           break;
@@ -453,7 +453,13 @@ public class Gameplay
        	    gamestatusInitializing = GamestatusInitializing.Null;
        	    gamestatusPlaying = GamestatusPlaying.CreatingDraft;
        	    setGamestatusPlaying(GamestatusPlaying.CreatingDraft);
-       	    break;       	    
+       	    break;   
+       	case "EndingGame":
+       		gamestatus = Gamestatus.Playing;
+       	    gamestatusInitializing = GamestatusInitializing.Null;
+       	    gamestatusPlaying = GamestatusPlaying.EndingGame;
+       	    setGamestatusPlaying(GamestatusPlaying.EndingGame);
+       	    break;     	    
        	default:
        	    throw new RuntimeException("Invalid gamestatus string was provided: " + status);
        	}
@@ -463,27 +469,27 @@ public class Gameplay
   /**
    * Guards
    */
-  // line 87 "../../../../../Gameplay.ump"
+  // line 93 "../../../../../Gameplay.ump"
    public boolean isCurrentPlayerTheLastInTurn(){
     return ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isCurrentPlayerTheLastInTurn();
   }
 
-  // line 91 "../../../../../Gameplay.ump"
+  // line 97 "../../../../../Gameplay.ump"
    public boolean isCurrentTurnTheLastInGame(){
     return ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isCurrentTurnTheLastInGame();
   }
 
-  // line 95 "../../../../../Gameplay.ump"
+  // line 101 "../../../../../Gameplay.ump"
    public boolean isSelectionValid(){
     return ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isSelectionValid();
   }
 
-  // line 99 "../../../../../Gameplay.ump"
+  // line 105 "../../../../../Gameplay.ump"
    public boolean isDominoCorrectlyPreplaced(){
     return ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isDominoCorrectlyPreplaced();
   }
 
-  // line 103 "../../../../../Gameplay.ump"
+  // line 109 "../../../../../Gameplay.ump"
    public boolean isImpossibleToPlace(){
     return !ca.mcgill.ecse223.kingdomino.controller.KingdominoController.isPossibleToPlace();
   }
@@ -493,55 +499,60 @@ public class Gameplay
    * You may need to add more guards here
    * Actions
    */
-  // line 113 "../../../../../Gameplay.ump"
+  // line 119 "../../../../../Gameplay.ump"
    public void shuffleDominos(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.shuffleDominos();
   }
 
-  // line 117 "../../../../../Gameplay.ump"
+  // line 123 "../../../../../Gameplay.ump"
    public void setNextDraft(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.setNextDraft();
   }
 
-  // line 121 "../../../../../Gameplay.ump"
+  // line 127 "../../../../../Gameplay.ump"
    public void orderNextDraft(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.orderNextDraft();
         draftReady();
   }
 
-  // line 126 "../../../../../Gameplay.ump"
+  // line 132 "../../../../../Gameplay.ump"
    public void revealNextDraft(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.revealNextDraft();
   }
 
-  // line 130 "../../../../../Gameplay.ump"
+  // line 136 "../../../../../Gameplay.ump"
    public void generateInitialPlayerOrder(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.generateInitialPlayerOrder();
   }
 
-  // line 134 "../../../../../Gameplay.ump"
+  // line 140 "../../../../../Gameplay.ump"
    public void nextPlayer(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.nextPlayer();
   }
 
-  // line 138 "../../../../../Gameplay.ump"
+  // line 144 "../../../../../Gameplay.ump"
    public void generatePlayerOrder(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.generatePlayerOrder();
   }
 
-  // line 142 "../../../../../Gameplay.ump"
+  // line 148 "../../../../../Gameplay.ump"
    public void placeDomino(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.placeDomino();
   }
 
-  // line 146 "../../../../../Gameplay.ump"
+  // line 152 "../../../../../Gameplay.ump"
    public void discardDomino(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.discardDomino();
   }
 
-  // line 150 "../../../../../Gameplay.ump"
+  // line 156 "../../../../../Gameplay.ump"
    public void calculatingScores(){
     ca.mcgill.ecse223.kingdomino.controller.KingdominoController.calculateRanking();
+  }
+
+  // line 160 "../../../../../Gameplay.ump"
+   public void updateScore(){
+    ca.mcgill.ecse223.kingdomino.controller.KingdominoController.updateScore();
   }
 
 }

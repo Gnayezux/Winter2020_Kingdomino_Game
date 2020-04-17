@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
-import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Game;
 import ca.mcgill.ecse223.kingdomino.model.Player;
 import ca.mcgill.ecse223.kingdomino.model.Property;
@@ -31,9 +30,9 @@ public class CalculatePropertiesAttributeStepDefinition {
 	@When("calculate property attributes is initiated")
 	public void calculate_property_attributes_is_initiated() {
 		KingdominoController.identifyProperties();
-		for (Property prop : KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer().getKingdom().getProperties()) {
-			System.out.println(prop.getLeftTile() + ": " + getDominos(prop));
-		}
+//		for (Property prop : KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer().getKingdom().getProperties()) {
+//			System.out.println(prop.getLeftTile() + ": " + getDominos(prop));
+//		}
 		KingdominoController.calculatePropertyAttributes();
 	}
 
@@ -63,18 +62,6 @@ public class CalculatePropertiesAttributeStepDefinition {
 	}
 
 	//HELPER METHODS
-	
-	private String getDominos(Property property) {
-		List<Domino> dominos = property.getIncludedDominos();
-		String doms = "";
-		for (Domino dominoInProp : dominos) {
-			if (!doms.equals("")) {
-				doms += ',';
-			}
-			doms += dominoInProp.getId();
-		}
-		return doms;
-	}
 	
 	private boolean hasProperty(String type, int expectedSize, int expectedCrowns, List<Property> properties) {
 		boolean found = false;

@@ -18,10 +18,10 @@ class Gameplay {
         }
         Playing {
         	PlacingDomino {
-        		readyToPlace [isDominoCorrectlyPreplaced() && !isCurrentTurnTheLastInGame()] -> /{placeDomino();} Playing.SelectingDomino;
-        		discard [isImpossibleToPlace() && !isCurrentTurnTheLastInGame()] -> /{discardDomino();} Playing.SelectingDomino;
-        		placeLast [isDominoCorrectlyPreplaced() && isCurrentTurnTheLastInGame()] -> /{placeDomino(); nextPlayer();} Playing.PlacingDomino;
-        		discardLast [isImpossibleToPlace() && isCurrentTurnTheLastInGame()] -> /{discardDomino(); nextPlayer();} Playing.PlacingDomino;
+        		readyToPlace [isDominoCorrectlyPreplaced() && !isCurrentTurnTheLastInGame()] -> /{placeDomino(); updateScore();} Playing.SelectingDomino;
+        		discard [isImpossibleToPlace() && !isCurrentTurnTheLastInGame()] -> /{discardDomino(); updateScore(); } Playing.SelectingDomino;
+        		placeLast [isDominoCorrectlyPreplaced() && isCurrentTurnTheLastInGame()] -> /{placeDomino(); updateScore(); nextPlayer();} Playing.PlacingDomino;
+        		discardLast [isImpossibleToPlace() && isCurrentTurnTheLastInGame()] -> /{discardDomino(); updateScore(); nextPlayer();} Playing.PlacingDomino;
         		endGame [isCurrentTurnTheLastInGame() && isCurrentPlayerTheLastInTurn()] -> Playing.EndingGame;
         	}
         	SelectingDomino {
@@ -73,7 +73,13 @@ class Gameplay {
        	    gamestatusInitializing = GamestatusInitializing.Null;
        	    gamestatusPlaying = GamestatusPlaying.CreatingDraft;
        	    setGamestatusPlaying(GamestatusPlaying.CreatingDraft);
-       	    break;       	    
+       	    break;   
+       	case "EndingGame":
+       		gamestatus = Gamestatus.Playing;
+       	    gamestatusInitializing = GamestatusInitializing.Null;
+       	    gamestatusPlaying = GamestatusPlaying.EndingGame;
+       	    setGamestatusPlaying(GamestatusPlaying.EndingGame);
+       	    break;     	    
        	default:
        	    throw new RuntimeException("Invalid gamestatus string was provided: " + status);
        	}
@@ -148,6 +154,10 @@ class Gameplay {
 	
 	public void calculatingScores(){
 		ca.mcgill.ecse223.kingdomino.controller.KingdominoController.calculateRanking();
+	}
+	
+	public void updateScore(){
+		ca.mcgill.ecse223.kingdomino.controller.KingdominoController.updateScore();
 	}
     // You may need to add more actions here
 }

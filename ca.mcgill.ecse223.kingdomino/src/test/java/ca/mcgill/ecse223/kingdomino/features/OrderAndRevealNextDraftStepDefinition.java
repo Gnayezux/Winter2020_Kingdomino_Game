@@ -22,7 +22,7 @@ public class OrderAndRevealNextDraftStepDefinition {
 	 * @author Maxime Rieuf
 	 */
 	@Given("the next draft is {string}")
-	public void the_next_draft_is(String string) {
+	public void the_next_draft_is(String string) { 
 		string = string.replaceAll("\\s+", "");
 		string = string.replace("\"", "");
 		List<String> numbers = new ArrayList<String>(Arrays.asList(string.split(",")));
