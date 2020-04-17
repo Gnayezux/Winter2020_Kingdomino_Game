@@ -30,9 +30,9 @@ public class SaveGameStepDefinition {
 		Kingdomino kingdomino = new Kingdomino();
 		Game game = new Game(48, kingdomino);
 		kingdomino.setCurrentGame(game);
-		KingdominoController.setNumberOfPlayers(4, kingdomino);
+		//KingdominoController.setNumberOfPlayers(4, kingdomino);
 		for (int i = 0; i < 4; i++) {
-			KingdominoController.selectColor(PlayerColor.values()[i], i, kingdomino);
+			//KingdominoController.selectColor(PlayerColor.values()[i], i, kingdomino);
 		}
 		List<Player> players = kingdomino.getCurrentGame().getPlayers();
 		for (int i = 0; i < players.size(); i++) {
@@ -43,7 +43,7 @@ public class SaveGameStepDefinition {
 			player.setPropertyScore(0);
 			player.setDominoSelection(null);
 		}
-		KingdominoController.createAllDominos(kingdomino.getCurrentGame());
+		//KingdominoController.createAllDominos(kingdomino.getCurrentGame());
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
@@ -62,7 +62,7 @@ public class SaveGameStepDefinition {
 	@When("the user initiates saving the game to a file named {string}")
 	public void the_user_initiates_saving_the_game_to_a_file_named(String string) {
 		fileName = string;
-		KingdominoController.save(KingdominoApplication.getKingdomino(), string);
+	//	KingdominoController.save(KingdominoApplication.getKingdomino(), string);
 	}
 
 	@Then("a file named {string} shall be created in the filesystem")
@@ -84,7 +84,7 @@ public class SaveGameStepDefinition {
 
 	@When("the user agrees to overwrite the existing file named {string}")
 	public void the_user_agrees_to_overwrite_the_existing_file_named(String string) {
-		KingdominoController.overWriteFile(string);
+	//	KingdominoController.overWriteFile(string);
 	}
 
 	@Then("the file named {string} shall be updated in the filesystem")

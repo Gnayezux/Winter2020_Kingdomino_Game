@@ -1,34 +1,14 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
 import static org.junit.Assert.assertEquals;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
-import ca.mcgill.ecse223.kingdomino.model.Castle;
-import ca.mcgill.ecse223.kingdomino.model.Domino;
+import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
-import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom;
-import ca.mcgill.ecse223.kingdomino.model.DominoSelection;
-import ca.mcgill.ecse223.kingdomino.model.Draft;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
-import ca.mcgill.ecse223.kingdomino.model.Game;
-import ca.mcgill.ecse223.kingdomino.model.Kingdom;
-import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
-import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
-import ca.mcgill.ecse223.kingdomino.model.Player;
-import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
-import ca.mcgill.ecse223.kingdomino.model.TerrainType;
-import ca.mcgill.ecse223.kingdomino.model.User;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import io.cucumber.java.en.*;
 
 public class MoveCurrentDominoStepDefinition {
 	
@@ -37,25 +17,8 @@ public class MoveCurrentDominoStepDefinition {
 	 */
 	@Given("the game is initialized for move current domino")
 	public void the_game_is_initialized_for_move_current_domino() {
-		Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		kingdomino.setCurrentGame(game);
-		KingdominoController.setNumberOfPlayers(4, kingdomino);
-		for (int i = 0; i < 4; i++) {
-			KingdominoController.selectColor(PlayerColor.values()[i], i, kingdomino);
-		}
-		List<Player> players = kingdomino.getCurrentGame().getPlayers();
-		for (int i = 0; i < players.size(); i++) {
-			Player player = players.get(i);
-			Kingdom kingdom = new Kingdom(player);
-			new Castle(0, 0, kingdom, player);
-			player.setBonusScore(0);
-			player.setPropertyScore(0);
-			player.setDominoSelection(null);
-		}
-		KingdominoController.createAllDominos(kingdomino.getCurrentGame());
-		KingdominoApplication.setKingdomino(kingdomino);
-
+		HelperClass.testSetup();
+		KingdominoController.shuffleDominos();
 	}
 
 	/**
@@ -63,16 +26,14 @@ public class MoveCurrentDominoStepDefinition {
 	 */
 	@Given("it is {string}'s turn")
 	public void it_is_s_turn(String string) {
-
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		List<Player> players = KingdominoApplication.getKingdomino().getCurrentGame().getPlayers();
 		for (Player p : players) {
-			if (p.getColor() == getColor(string)) {
+			if (p.getColor() == HelperClass.getColor(string)) {
 				game.setNextPlayer(p);
 				break;
 			}
 		}
-
 	}
 
 	/**
@@ -80,13 +41,11 @@ public class MoveCurrentDominoStepDefinition {
 	 */
 	@Given("{string} has selected domino {int}")
 	public void has_selected_domino(String string, Integer int1) {
-
 		Draft draft = new Draft(DraftStatus.FaceUp, KingdominoApplication.getKingdomino().getCurrentGame());
 		List<Player> players = KingdominoApplication.getKingdomino().getCurrentGame().getPlayers();
 		for (Player p : players) {
-			if (p.getColor() == getColor(string)) {
-				p.setDominoSelection(new DominoSelection(p,
-						KingdominoApplication.getKingdomino().getCurrentGame().getAllDomino(int1 - 1), draft));
+			if (p.getColor() == HelperClass.getColor(string)) {
+				new DominoSelection(p, HelperClass.getDominoByID(int1), draft);
 				break;
 			}
 		}
@@ -98,9 +57,7 @@ public class MoveCurrentDominoStepDefinition {
 	 */
 	@When("{string} removes his king from the domino {int}")
 	public void removes_his_king_from_the_domino(String string, Integer int1) {
-
-
-		KingdominoController.removeKing(KingdominoApplication.getKingdomino());
+		KingdominoController.removeKing();
 	}
 
 	/**
@@ -116,7 +73,7 @@ public class MoveCurrentDominoStepDefinition {
 		assertEquals((int) int1, dom.getDomino().getId());
 		assertEquals((int) int2, dom.getX());
 		assertEquals((int) int3, dom.getY());
-		assertEquals(getColor(string), player.getColor());
+		assertEquals(HelperClass.getColor(string), player.getColor());
 		assertEquals(DominoStatus.ErroneouslyPreplaced, dom.getDomino().getStatus());
 
 	}
@@ -132,12 +89,12 @@ public class MoveCurrentDominoStepDefinition {
 		for (Map<String, String> map : valueMaps) {
 			// Get values from cucumber table
 			Integer id = Integer.decode(map.get("id"));
-			DirectionKind dir = getDirection(map.get("dir"));
+			DirectionKind dir = HelperClass.getDirection(map.get("dir"));
 			Integer posx = Integer.decode(map.get("posx"));
 			Integer posy = Integer.decode(map.get("posy"));
 
 			// Add the domino to a player's kingdom
-			Domino dominoToPlace = getdominoByID(id);
+			Domino dominoToPlace = HelperClass.getDominoByID(id);
 			Kingdom kingdom = player.getKingdom();
 
 			DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
@@ -154,11 +111,12 @@ public class MoveCurrentDominoStepDefinition {
 			String string) {
 
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
-		Domino dominoToPlace = getdominoByID(int1);
+		Domino dominoToPlace = HelperClass.getDominoByID(int1);
+		dominoToPlace.setStatus(DominoStatus.ErroneouslyPreplaced);
 		Kingdom kingdom = player.getKingdom();
 		DominoInKingdom domInKingdom = new DominoInKingdom(int2, int3, kingdom, dominoToPlace);
-		domInKingdom.setDirection(getDirection(string));
-		dominoToPlace.setStatus(DominoStatus.ErroneouslyPreplaced);
+		domInKingdom.setDirection(HelperClass.getDirection(string));
+		
 
 	}
 
@@ -167,8 +125,7 @@ public class MoveCurrentDominoStepDefinition {
 	 */
 	@When("{string} requests to move the domino {string}")
 	public void requests_to_move_the_domino(String string, String string2) {
-
-		KingdominoController.moveDomino(KingdominoApplication.getKingdomino(), string2);
+		KingdominoController.moveDomino(string2);
 	}
 
 	/**
@@ -184,7 +141,7 @@ public class MoveCurrentDominoStepDefinition {
 		assertEquals((int) int1, dom.getDomino().getId());
 		assertEquals((int) int2, dom.getX());
 		assertEquals((int) int3, dom.getY());
-		assertEquals(getDirection(string), dom.getDirection());
+		assertEquals(HelperClass.getDirection(string), dom.getDirection());
 
 	}
 
@@ -197,7 +154,7 @@ public class MoveCurrentDominoStepDefinition {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
 		DominoInKingdom dom = (DominoInKingdom) player.getKingdom()
 				.getTerritory(player.getKingdom().numberOfTerritories() - 1);
-		assertEquals(getDominoStatus(string), dom.getDomino().getStatus());
+		assertEquals(HelperClass.getDominoStatus(string), dom.getDomino().getStatus());
 
 	}
 
@@ -206,8 +163,8 @@ public class MoveCurrentDominoStepDefinition {
 	 */
 	@Given("domino {int} has status {string}")
 	public void domino_has_status(Integer int1, String string) {
-		Domino dom = getdominoByID(int1);
-		dom.setStatus(getDominoStatus(string));
+		Domino dom = HelperClass.getDominoByID(int1);
+		dom.setStatus(HelperClass.getDominoStatus(string));
 	}
 
 	/**
@@ -231,74 +188,6 @@ public class MoveCurrentDominoStepDefinition {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
 		DominoInKingdom dom = (DominoInKingdom) player.getKingdom()
 				.getTerritory(player.getKingdom().numberOfTerritories() - 1);
-		assertEquals(getDominoStatus(string), dom.getDomino().getStatus());
-	}
-
-
-	/**********************
-	 * * Helper Methods * *
-	 **********************/
-
-	private Domino getdominoByID(int id) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		for (Domino domino : game.getAllDominos()) {
-			if (domino.getId() == id) {
-				return domino;
-			}
-		}
-		throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
-	}
-
-	private DirectionKind getDirection(String dir) {
-		switch (dir) {
-		case "up":
-			return DirectionKind.Up;
-		case "down":
-			return DirectionKind.Down;
-		case "left":
-			return DirectionKind.Left;
-		case "right":
-			return DirectionKind.Right;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid direction: " + dir);
-		}
-	}
-
-	private DominoStatus getDominoStatus(String status) {
-		switch (status) {
-		case "inPile":
-			return DominoStatus.InPile;
-		case "excluded":
-			return DominoStatus.Excluded;
-		case "inCurrentDraft":
-			return DominoStatus.InCurrentDraft;
-		case "inNextDraft":
-			return DominoStatus.InNextDraft;
-		case "ErroneouslyPreplaced":
-			return DominoStatus.ErroneouslyPreplaced;
-		case "CorrectlyPreplaced":
-			return DominoStatus.CorrectlyPreplaced;
-		case "placedInKingdom":
-			return DominoStatus.PlacedInKingdom;
-		case "discarded":
-			return DominoStatus.Discarded;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid domino status: " + status);
-		}
-	}
-
-	private PlayerColor getColor(String color) {
-		switch (color) {
-		case "pink":
-			return PlayerColor.Pink;
-		case "green":
-			return PlayerColor.Green;
-		case "blue":
-			return PlayerColor.Blue;
-		case "yellow":
-			return PlayerColor.Yellow;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid color: " + color);
-		}
+		assertEquals(HelperClass.getDominoStatus(string), dom.getDomino().getStatus());
 	}
 }

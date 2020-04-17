@@ -2,17 +2,10 @@ package ca.mcgill.ecse223.kingdomino.features;
 
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
-import ca.mcgill.ecse223.kingdomino.model.Draft;
-import ca.mcgill.ecse223.kingdomino.model.Game;
-import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
-import ca.mcgill.ecse223.kingdomino.model.Player;
-import ca.mcgill.ecse223.kingdomino.model.User;
-import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import ca.mcgill.ecse223.kingdomino.model.*;
+import io.cucumber.java.en.*;
+import static org.junit.Assert.*;
+import java.util.*;
 
 public class StartANewGameStepDefinitions {
 
@@ -21,10 +14,7 @@ public class StartANewGameStepDefinitions {
 	 */
 	@Given("the program is started and ready for starting a new game")
 	public void the_program_is_started_and_ready_for_starting_a_new_game() {
-		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
-		KingdominoController.setGameOptions(kingdomino);
-		KingdominoController.setNumberOfPlayers(4, kingdomino);
-		KingdominoApplication.setKingdomino(kingdomino);
+		KingdominoController.startGameSetup();
 	}
 
 	/**
@@ -32,12 +22,15 @@ public class StartANewGameStepDefinitions {
 	 */
 	@Given("there are four selected players")
 	public void there_are_four_selected_players() {
+		KingdominoController.setNumberOfPlayers(4);
+		KingdominoController.createPlayersAndKingdoms();
+		List<Player> players = KingdominoApplication.getKingdomino().getCurrentGame().getPlayers();
 		String[] userNames = { "User1", "User2", "User3", "User4" };
-		for (int i = 0; i < userNames.length; i++) {
-			KingdominoController.selectUser(new User(userNames[i],KingdominoApplication.getKingdomino()), i , KingdominoApplication.getKingdomino());
-			KingdominoController.selectColor(PlayerColor.values()[i], i, KingdominoApplication.getKingdomino());
+		int i = 0;
+		for(Player p: players) {
+			KingdominoController.selectUser(new User(userNames[i],KingdominoApplication.getKingdomino()), p.getColor().name());
+			i++;
 		}
-		
 	}
 
 	/**
@@ -45,9 +38,8 @@ public class StartANewGameStepDefinitions {
 	 */
 	@Given("bonus options Harmony and MiddleKingdom are selected")
 	public void bonus_options_Harmony_and_MiddleKingdom_are_selected() {
-		KingdominoController.setBonusOption("Harmony", KingdominoApplication.getKingdomino(), true);
-		KingdominoController.setBonusOption("MiddleKingdom", KingdominoApplication.getKingdomino(), true);
-
+		KingdominoController.setBonusOption("Harmony", true);
+		KingdominoController.setBonusOption("MiddleKingdom", true);
 	}
 
 	/**
@@ -55,7 +47,8 @@ public class StartANewGameStepDefinitions {
 	 */
 	@When("starting a new game is initiated")
 	public void starting_a_new_game_is_initiated() {    
-		KingdominoController.startNewGame(KingdominoApplication.getKingdomino());
+		KingdominoController.shuffleDominos();
+		KingdominoController.setNextDraft();
 	}
 
 	/**
@@ -63,8 +56,8 @@ public class StartANewGameStepDefinitions {
 	 */
 	@When("reveal first draft is initiated")
 	public void reveal_first_draft_is_initiated() {
-		KingdominoController.orderNextDraft(KingdominoApplication.getKingdomino());
-		KingdominoController.revealNextDraft(KingdominoApplication.getKingdomino());
+		KingdominoController.orderNextDraft();
+		KingdominoController.revealNextDraft();
 	}
 
 	/**
@@ -93,7 +86,7 @@ public class StartANewGameStepDefinitions {
 	 */
 	@Then("the first draft of dominoes is revealed")
 	public void the_first_draft_of_dominoes_is_revealed() {
-		assertEquals(Draft.DraftStatus.FaceUp, KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft().getDraftStatus());
+		assertNotEquals(null, KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft());
 	}
 
 	/**
@@ -101,7 +94,7 @@ public class StartANewGameStepDefinitions {
 	 */
 	@Then("all the dominoes form the first draft are facing up")
 	public void all_the_dominoes_form_the_first_draft_are_facing_up() {
-		// If the draft is face up the dominos are face up
+		assertEquals(Draft.DraftStatus.FaceUp, KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft().getDraftStatus());
 	}
 
 	/**

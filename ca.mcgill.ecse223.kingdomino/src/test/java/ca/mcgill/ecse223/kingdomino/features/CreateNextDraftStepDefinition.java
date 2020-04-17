@@ -1,7 +1,6 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
 import static org.junit.Assert.*;
-
 import java.util.*;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
@@ -15,12 +14,8 @@ public class CreateNextDraftStepDefinition {
 	 */
 	@Given("the game is initialized to create next draft")
 	public void the_game_is_initialized_to_create_next_draft() {
-		Kingdomino kingdomino = new Kingdomino();
-		Game newGame = new Game(48, kingdomino);
-		newGame.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(newGame);
-		KingdominoController.createAllDominos(newGame);
-		KingdominoApplication.setKingdomino(kingdomino);
+		HelperClass.testSetup();
+		KingdominoController.browseDominoPile(); // Will create all of the dominos in ascending order
 	}
 
 	/**
@@ -29,11 +24,7 @@ public class CreateNextDraftStepDefinition {
 	@Given("there has been {int} drafts created")
 	public void there_has_been_drafts_created(Integer int1) {
 		for (int i = 0; i < int1; i++) {
-			if (i == 0) {
-				KingdominoController.setFirstDraft(KingdominoApplication.getKingdomino());
-			} else {
-				KingdominoController.createNextDraft(KingdominoApplication.getKingdomino());
-			}
+			KingdominoController.setNextDraft();
 		}
 	}
 
@@ -63,7 +54,8 @@ public class CreateNextDraftStepDefinition {
 		List<String> numbers = new ArrayList<String>(Arrays.asList(string.split(",")));
 		boolean correct = false;
 		for (int i = 0; i < int1; i++) {
-			if (Integer.parseInt(numbers.get(i)) == KingdominoApplication.getKingdomino().getCurrentGame().getAllDomino(i).getId()) {
+			if (Integer.parseInt(numbers.get(i)) == KingdominoApplication.getKingdomino().getCurrentGame()
+					.getAllDomino(i).getId()) {
 				correct = true;
 			} else {
 				correct = false;
@@ -78,7 +70,7 @@ public class CreateNextDraftStepDefinition {
 	 */
 	@When("create next draft is initiated")
 	public void create_next_draft_is_initiated() {
-		KingdominoController.createNextDraft(KingdominoApplication.getKingdomino());
+		KingdominoController.setNextDraft();
 	}
 
 	/**
@@ -107,7 +99,7 @@ public class CreateNextDraftStepDefinition {
 	 */
 	@Then("the next draft now has the dominoes {string}")
 	public void the_next_draft_now_has_the_dominoes(String string) {
-		//this check is the exact same as the previous one.
+		// this check is the exact same as the previous one.
 	}
 
 	/**
@@ -124,7 +116,8 @@ public class CreateNextDraftStepDefinition {
 	 */
 	@Then("the top domino of the pile is ID {int}")
 	public void the_top_domino_of_the_pile_is_ID(Integer int1) {
-		assertEquals(int1, Integer.valueOf(KingdominoApplication.getKingdomino().getCurrentGame().getTopDominoInPile().getId()));
+		assertEquals(int1,
+				Integer.valueOf(KingdominoApplication.getKingdomino().getCurrentGame().getTopDominoInPile().getId()));
 	}
 
 	/**
@@ -133,10 +126,14 @@ public class CreateNextDraftStepDefinition {
 	@Then("the former next draft is now the current draft")
 	public void the_former_next_draft_is_now_the_current_draft() {
 		if (KingdominoApplication.getKingdomino().getCurrentGame().getAllDrafts().size() == 12) {
-			assertEquals(KingdominoApplication.getKingdomino().getCurrentGame().getAllDraft(KingdominoApplication.getKingdomino().getCurrentGame().getAllDrafts().size() - 1),
+			assertEquals(
+					KingdominoApplication.getKingdomino().getCurrentGame().getAllDraft(
+							KingdominoApplication.getKingdomino().getCurrentGame().getAllDrafts().size() - 1),
 					KingdominoApplication.getKingdomino().getCurrentGame().getCurrentDraft());
 		} else {
-			assertEquals(KingdominoApplication.getKingdomino().getCurrentGame().getAllDraft(KingdominoApplication.getKingdomino().getCurrentGame().getAllDrafts().size() - 2),
+			assertEquals(
+					KingdominoApplication.getKingdomino().getCurrentGame().getAllDraft(
+							KingdominoApplication.getKingdomino().getCurrentGame().getAllDrafts().size() - 2),
 					KingdominoApplication.getKingdomino().getCurrentGame().getCurrentDraft());
 		}
 	}
@@ -146,12 +143,8 @@ public class CreateNextDraftStepDefinition {
 	 */
 	@Given("this is a {int} player game")
 	public void this_is_a_player_game(Integer int1) {
-		Kingdomino kingdomino = new Kingdomino();
-		Game newGame = new Game(48, kingdomino);
-		newGame.setNumberOfPlayers(Integer.valueOf(int1));
-		kingdomino.setCurrentGame(newGame);
-		KingdominoController.createAllDominos(newGame);
-		KingdominoApplication.setKingdomino(kingdomino);
+		HelperClass.testSetup();
+		KingdominoController.browseDominoPile(); // Will create all of the dominos in ascending order
 	}
 
 	/**

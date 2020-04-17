@@ -1,11 +1,9 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
-import java.io.*;
 import java.util.*;
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.*;
-import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import io.cucumber.java.en.*;
 import static org.junit.Assert.assertEquals;
 
@@ -15,14 +13,8 @@ public class ChooseNextDominoStepDefinition {
 	 */
 	@Given("the game is initialized for choose next domino")
 	public void the_game_is_initialized_for_choose_next_domino() {
-		Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		game.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(game);
-		addDefaultUsersAndPlayers(game);
-		KingdominoController.createAllDominos(game);
-		game.setNextPlayer(game.getPlayer(0));
-		KingdominoApplication.setKingdomino(kingdomino);
+		HelperClass.testSetup();
+		KingdominoController.shuffleDominos();
 	}
 
 	/**
@@ -34,10 +26,9 @@ public class ChooseNextDominoStepDefinition {
 		List<String> dominoString = new ArrayList<String>(Arrays.asList(string.split(",")));
 		Draft draft = new Draft(Draft.DraftStatus.Sorted, game);
 		for (String s : dominoString) {
-			draft.addIdSortedDomino(game.getAllDomino(Integer.parseInt(s) - 1));
+			draft.addIdSortedDomino(HelperClass.getDominoByID(Integer.parseInt(s)));
 		}
-		game.setNextDraft(draft);
-		KingdominoController.orderNextDraft(KingdominoApplication.getKingdomino());
+		game.setNextDraft(draft); // Hardcode what the draft is depending on the test
 	}
 
 	/**
@@ -45,18 +36,21 @@ public class ChooseNextDominoStepDefinition {
 	 */
 	@Given("player's domino selection {string}")
 	public void player_s_domino_selection(String string) {
+		List<String> choices = new ArrayList<String>(Arrays.asList(string.split(",")));
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		List<Player> players = game.getPlayers();
 		Draft draft = game.getNextDraft();
-		string = string.replaceAll("\\s+", "");
-		List<String> selection = new ArrayList<String>(Arrays.asList(string.split(",")));
-		int index = 0;
-		for (String select : selection) {
-			for (Player player : game.getPlayers()) {
-				if (select.equals(player.getColor().toString().toLowerCase())) {
-					draft.addSelection(player, draft.getIdSortedDomino(index));
+		for(String choice: choices) {
+			if(!choice.equalsIgnoreCase("none")) {
+				int j = 0;
+				for(Player p: players) {
+					if(p.getColor() == HelperClass.getColor(choice)) {
+						new DominoSelection(p, draft.getIdSortedDomino(j), draft);
+						break;
+					}
+					j++;
 				}
-			}
-			index++;
+			} 
 		}
 	}
 
@@ -70,6 +64,7 @@ public class ChooseNextDominoStepDefinition {
 		for (Player player : game.getPlayers()) {
 			if (player.getColor().toString().toLowerCase().equals(string)) {
 				curPlayer = player;
+				break;
 			}
 		}
 		game.setNextPlayer(curPlayer);
@@ -80,8 +75,7 @@ public class ChooseNextDominoStepDefinition {
 	 */
 	@When("current player chooses to place king on {int}")
 	public void current_player_chooses_to_place_king_on(Integer int1) {
-		KingdominoController.ChooseNextDomino(KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer(),
-				KingdominoApplication.getKingdomino(), (int)int1);
+		KingdominoController.selectDomino((int)int1);
 	}
 
 	/**
@@ -90,15 +84,8 @@ public class ChooseNextDominoStepDefinition {
 	@Then("current player king now is on {string}")
 	public void current_player_king_now_is_on(String string) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		Draft draft = game.getNextDraft();
-		int id = -1;
-		for (DominoSelection selection : draft.getSelections()) {
-			if (game.getNextPlayer().equals(selection.getPlayer())) {
-				id = selection.getDomino().getId();
-			}
-
-		}
-		assertEquals(Integer.parseInt(string), id);
+		Player curPlayer = game.getNextPlayer();
+		assertEquals(Integer.parseInt(string), curPlayer.getDominoSelection().getDomino().getId());
 	}
 	
 	/**
@@ -157,22 +144,6 @@ public class ChooseNextDominoStepDefinition {
 			}
 		}
 		assertEquals(true, isThere);
-	}
-
-	/**********************
-	 * * Helper Methods * *
-	 **********************/
-	
-	private static void addDefaultUsersAndPlayers(Game game) {
-		String[] userNames = { "User1", "User2", "User3", "User4" };
-		for (int i = 0; i < userNames.length; i++) {
-			User user = game.getKingdomino().addUser(userNames[i]);
-			Player player = new Player(game);
-			player.setUser(user);
-			player.setColor(PlayerColor.values()[i]);
-			Kingdom kingdom = new Kingdom(player);
-			new Castle(0, 0, kingdom, player);
-		}
 	}
 
 }

@@ -1,7 +1,5 @@
 package ca.mcgill.ecse223.kingdomino.controller;
 
-import ca.mcgill.ecse223.kingdomino.model.KingdomTerritory;
-
 /**
  * This class is a helper class for all the features that perform verifications
  * @author Zeyang Xu

@@ -1,13 +1,16 @@
 package ca.mcgill.ecse223.kingdomino;
 
+import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
+import ca.mcgill.ecse223.kingdomino.model.Gameplay;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
 
 public class KingdominoApplication {
 
 	private static Kingdomino kingdomino;
+	private static Gameplay gameplay;
 
 	public static void main(String[] args) {
-		System.out.println("Hello World!");
+		new KingdominoController();
 	}
 
 	public static Kingdomino getKingdomino() {
@@ -19,5 +22,13 @@ public class KingdominoApplication {
 
 	public static void setKingdomino(Kingdomino kd) {
 		kingdomino = kd;
+	}
+	
+	public static Gameplay getGameplay() {
+		return gameplay;
+	}
+	
+	public static void setGameplay(Gameplay gp) {
+		gameplay = gp;
 	}
 }

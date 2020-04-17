@@ -19,11 +19,9 @@ public class ProvideUserProfileStepDefinition {
 	 */
 	@Given("the program is started and ready for providing user profile")
 	public void the_program_is_started_and_ready_for_providing_user_profile() {
-		Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		game.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(game);
-		KingdominoApplication.setKingdomino(kingdomino);
+		KingdominoController.startGameSetup();
+		KingdominoController.setNumberOfPlayers(4);
+		KingdominoController.createPlayersAndKingdoms();
 	}
 
 	/**
@@ -31,6 +29,7 @@ public class ProvideUserProfileStepDefinition {
 	 */
 	@Given("there are no users exist")
 	public void there_are_no_users_exist() {
+		// No users are added yet
 	}
 
 	/**
@@ -38,7 +37,7 @@ public class ProvideUserProfileStepDefinition {
 	 */
 	@When("I provide my username {string} and initiate creating a new user")
 	public void i_provide_my_username_and_initiate_creating_a_new_user(String string) {
-		userAdded = KingdominoController.createNewUser(string, KingdominoApplication.getKingdomino());
+		userAdded = KingdominoController.createNewUser(string);
 	}
 
 	/**
@@ -83,7 +82,7 @@ public class ProvideUserProfileStepDefinition {
 	 */
 	@When("I initiate the browsing of all users")
 	public void i_initiate_the_browsing_of_all_users() {
-		listAllUsers = KingdominoController.browseAllUsers(KingdominoApplication.getKingdomino());
+		listAllUsers = KingdominoController.browseAllUsers();
 	}
 
 	/**
@@ -120,8 +119,8 @@ public class ProvideUserProfileStepDefinition {
 	 */
 	@When("I initiate querying the game statistics for a user {string}")
 	public void i_initiate_querying_the_game_statistics_for_a_user(String string) {
-		gamesWon = KingdominoController.getUserGamesWon(string, KingdominoApplication.getKingdomino());
-		gamesPlayed = KingdominoController.getUserGamesPlayed(string, KingdominoApplication.getKingdomino());
+		gamesWon = KingdominoController.getUserGamesWon(string);
+		gamesPlayed = KingdominoController.getUserGamesPlayed(string);
 	}
 
 	/**
