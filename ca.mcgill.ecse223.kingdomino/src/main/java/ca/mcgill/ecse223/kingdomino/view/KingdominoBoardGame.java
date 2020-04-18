@@ -106,6 +106,10 @@ public class KingdominoBoardGame extends JFrame {
 		gamePage.setPlacementEnabled(enabled);
 	}
 	
+	public void setDiscardEnabled(boolean enabled) {
+		gamePage.setDiscardEnabled(enabled);
+	}
+	
 	public void setSelectionEnabled(boolean enabled) {
 		gamePage.setSelectionEnabled(enabled);
 	}
@@ -117,6 +121,13 @@ public class KingdominoBoardGame extends JFrame {
 	}
 	public void setMovementEnabled(boolean enabled) {
 		gamePage.setMovementEnabled(enabled);
+	}
+	
+	public void endingGame(Game game) {
+		EndGamePage p = new EndGamePage(game);
+		this.setContentPane(p);
+		this.invalidate();
+		this.validate();
 	}
 //	
 //	public void loadGame() {

@@ -13,7 +13,7 @@ class Gameplay {
             }
             SelectingFirstDomino {
             	selectionComplete [isSelectionValid()] -> /{nextPlayer();} Initializing.SelectingFirstDomino;
-            	endOfTurn [isCurrentPlayerTheLastInTurn() && isSelectionValid()] -> /{setNextDraft(); orderNextDraft(); generatePlayerOrder();} Playing.PlacingDomino;
+            	endOfTurn [isCurrentPlayerTheLastInTurn() && isSelectionValid()] -> /{setNextDraft(); orderNextDraft(); revealNextDraft(); generatePlayerOrder();} Playing.PlacingDomino;
             }
         }
         Playing {
@@ -30,7 +30,7 @@ class Gameplay {
         		endOfTurn [isCurrentPlayerTheLastInTurn() && isSelectionValid()] -> /{setNextDraft(); generatePlayerOrder();} Playing.CreatingDraft;
         	}
         	CreatingDraft {
-        		entry/{setNextDraft(); orderNextDraft(); revealNextDraft();}
+        		entry/{setNextDraft(); orderNextDraft();}
                 draftReady -> /{generatePlayerOrder();} Playing.PlacingDomino;
         	}
         	EndingGame {

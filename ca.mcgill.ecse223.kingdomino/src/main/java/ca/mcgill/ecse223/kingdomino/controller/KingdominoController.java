@@ -46,7 +46,10 @@ public class KingdominoController {
 		}
 		Gameplay gameplay = new Gameplay();
 		KingdominoApplication.setGameplay(gameplay);
-		boardGame.startGame(KingdominoApplication.getKingdomino().getCurrentGame()); // Starting the game in the view
+		if (boardGame != null) {
+			boardGame.startGame(KingdominoApplication.getKingdomino().getCurrentGame()); // Starting the game in the
+																							// view
+		}
 		gameplay.start();
 	}
 
@@ -235,6 +238,7 @@ public class KingdominoController {
 		// and the new draft becomes the next draft
 		game.setCurrentDraft(game.getNextDraft());
 		game.setNextDraft(draft);
+//		System.out.println("setting");
 //		if (boardGame != null) {
 //			boardGame.updateDrafts(game.getCurrentDraft(), game.getNextDraft());
 //		}
@@ -252,19 +256,51 @@ public class KingdominoController {
 		// System.out.println("before");
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		if (boardGame != null) {
-			boardGame.updateDrafts(game.getCurrentDraft(), game.getNextDraft());
+
 			// System.out.println(KingdominoApplication.getGameplay().getGamestatusFullName());
 			switch (KingdominoApplication.getGameplay().getGamestatusFullName()) {
-			case ("Initializing.SelectingFirstDomino"):
+			case ("Initializing"):
+				// Updates the drafts on the board
+				boardGame.updateDrafts(game.getCurrentDraft(), game.getNextDraft());
+				break;
+			case ("Playing"):
+				// Updates the drafts on the board
+				boardGame.updateDrafts(game.getCurrentDraft(), game.getNextDraft());
+				break;
+			case ("Initializing.CreatingFirstDraft"):
+				// Updates the drafts on the board
+				boardGame.updateDrafts(game.getCurrentDraft(), game.getNextDraft());
+				// System.out.println("first");
+				// At this point, we enter the first selection stage
 				boardGame.setDominoSelectionEnabled(true);
 				break;
 			case ("Playing.PlacingDomino"):
+				if (game.getNextPlayer() == game.getPlayer(0)) {
+					boardGame.updateDrafts(game.getCurrentDraft(), game.getNextDraft());
+				}
+				// When you begin the placing stage
+				// System.out.println("placing");
+				// You should not be able to select a domino yet
 				boardGame.setDominoSelectionEnabled(false);
+				boardGame.setSelectionEnabled(false);
+				// You are able to place
 				boardGame.setMovementEnabled(true);
+				boardGame.setPlacementEnabled(true);
+
+				// Updates the grids for the placement step
+				boardGame.sendMessage(
+						"Place your domino in your kingdom with the controls. \nTo confirm your placement, click <place>. \nIf it is impossible to place, click <discard>.");
+				boardGame.notifyCurrentPlayer(game.getNextPlayer());
+				removeKing();
+				// Depending on the state of the kindom, enables discarding
+				if (!isPossibleToPlace()) {
+					boardGame.setDiscardEnabled(true);
+				} else {
+					boardGame.setDiscardEnabled(false);
+				}
+				boardGame.updateGrid();
 				break;
 			}
-			boardGame.updateGrid();
-
 		}
 	}
 
@@ -296,6 +332,7 @@ public class KingdominoController {
 		}
 		game.setNextPlayer(game.getPlayer(0));
 		if (boardGame != null) {
+			// This is the first turn for the selecting of the first domino
 			boardGame.sendMessage("For your first turn, choose a domino. \nTo lock in your choice, click <select>.");
 			boardGame.notifyCurrentPlayer(game.getNextPlayer());
 		}
@@ -323,8 +360,13 @@ public class KingdominoController {
 			}
 		}
 		if (boardGame != null) {
+			// This happens when the user clicks "choose"
+			// The choose buttons need to be disabled
 			switch (KingdominoApplication.getGameplay().getGamestatusFullName()) {
 			case ("Initializing.SelectingFirstDomino"):
+				boardGame.setDominoSelectionEnabled(false);
+				break;
+			case ("Playing.SelectingDomino"):
 				boardGame.setDominoSelectionEnabled(false);
 				break;
 			}
@@ -352,12 +394,19 @@ public class KingdominoController {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
 		if (isSelectionValid()) {
 			if (boardGame != null) {
+				// When the selection is valid, we set the color of the domino selection
+				// This will always execute regardless the state
 				boardGame.changeButtonColor(player.getColor(), player.getDominoSelection().getDomino().getId());
 			}
 		}
+
 		if (boardGame != null) {
+			// The confirmation of the domino selection is executed
 			switch (KingdominoApplication.getGameplay().getGamestatusFullName()) {
 			case ("Initializing.SelectingFirstDomino"):
+				boardGame.setDominoSelectionEnabled(true);
+				break;
+			case ("Playing.SelectingDomino"):
 				boardGame.setDominoSelectionEnabled(true);
 				break;
 			}
@@ -383,7 +432,12 @@ public class KingdominoController {
 				if (i + 1 != players.size()) {
 					game.setNextPlayer(players.get(i + 1));
 					if (boardGame != null) {
-						boardGame.notifyCurrentPlayer(game.getNextPlayer());
+						switch (KingdominoApplication.getGameplay().getGamestatusFullName()) {
+						case ("Initializing"):
+							boardGame.notifyCurrentPlayer(game.getNextPlayer());
+							break;
+						// Sends a message to let the players know whose turn it is
+						}
 					}
 				}
 				break;
@@ -408,18 +462,18 @@ public class KingdominoController {
 				return false;
 			}
 		}
-		if (boardGame != null) {
-			switch (KingdominoApplication.getGameplay().getGamestatusFullName()) {
-			case ("Initializing.SelectingFirstDomino"):
-				boardGame.setPlacementEnabled(true);
-				boardGame.setDominoSelectionEnabled(false);
-				boardGame.setSelectionEnabled(false);
-				boardGame.sendMessage(
-						"Place your domino in your kingdom with the controls. \nTo confirm your placement, click <place>. \nIf it is impossible to place, click <discard>.");
-
-				break;
-			}
-		}
+//		if (boardGame != null) {
+//			switch (KingdominoApplication.getGameplay().getGamestatusFullName()) {
+//			case ("Initializing.SelectingFirstDomino"):
+//				boardGame.setPlacementEnabled(true);
+//				boardGame.setDominoSelectionEnabled(false);
+//				boardGame.setSelectionEnabled(false);
+//				boardGame.sendMessage(
+//						"Place your domino in your kingdom with the controls. \nTo confirm your placement, click <place>. \nIf it is impossible to place, click <discard>.");
+//
+//				break;
+//			}
+//		}
 		return true;
 	}
 
@@ -441,21 +495,10 @@ public class KingdominoController {
 		int i = 0;
 		for (DominoSelection selection : selections) {
 			game.addOrMovePlayerAt(selection.getPlayer(), i);
-			System.out.println(selection.getPlayer().getColor());
+			// System.out.println(selection.getPlayer().getColor());
 			i++;
 		}
 		game.setNextPlayer(game.getPlayer(0));
-		if (boardGame != null) {
-			boardGame.notifyCurrentPlayer(game.getNextPlayer());
-			removeKing();
-			System.out.println(KingdominoApplication.getGameplay().getGamestatusFullName());
-			switch (KingdominoApplication.getGameplay().getGamestatusFullName()) {
-			case ("Initializing.SelectingFirstDomino"):
-
-				break;
-			}
-		}
-
 	}
 
 	/**
@@ -743,8 +786,8 @@ public class KingdominoController {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
 		Domino dom = player.getDominoSelection().getDomino();
 		dom.setStatus(DominoStatus.ErroneouslyPreplaced);
-		DominoInKingdom d = new DominoInKingdom(0, 0, player.getKingdom(), dom); // Placing domino in kingdom     
-		
+		DominoInKingdom d = new DominoInKingdom(0, 0, player.getKingdom(), dom); // Placing domino in kingdom
+
 	}
 
 	/**
@@ -923,9 +966,28 @@ public class KingdominoController {
 		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
 		DominoInKingdom ter = (DominoInKingdom) territories.get(territories.size() - 1);
 		Domino dom = ter.getDomino();
+
+		boolean gridSize = verifyGridSize(player.getKingdom());
 		// Placing the domino in the kingdom
-		dom.setStatus(DominoStatus.PlacedInKingdom);
-		player.setDominoSelection(null);
+		if (isDominoCorrectlyPreplaced() && gridSize) {
+			dom.setStatus(DominoStatus.PlacedInKingdom);
+			player.getDominoSelection().delete();
+//		System.out.println("placing");
+			if (boardGame != null) {
+//			// The confirmation of the domino selection is executed
+//			switch (KingdominoApplication.getGameplay().getGamestatusFullName()) {
+//			case ("Playing.PlacingDomino"):
+				boardGame.setDominoSelectionEnabled(true);
+				boardGame.setSelectionEnabled(true);
+				boardGame.setPlacementEnabled(false);
+				boardGame.setDiscardEnabled(false);
+				boardGame.setMovementEnabled(false);
+				boardGame.sendMessage("Choose your next domino. \nTo lock in your choice, click <select>.");
+//				break;
+//			}
+
+			}
+		}
 	}
 
 	/**
@@ -1969,7 +2031,9 @@ public class KingdominoController {
 			}
 
 		}
-
+		if (boardGame != null) {
+			boardGame.endingGame(KingdominoApplication.getKingdomino().getCurrentGame());
+		}
 	}
 
 	/**

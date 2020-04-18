@@ -364,7 +364,7 @@ public class GamePage extends JPanel {
 		discardButton.setPreferredSize(new Dimension(125, 65));
 		discardButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				KingdominoController.placing();
+				KingdominoController.discardDomino();
 			}
 		});
 		discardButton.setEnabled(false);
@@ -464,9 +464,11 @@ public class GamePage extends JPanel {
 	
 	public void setPlacementEnabled(boolean enabled) {
 		placeButton.setEnabled(enabled);
-		discardButton.setEnabled(enabled);
 	}
 	
+	public void setDiscardEnabled(boolean enabled) {
+		discardButton.setEnabled(enabled);
+	}
 	public void updateGrid() {
 		for(KingdomGrid g: grids) {
 			g.updateGrid();
@@ -475,7 +477,6 @@ public class GamePage extends JPanel {
 	}
 	
 	private void movement(String m) {
-		System.out.println(m);
 		if(movementEnabled) {
 			switch(m) {
 			case "up":

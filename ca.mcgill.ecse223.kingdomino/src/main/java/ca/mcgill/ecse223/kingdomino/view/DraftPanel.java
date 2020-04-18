@@ -40,7 +40,7 @@ public class DraftPanel extends JPanel{
 			DraftDomino d;
 			if(isCurrent) {
 				d = new DraftDomino(draft.getIdSortedDominos().get(i).getId(), true);
-				d.setColor(draft.getSelection(i).getPlayer().getColor());
+				d.setColor(draft.getGame().getPlayer(i).getColor());
 			} else {
 				d = new DraftDomino(draft.getIdSortedDominos().get(i).getId(), false);
 			}

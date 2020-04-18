@@ -126,7 +126,6 @@ public class KingdomGrid extends JPanel {
 					
 					String tileRight = ter.getDomino().getRightTile().toString().toLowerCase();
 					tileRight+=ter.getDomino().getRightCrown();
-					System.out.println(ter.getDirection());
 					switch(ter.getDirection()) {
 					case Up:
 						tiles[8-(ter.getY()+5)][ter.getX()+4] = "src/main/resources/tiles/"+tileRight+".jpg";

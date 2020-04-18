@@ -166,7 +166,7 @@ public class Gameplay
         {
           exitGamestatus();
         // line 16 "../../../../../Gameplay.ump"
-          setNextDraft(); orderNextDraft(); generatePlayerOrder();
+          setNextDraft(); orderNextDraft(); revealNextDraft(); generatePlayerOrder();
           setGamestatusPlaying(GamestatusPlaying.PlacingDomino);
           wasEventProcessed = true;
           break;
@@ -409,7 +409,7 @@ public class Gameplay
         break;
       case CreatingDraft:
         // line 33 "../../../../../Gameplay.ump"
-        setNextDraft(); orderNextDraft(); revealNextDraft();
+        setNextDraft(); orderNextDraft();
         break;
       case EndingGame:
         // line 37 "../../../../../Gameplay.ump"
