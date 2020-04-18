@@ -13,21 +13,41 @@ import java.util.stream.Collectors;
 
 public class KingdominoController {
 
-	private KingdominoBoardGame boardGame;
-	
+	private static KingdominoBoardGame boardGame;
+
 	public KingdominoController() {
-		boardGame = new KingdominoBoardGame(this);
+		boardGame = new KingdominoBoardGame();
 	}
 
-	public static void startGame() {
+	public static void newGame() {
+		boardGame.newGamePage();
+	}
+
+	// Method that is called to initiate the start of the game
+	public static void startGame(String[] users) {
 		startGameSetup();
 		setNumberOfPlayers(4);
 		createPlayersAndKingdoms();
+		List<Player> players = KingdominoApplication.getKingdomino().getCurrentGame().getPlayers();
+		String[] userNames = users;
+		int i = 0;
+		for (Player p : players) {
+			p.setUser(new User(userNames[i], KingdominoApplication.getKingdomino()));
+			// KingdominoController.selectUser(new
+			// User(userNames[i],KingdominoApplication.getKingdomino()),
+			// p.getColor().name());
+			i++;
+		}
 		Gameplay gameplay = new Gameplay();
 		KingdominoApplication.setGameplay(gameplay);
+		boardGame.startGame(KingdominoApplication.getKingdomino().getCurrentGame()); // Starting the game in the view
 		gameplay.start();
 	}
-	
+
+	public static List<Player> getPlayers() {
+		return KingdominoApplication.getKingdomino().getCurrentGame().getPlayers();
+	}
+
 	public static void shuffleDominos() {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
 		Game game = kingdomino.getCurrentGame();
@@ -170,12 +190,21 @@ public class KingdominoController {
 		// and the new draft becomes the next draft
 		game.setCurrentDraft(game.getNextDraft());
 		game.setNextDraft(draft);
+		if (boardGame != null) {
+			boardGame.updateDrafts(game.getCurrentDraft(), game.getNextDraft());
+		}
+
 	}
 
 	public static void revealNextDraft() {
 		// Setting the status to FaceUp
 		Draft draft = KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft();
 		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
+		System.out.println("before");
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		if (boardGame != null) {
+			boardGame.updateDrafts(game.getCurrentDraft(), game.getNextDraft());
+		}
 	}
 
 	public static void generateInitialPlayerOrder() {
@@ -199,6 +228,10 @@ public class KingdominoController {
 			game.addOrMovePlayerAt(players.get(i), numbers.get(i).intValue());
 		}
 		game.setNextPlayer(game.getPlayer(0));
+		if (boardGame != null) {
+			boardGame.sendMessage("For your first turn, choose a domino. \nTo lock in your choice, click <select>.");
+			boardGame.notifyCurrentPlayer(game.getNextPlayer());
+		}
 	}
 
 	/******************************************/
@@ -216,6 +249,9 @@ public class KingdominoController {
 				}
 			}
 		}
+		if (boardGame != null) {
+			boardGame.setDominoSelectionEnabled(false);
+		}
 	}
 
 	public static boolean isSelectionValid() {
@@ -228,6 +264,15 @@ public class KingdominoController {
 	}
 
 	public static void selectionComplete() {
+		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+		if (isSelectionValid()) {
+			if (boardGame != null) {
+				boardGame.changeButtonColor(player.getColor(), player.getDominoSelection().getDomino().getId());
+			}
+		}
+		if (boardGame != null) {
+			boardGame.setDominoSelectionEnabled(true);
+		}
 		KingdominoApplication.getGameplay().endOfTurn();
 		KingdominoApplication.getGameplay().selectionComplete();
 
@@ -241,10 +286,14 @@ public class KingdominoController {
 			if (nextPlayer.equals(players.get(i))) {
 				if (i + 1 != players.size()) {
 					game.setNextPlayer(players.get(i + 1));
+					if (boardGame != null) {
+						boardGame.notifyCurrentPlayer(game.getNextPlayer());
+					}
 				}
 				break;
 			}
 		}
+		
 	}
 
 	public static boolean isCurrentPlayerTheLastInTurn() {
@@ -256,6 +305,7 @@ public class KingdominoController {
 				return false;
 			}
 		}
+		// TODO end of the turn
 		return true;
 	}
 
@@ -1308,6 +1358,9 @@ public class KingdominoController {
 		List<Property> myprop = player.getKingdom().getProperties();
 		for (int i = 0; i < myprop.size(); i++) {
 			propscore += myprop.get(i).getScore();
+			System.out.println(myprop.get(i).getCrowns());
+			System.out.println(myprop.get(i).getSize());
+			System.out.println(myprop.get(i).getScore());
 			System.out.println(propscore);
 		}
 

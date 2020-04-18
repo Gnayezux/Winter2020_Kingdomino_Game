@@ -1,9 +1,14 @@
 package ca.mcgill.ecse223.kingdomino.features;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
 import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
+import ca.mcgill.ecse223.kingdomino.model.Domino;
 import ca.mcgill.ecse223.kingdomino.model.Player;
+import ca.mcgill.ecse223.kingdomino.model.Property;
 import io.cucumber.java.en.*;
 
 public class CalculatePlayerScoreStepDefinition {
@@ -31,7 +36,14 @@ public class CalculatePlayerScoreStepDefinition {
 			}
 		}
 		KingdominoController.identifyProperties();
+		for (Property prop : KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer().getKingdom().getProperties()) {
+			System.out.println(prop.getLeftTile() + ": " + getDominos(prop));
+		}
 		KingdominoController.calculatePropertyAttributes();
+		for (Property prop : KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer().getKingdom().getProperties()) {
+			System.out.println(prop.getLeftTile() + ": " + getDominos(prop));
+			System.out.println(prop.getScore());
+		}
 		KingdominoController.calculateBonusScore();
 	}
 
@@ -49,6 +61,19 @@ public class CalculatePlayerScoreStepDefinition {
 	@Then("the total score should be {int}")
 	public void the_total_score_should_be(Integer int1) {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
+		
 		assertEquals((int) int1, player.getTotalScore());
+	}
+	
+	private String getDominos(Property property) {
+		List<Domino> dominos = property.getIncludedDominos();
+		String doms = "";
+		for (Domino dominoInProp : dominos) {
+			if (!doms.equals("")) {
+				doms += ',';
+			}
+			doms += dominoInProp.getId();
+		}
+		return doms;
 	}
 }

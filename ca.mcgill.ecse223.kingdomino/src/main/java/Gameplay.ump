@@ -9,11 +9,11 @@ class Gameplay {
 		Initializing {
             CreatingFirstDraft {
                 entry/{shuffleDominos(); setNextDraft(); orderNextDraft();}
-                draftReady -> /{revealNextDraft(); setNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
+                draftReady -> /{revealNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
             }
             SelectingFirstDomino {
             	selectionComplete [isSelectionValid()] -> /{nextPlayer();} Initializing.SelectingFirstDomino;
-            	endOfTurn [isCurrentPlayerTheLastInTurn() && isSelectionValid()] -> /{setNextDraft(); generatePlayerOrder();} Playing.PlacingDomino;
+            	endOfTurn [isCurrentPlayerTheLastInTurn() && isSelectionValid()] -> /{setNextDraft(); orderNextDraft(); revealNextDraft(); generatePlayerOrder();} Playing.PlacingDomino;
             }
         }
         Playing {

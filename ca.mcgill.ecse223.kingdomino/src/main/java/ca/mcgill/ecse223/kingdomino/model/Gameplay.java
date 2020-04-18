@@ -86,7 +86,7 @@ public class Gameplay
       case CreatingFirstDraft:
         exitGamestatusInitializing();
         // line 12 "../../../../../Gameplay.ump"
-        revealNextDraft(); setNextDraft(); generateInitialPlayerOrder();
+        revealNextDraft(); generateInitialPlayerOrder();
         setGamestatusInitializing(GamestatusInitializing.SelectingFirstDomino);
         wasEventProcessed = true;
         break;
@@ -166,7 +166,7 @@ public class Gameplay
         {
           exitGamestatus();
         // line 16 "../../../../../Gameplay.ump"
-          setNextDraft(); generatePlayerOrder();
+          setNextDraft(); orderNextDraft(); revealNextDraft(); generatePlayerOrder();
           setGamestatusPlaying(GamestatusPlaying.PlacingDomino);
           wasEventProcessed = true;
           break;

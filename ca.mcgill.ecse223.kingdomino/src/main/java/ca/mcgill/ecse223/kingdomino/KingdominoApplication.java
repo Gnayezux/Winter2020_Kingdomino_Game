@@ -3,6 +3,7 @@ package ca.mcgill.ecse223.kingdomino;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
 import ca.mcgill.ecse223.kingdomino.model.Kingdomino;
+import ca.mcgill.ecse223.kingdomino.view.KingdominoBoardGame;
 
 public class KingdominoApplication {
 
@@ -11,6 +12,7 @@ public class KingdominoApplication {
 
 	public static void main(String[] args) {
 		new KingdominoController();
+		//KingdominoBoardGame boardGame = new KingdominoBoardGame();
 	}
 
 	public static Kingdomino getKingdomino() {
