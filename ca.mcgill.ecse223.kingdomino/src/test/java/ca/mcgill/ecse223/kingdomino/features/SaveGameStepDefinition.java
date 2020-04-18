@@ -30,20 +30,23 @@ public class SaveGameStepDefinition {
 		Kingdomino kingdomino = new Kingdomino();
 		Game game = new Game(48, kingdomino);
 		kingdomino.setCurrentGame(game);
-		//KingdominoController.setNumberOfPlayers(4, kingdomino);
-		for (int i = 0; i < 4; i++) {
-			//KingdominoController.selectColor(PlayerColor.values()[i], i, kingdomino);
-		}
-		List<Player> players = kingdomino.getCurrentGame().getPlayers();
-		for (int i = 0; i < players.size(); i++) {
-			Player player = players.get(i);
-			Kingdom kingdom = new Kingdom(player);
-			new Castle(0, 0, kingdom, player);
-			player.setBonusScore(0);
-			player.setPropertyScore(0);
-			player.setDominoSelection(null);
-		}
-		//KingdominoController.createAllDominos(kingdomino.getCurrentGame());
+		KingdominoController.setNumberOfPlayers(4);
+		KingdominoController.createPlayersAndKingdoms();
+//		for (int i = 0; i < 4; i++) {
+//			KingdominoController.selectColor(PlayerColor.values()[i], i, kingdomino);
+//		}
+//		List<Player> players = kingdomino.getCurrentGame().getPlayers();
+//		for (int i = 0; i < players.size(); i++) {
+//			Player player = players.get(i);
+//			Kingdom kingdom = new Kingdom(player);
+//			new Castle(0, 0, kingdom, player);
+//			player.setBonusScore(0);
+//			player.setPropertyScore(0);
+//			player.setDominoSelection(null);
+//		}
+		KingdominoController.setNextDraft();
+		KingdominoController.setNextDraft();
+		KingdominoController.createAllDominos();
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
 
@@ -62,7 +65,7 @@ public class SaveGameStepDefinition {
 	@When("the user initiates saving the game to a file named {string}")
 	public void the_user_initiates_saving_the_game_to_a_file_named(String string) {
 		fileName = string;
-	//	KingdominoController.save(KingdominoApplication.getKingdomino(), string);
+		KingdominoController.save(KingdominoApplication.getKingdomino(), string);
 	}
 
 	@Then("a file named {string} shall be created in the filesystem")

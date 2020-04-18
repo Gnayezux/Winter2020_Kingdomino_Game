@@ -37,7 +37,7 @@ public class CalculatingPlayerScoreStepDefinition {
 	public void the_score_of_the_current_player_is(Integer int1) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Player player = game.getNextPlayer();
-		//player.setPropertyScore(int1);
+		player.setPropertyScore(int1);
 	}
 
 	@Then("the score of the current player shall be {int}")

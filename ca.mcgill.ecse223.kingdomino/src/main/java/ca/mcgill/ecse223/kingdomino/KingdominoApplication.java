@@ -11,7 +11,7 @@ public class KingdominoApplication {
 	private static Gameplay gameplay;
 
 	public static void main(String[] args) {
-		new KingdominoController();
+		//new KingdominoController();
 		//KingdominoBoardGame boardGame = new KingdominoBoardGame();
 	}
 

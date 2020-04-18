@@ -4,6 +4,7 @@ import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
+import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 import ca.mcgill.ecse223.kingdomino.view.*;
 
@@ -293,7 +294,7 @@ public class KingdominoController {
 				break;
 			}
 		}
-		
+
 	}
 
 	public static boolean isCurrentPlayerTheLastInTurn() {
@@ -1472,4 +1473,247 @@ public class KingdominoController {
 		return numCrowns;
 	}
 
+	public static void load(Kingdomino kingdomino, String string) {
+		File file = new File(string);
+		try {
+			Scanner reader = new Scanner(file);
+			String data = reader.nextLine();
+			System.out.print(data);
+
+			Game game = new Game(48, kingdomino);
+			kingdomino.setCurrentGame(game);
+			setNumberOfPlayers(4);
+			createPlayersAndKingdoms();
+//			for (int i = 0; i < 4; i++) {
+//				game.getPlayer(0).setColor(PlayerColor.values()[i]);
+//			}
+			List<Player> players = kingdomino.getCurrentGame().getPlayers();
+			for (int i = 0; i < players.size(); i++) {
+				Player player = players.get(i);
+				User user = new User("P" + (i + 1), kingdomino);
+				player.setUser(user);
+				player.setColor(PlayerColor.values()[i]);
+				game.setNextPlayer(player);
+			}
+			createAllDominos();
+			KingdominoApplication.setKingdomino(kingdomino);
+
+			ArrayList<DominoSelection> sels = new ArrayList<DominoSelection>();
+			Draft draft = new Draft(DraftStatus.FaceUp, game);
+			String[] ids = data.split(" ");
+			for (int i = 1; i < ids.length; i++) {
+				ids[i].replaceAll("[^0-9]", "");
+				ids[i].trim();
+				String id = ids[i];
+				if (ids[i].charAt(ids[i].length() - 1) == ',') {
+					id = ids[i].substring(0, ids[i].length() - 1);
+				}
+				draft.addIdSortedDomino(getDominoByID(Integer.parseInt(id)));
+				DominoSelection s = new DominoSelection(players.get(i - 1), getDominoByID(Integer.parseInt(id)),
+						draft);
+				sels.add(s);
+				//draft.addSelection(s);
+			}
+			game.setCurrentDraft(draft);
+			game.setNextDraft(draft);
+			
+//			for (int i = 0; i < sels.size(); i++) {
+//				players.get(i).setDominoSelection(sels.get(i));
+//			}
+
+			data = reader.nextLine();
+			ids = data.split(" ");
+			String id = ids[1];
+			if (ids[1].charAt(ids[1].length() - 1) == ',') {
+				id = ids[1].substring(0, ids[1].length() - 1);
+			}
+			game.setTopDominoInPile(getDominoByID(Integer.parseInt(id)));
+
+			draft = new Draft(DraftStatus.FaceUp, game);
+			for (int i = 1; i < ids.length; i++) {
+				ids[i].replaceAll("[^0-9]", "");
+				ids[i].trim();
+				String id2 = ids[i];
+				if (ids[i].charAt(ids[i].length() - 1) == ',') {
+					id2 = ids[i].substring(0, ids[i].length() - 1);
+				}
+				draft.addIdSortedDomino(getDominoByID(Integer.parseInt(id)));
+			}
+			game.setNextDraft(draft);
+			game.setCurrentDraft(draft);
+			System.out.println(draft.getIdSortedDominos());
+			int playerCounter = 0;
+			while (reader.hasNextLine()) {
+				data = reader.nextLine();
+				String[] elements = data.split(" ");
+				for (int i = 1; i < elements.length; i++) {
+					addLoadDomino(elements[i], players.get(playerCounter), kingdomino);
+				}
+				playerCounter++;
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Helper method for loading
+	 * 
+	 * @param kingdomino The kingdomino instance that is used
+	 * @return boolean if ready
+	 */
+	public static boolean isReady(Kingdomino kingdomino) {
+		return (kingdomino.getCurrentGame() != null);
+	}
+
+	public static boolean isValidGame(Kingdomino kingdomino) {
+		return false;
+	}
+
+	private static void addLoadDomino(String element, Player player, Kingdomino kingdomino) {
+		String[] sections = element.split("@");
+		Domino domino = KingdominoApplication.getKingdomino().getCurrentGame()
+				.getAllDomino(Integer.parseInt(sections[0])-1);
+		String[] elements = sections[1].substring(1, sections[1].length()).split(",");
+		int x = Integer.parseInt(elements[0]);
+		int y = Integer.parseInt(elements[1]);
+		DirectionKind dir = null;
+		elements[2] = elements[2].substring(0, 1);
+		switch (elements[2]) {
+
+		case "R":
+			dir = DirectionKind.Right;
+			break;
+		case "L":
+			dir = DirectionKind.Left;
+			break;
+		case "U":
+			dir = DirectionKind.Up;
+			break;
+		case "D":
+			dir = DirectionKind.Down;
+			break;
+		}
+		Kingdom kingdom = player.getKingdom();
+		if (x < 5) {
+			DominoInKingdom domInKingdom = new DominoInKingdom(x, y, kingdom, domino);
+			domInKingdom.setDirection(dir);
+			domino.setStatus(DominoStatus.PlacedInKingdom);
+
+		}
+	}
+	public static Domino getDominoByID(int id) {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		if (!game.hasAllDominos()) {
+			createAllDominosLoading();
+		}
+		ArrayList<Domino> allDominos = new ArrayList<Domino>(game.getAllDominos());
+		Collections.sort(allDominos, (a, b) -> a.getId() - b.getId());
+		return allDominos.get(id - 1);
+	}
+
+	private static void createAllDominosLoading() {
+		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));
+			String line = "";
+			String delimiters = "[:\\+()]";
+			while ((line = br.readLine()) != null) {
+				String[] dominoString = line.split(delimiters); // {id, leftTerrain, rightTerrain, crowns}
+				int dominoId = Integer.decode(dominoString[0]);
+				TerrainType leftTerrain = getTerrainType(dominoString[1]);
+				TerrainType rightTerrain = getTerrainType(dominoString[2]);
+				int numCrown = 0;
+				if (dominoString.length > 3) {
+					numCrown = Integer.decode(dominoString[3]);
+				}
+				new Domino(dominoId, leftTerrain, rightTerrain, numCrown, game);
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new java.lang.IllegalArgumentException(
+					"Error occured while trying to read alldominoes.dat: " + e.getMessage());
+		}
+	}
+
+	public static void save(Kingdomino kingdomino, String string) {
+		File file = new File(string);
+		if (file.exists()) {
+			overWriteFile(string);
+			helpsavegame(file,kingdomino);
+			
+		} else {
+			helpsavegame(file,kingdomino);
+			}
+			
+		}
+	/**
+	 * Helper method that save the game to a file if needed
+	 * 
+	 * @param file
+	 * @param kingdomino
+	 */
+	public static void helpsavegame(File file, Kingdomino kingdomino) {
+		try {
+			file.createNewFile();
+			BufferedWriter out = new BufferedWriter(new FileWriter(file));				
+			String currentsel = "C: ";
+			List<Player> players = kingdomino.getCurrentGame().getPlayers();
+			for (Player i: players) {
+				currentsel = currentsel + i.getDominoSelection().getDomino().getId() + ", ";
+			}
+			currentsel = currentsel.substring(0, currentsel.length()-2);
+			out.write(currentsel);
+			out.newLine();
+//			String unused = "U: ";
+//			List<Domino> dominos = kingdomino.getCurrentGame().getCurrentDraft().getIdSortedDominos();
+//			for (int i = 0; i<dominos.size();i++) {
+//				unused = unused+dominos.get(i).getId() + ", ";
+//			}
+//			
+//			unused = unused.substring(0, unused.length()-2);
+//			out.write(unused);
+//			out.newLine();
+			
+			for (Player i:players) {
+				String playerdominos = i.getUser().getName() + ": ";
+				for(KingdomTerritory kt: i.getKingdom().getTerritories()) {
+					if (!kt.getClass().equals(Castle.class)) {
+					DominoInKingdom dik = (DominoInKingdom)kt;
+					playerdominos = playerdominos + dik.getDomino().getId() + "@(" + kt.getX() + "," + kt.getY() + ","
+					+ dik.getDirection().toString().substring(0, 1) + ")" +", ";
+					} else {
+						continue;
+					}
+					}
+				playerdominos = playerdominos.substring(0, playerdominos.length()-2);
+				out.write(playerdominos);
+				out.newLine();
+				}
+				
+			out.flush();
+			out.close();	
+		}
+			
+			 catch (IOException e) {
+			e.printStackTrace();
+			}
+	}
+	/**
+	 * Helper method that overwrites a file if needed
+	 * 
+	 * @param string
+	 */
+	public static void overWriteFile(String string) {
+		File file = new File(string);
+		file.delete();
+		File newFile = new File(string);
+		try {
+			newFile.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
