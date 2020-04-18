@@ -223,6 +223,7 @@ public class GamePage extends JPanel {
 		}
 		newImage = leftPic.getScaledInstance(50, 50, Image.SCALE_DEFAULT);
 		picLabel = new JButton(new ImageIcon(newImage));
+		picLabel.setFocusable(false);
 		picLabel.setName("left");
 		picLabel.addActionListener(new ActionListener() {
 			@Override
@@ -246,6 +247,7 @@ public class GamePage extends JPanel {
 		}
 		newImage = rightPic.getScaledInstance(50, 50, Image.SCALE_DEFAULT);
 		picLabel = new JButton(new ImageIcon(newImage));
+		picLabel.setFocusable(false);
 		picLabel.setName("right");
 		picLabel.addActionListener(new ActionListener() {
 			@Override
@@ -269,6 +271,7 @@ public class GamePage extends JPanel {
 		}
 		newImage = downPic.getScaledInstance(50, 50, Image.SCALE_DEFAULT);
 		picLabel = new JButton(new ImageIcon(newImage));
+		picLabel.setFocusable(false);
 		picLabel.setName("down");
 		picLabel.addActionListener(new ActionListener() {
 			@Override
@@ -292,6 +295,7 @@ public class GamePage extends JPanel {
 		}
 		newImage = counterPic.getScaledInstance(50, 50, Image.SCALE_DEFAULT);
 		picLabel = new JButton(new ImageIcon(newImage));
+		picLabel.setFocusable(false);
 		picLabel.setName("counter");
 		picLabel.addActionListener(new ActionListener() {
 			@Override
@@ -315,6 +319,7 @@ public class GamePage extends JPanel {
 		}
 		newImage = clockPic.getScaledInstance(50, 50, Image.SCALE_DEFAULT);
 		picLabel = new JButton(new ImageIcon(newImage));
+		picLabel.setFocusable(false);
 		picLabel.setName("clockwise");
 		picLabel.addActionListener(new ActionListener() {
 			@Override

@@ -122,27 +122,28 @@ public class KingdomGrid extends JPanel {
 				if (ter.getDomino().getStatus() != DominoStatus.Discarded) {
 					String tileLeft = ter.getDomino().getLeftTile().toString().toLowerCase();
 					tileLeft+=ter.getDomino().getLeftCrown();
-					tiles[ter.getY()+4][ter.getX()+4] = "src/main/resources/tiles/"+tileLeft+".jpg";
+					tiles[8-(ter.getY()+4)][ter.getX()+4] = "src/main/resources/tiles/"+tileLeft+".jpg";
 					
 					String tileRight = ter.getDomino().getRightTile().toString().toLowerCase();
 					tileRight+=ter.getDomino().getRightCrown();
+					System.out.println(ter.getDirection());
 					switch(ter.getDirection()) {
 					case Up:
-						tiles[ter.getY()+4][ter.getX()+5] = "src/main/resources/tiles/"+tileRight+".jpg";
+						tiles[8-(ter.getY()+5)][ter.getX()+4] = "src/main/resources/tiles/"+tileRight+".jpg";
 						break;
 					case Down:
-						tiles[ter.getY()+4][ter.getX()+3] = "src/main/resources/tiles/"+tileRight+".jpg";
+						tiles[8-(ter.getY()+3)][ter.getX()+4] = "src/main/resources/tiles/"+tileRight+".jpg";
 						break;
 					case Left:
-						tiles[ter.getY()+3][ter.getX()+4] = "src/main/resources/tiles/"+tileRight+".jpg";
+						tiles[8-(ter.getY()+4)][ter.getX()+3] = "src/main/resources/tiles/"+tileRight+".jpg";
 						break;
 					case Right:
-						tiles[ter.getY()+5][ter.getX()+4] = "src/main/resources/tiles/"+tileRight+".jpg";
+						tiles[8-(ter.getY()+4)][ter.getX()+5] = "src/main/resources/tiles/"+tileRight+".jpg";
 						break;
 					}
 				}
 			} else {
-				tiles[territories.get(i).getY()+4][territories.get(i).getX()+4] = "src/main/resources/tiles/"+player.getColor()+".jpg";
+				tiles[8-(territories.get(i).getY()+4)][territories.get(i).getX()+4] = "src/main/resources/tiles/"+player.getColor()+".jpg";
 			}
 		}
 	}

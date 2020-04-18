@@ -743,8 +743,8 @@ public class KingdominoController {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
 		Domino dom = player.getDominoSelection().getDomino();
 		dom.setStatus(DominoStatus.ErroneouslyPreplaced);
-		new DominoInKingdom(0, 0, player.getKingdom(), dom); // Placing domino in kingdom
-
+		DominoInKingdom d = new DominoInKingdom(0, 0, player.getKingdom(), dom); // Placing domino in kingdom     
+		
 	}
 
 	/**
