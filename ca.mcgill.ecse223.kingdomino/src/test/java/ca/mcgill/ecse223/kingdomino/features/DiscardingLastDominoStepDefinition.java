@@ -6,6 +6,9 @@ import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
 import io.cucumber.java.en.*;
 
+/**
+ * @author Mathieu-Joseph Magri
+ */
 public class DiscardingLastDominoStepDefinition {
 
 	@Given("the game is initialized for discarding last domino")

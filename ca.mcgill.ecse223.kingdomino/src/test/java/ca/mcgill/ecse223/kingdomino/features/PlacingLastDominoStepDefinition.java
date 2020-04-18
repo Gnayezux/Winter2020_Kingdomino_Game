@@ -7,6 +7,9 @@ import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.Gameplay;
 import io.cucumber.java.en.*;
 
+/**
+ * @author Abdallah Shapsough
+ */
 public class PlacingLastDominoStepDefinition {
 	
 	@Given("the game has been initialized for placing last domino")

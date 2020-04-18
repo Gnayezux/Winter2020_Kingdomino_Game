@@ -9,6 +9,9 @@ import io.cucumber.java.en.*;
 import static org.junit.Assert.*;
 import java.util.*;
 
+/**
+ * @author Maxime Rieuf
+ */
 public class PlacingDominoStepDefinition {
 
 	@Given("the game has been initialized for placing domino")

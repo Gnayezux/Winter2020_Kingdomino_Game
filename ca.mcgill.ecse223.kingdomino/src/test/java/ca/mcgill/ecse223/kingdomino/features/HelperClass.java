@@ -15,13 +15,22 @@ import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.DominoInKingdom.DirectionKind;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
+/**
+ * @author Victoria Iannotti
+ */
 public class HelperClass {
+	/**
+	 * Setting up a test case
+	 */
 	public static void testSetup() {
 		KingdominoController.startGameSetup();
 		KingdominoController.setNumberOfPlayers(4);
 		KingdominoController.createPlayersAndKingdoms();
 	}
 
+	/**
+	 * Returns a terrain type of the enum type
+	 */
 	public static TerrainType getTerrainType(String terrain) {
 		terrain = terrain.toUpperCase();
 		if (terrain.equals("WHEATFIELD") || terrain.equals("WHEAT")) {
@@ -55,6 +64,9 @@ public class HelperClass {
 		}
 	}
 
+	/**
+	 * Returns a color of the PlayerColor type
+	 */
 	public static PlayerColor getColor(String color) {
 		switch (color) {
 		case "pink":
@@ -70,6 +82,9 @@ public class HelperClass {
 		}
 	}
 
+	/**
+	 * Returns a direction of the enum type
+	 */
 	public static DirectionKind getDirection(String dir) {
 		switch (dir) {
 		case "up":
@@ -85,6 +100,9 @@ public class HelperClass {
 		}
 	}
 
+	/**
+	 * Returns a domino status of the enum type
+	 */
 	public static DominoStatus getDominoStatus(String s) {
 		String status = s.toLowerCase();
 		switch (status) {
@@ -109,6 +127,9 @@ public class HelperClass {
 		}
 	}
 
+	/**
+	 * Takes in the id of a domino and returns the domino
+	 */
 	public static Domino getDominoByID(int id) {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		if (!game.hasAllDominos()) {
@@ -119,6 +140,9 @@ public class HelperClass {
 		return allDominos.get(id - 1);
 	}
 
+	/**
+	 * Creates all of the dominos needed for getting a domino
+	 */
 	private static void createAllDominos() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		try {
@@ -144,6 +168,9 @@ public class HelperClass {
 		}
 	}
 
+	/**
+	 * Returns the state (in a format for testing)
+	 */
 	public static String getState(String s) {
 		switch (s) {
 			case ("Initializing.SelectingFirstDomino"):

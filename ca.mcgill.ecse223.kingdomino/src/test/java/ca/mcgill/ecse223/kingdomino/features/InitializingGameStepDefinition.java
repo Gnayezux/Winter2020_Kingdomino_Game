@@ -11,6 +11,9 @@ import ca.mcgill.ecse223.kingdomino.model.Gameplay;
 import ca.mcgill.ecse223.kingdomino.model.Player;
 import io.cucumber.java.en.*;
 
+/**
+ * @author Victoria Iannotti
+ */
 public class InitializingGameStepDefinition {
 	@Given("the game has not been started")
 	public void the_game_has_not_been_started() {

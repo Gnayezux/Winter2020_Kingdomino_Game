@@ -19,6 +19,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+/**
+ * @ team
+ */
 public class LoadGameStepDefinition {
 	@Given("the game is initialized for load game")
 	public void the_game_is_initialized_for_load_game() {

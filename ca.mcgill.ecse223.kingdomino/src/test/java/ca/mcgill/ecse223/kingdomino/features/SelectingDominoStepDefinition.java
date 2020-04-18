@@ -6,6 +6,9 @@ import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import io.cucumber.java.en.*;
 
+/**
+ * @author Abdallah Shapsough
+ */
 public class SelectingDominoStepDefinition {
 	@Given("the game has been initialized for selecting domino")
 	public void the_game_has_been_initialized_for_selecting_domino() {

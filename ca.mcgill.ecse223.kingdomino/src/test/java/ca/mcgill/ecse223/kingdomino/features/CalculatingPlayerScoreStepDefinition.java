@@ -17,6 +17,9 @@ import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import io.cucumber.java.en.*;
 
+/**
+ * @author Kaichengwu
+ */
 public class CalculatingPlayerScoreStepDefinition {
 
 	@Given("the game is initialized for calculating player score")

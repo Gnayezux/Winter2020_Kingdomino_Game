@@ -13,6 +13,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+/**
+ * @author Victoria Iannotti
+ */
 public class SortingAndRevealingDraftStepDefinition {
 	
 	@Given("there is a next draft, face down")
