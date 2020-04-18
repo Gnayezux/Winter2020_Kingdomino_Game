@@ -111,6 +111,7 @@ public class DraftDomino extends JPanel{
 			pan.setBackground(Color.WHITE);
 			pan.setPreferredSize(new Dimension(75, 75));
 			selector = new JButton("CHOOSE");
+			selector.setFocusable(false);
 			selector.setBackground(Color.WHITE);
 			Font saveFont = new Font("Arial", Font.BOLD, 12);
 			selector.setFont(saveFont);
@@ -206,19 +207,15 @@ public class DraftDomino extends JPanel{
 	public void setColor(PlayerColor color) {
 		switch(color) {
 		case Pink:
-			System.out.println("pink");
 			pan.setBackground(Color.PINK);
 			break;
 		case Blue:
-			System.out.println("blue");
 			pan.setBackground(Color.BLUE);
 			break;
 		case Green:
-			System.out.println("green");
 			pan.setBackground(Color.GREEN);
 			break;
 		case Yellow:
-			System.out.println("ye");
 			pan.setBackground(Color.YELLOW);
 			break;
 		}

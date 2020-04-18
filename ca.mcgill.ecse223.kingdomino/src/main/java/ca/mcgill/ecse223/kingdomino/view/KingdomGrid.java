@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -15,6 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import ca.mcgill.ecse223.kingdomino.model.*;
+import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
+import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
 public class KingdomGrid extends JPanel {
 
@@ -23,6 +26,7 @@ public class KingdomGrid extends JPanel {
 	private static final int GAP = 1;
 	private static final Color BG = Color.BLACK;
 	public static final int TIMER_DELAY = 2 * 1000;
+	private String [][] tiles;
 	private Player player;
 
 	public KingdomGrid(Player p) {
@@ -31,6 +35,7 @@ public class KingdomGrid extends JPanel {
 	}
 
 	private void initComponents() {
+		tiles = new String[9][9];
 		// JLabel[][] fieldGrid = new JLabel[MAX_ROWS][MAX_ROWS];
 		this.setLayout(new GridLayout(9, 9));
 		//this.setBorder(BorderFactory.createEmptyBorder(GAP, GAP, GAP, GAP));
@@ -50,6 +55,7 @@ public class KingdomGrid extends JPanel {
 			break;
 		}
 		//
+		initGrid();
 		updateGrid();
 //		JPanel[][] panels = new JPanel[CLUSTER][CLUSTER];
 //		for (int i = 0; i < panels.length; i++) {
@@ -76,16 +82,19 @@ public class KingdomGrid extends JPanel {
 		this.setPreferredSize(new Dimension(350, 320));
 	}
 
-	private void updateGrid() {
-		for (int i = 0; i < 81; i++) {
-			this.add(createField());
+	private void initGrid() {
+		for (int i = 0; i < 9; i++) {
+//			this.add(createField());
+			for(int j = 0; j<9; j++) {
+				tiles[i][j] = "src/main/resources/tiles/white.jpg";
+			}
 		}
 	}
 
-	private JLabel createField() {
+	private JLabel createField(String s) {
 		BufferedImage myPicture = null;
 		try {
-			myPicture = ImageIO.read(new File("src/main/resources/tiles/white.png"));
+			myPicture = ImageIO.read(new File(s));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -94,7 +103,53 @@ public class KingdomGrid extends JPanel {
 
 		return picLabel;
 	}
+	public void updateGrid() {
+		this.removeAll();
+		updateTiles();
+		for (int i = 0; i < 9; i++) {
+			for(int j = 0; j<9; j++) {
+				this.add(createField(tiles[i][j]));
+			}
+		}
+		this.setVisible(true);
+	}
+	public void updateTiles() {
+		initGrid();
+		List<KingdomTerritory> territories = player.getKingdom().getTerritories();
+		for (int i = 0; i < territories.size(); i++) {
+			if (territories.get(i) instanceof DominoInKingdom) {
+				DominoInKingdom ter = (DominoInKingdom) territories.get(i);
+				if (ter.getDomino().getStatus() != DominoStatus.Discarded) {
+					String tileLeft = ter.getDomino().getLeftTile().toString().toLowerCase();
+					tileLeft+=ter.getDomino().getLeftCrown();
+					tiles[ter.getY()+4][ter.getX()+4] = "src/main/resources/tiles/"+tileLeft+".jpg";
+					
+					String tileRight = ter.getDomino().getRightTile().toString().toLowerCase();
+					tileRight+=ter.getDomino().getRightCrown();
+					switch(ter.getDirection()) {
+					case Up:
+						tiles[ter.getY()+4][ter.getX()+5] = "src/main/resources/tiles/"+tileRight+".jpg";
+						break;
+					case Down:
+						tiles[ter.getY()+4][ter.getX()+3] = "src/main/resources/tiles/"+tileRight+".jpg";
+						break;
+					case Left:
+						tiles[ter.getY()+3][ter.getX()+4] = "src/main/resources/tiles/"+tileRight+".jpg";
+						break;
+					case Right:
+						tiles[ter.getY()+5][ter.getX()+4] = "src/main/resources/tiles/"+tileRight+".jpg";
+						break;
+					}
+				}
+			} else {
+				tiles[territories.get(i).getY()+4][territories.get(i).getX()+4] = "src/main/resources/tiles/"+player.getColor()+".jpg";
+			}
+		}
+	}
 	
+	public PlayerColor getColor() {
+		return player.getColor();
+	}
 	String[] leftTile = { "WheatField", "Mountain", "Lake", "WheatField" };
 	String[] rightTile = { "Grass", "Lake", "Grass", "Lake" };
 	int[] leftCrown = { 0, 2, 1, 1 };

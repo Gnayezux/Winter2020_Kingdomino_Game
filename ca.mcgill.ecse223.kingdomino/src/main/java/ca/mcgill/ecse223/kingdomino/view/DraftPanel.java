@@ -32,7 +32,7 @@ public class DraftPanel extends JPanel{
 		updateEmpty();
 	}
 	
-	public void update(Draft draft) {
+	public DraftPanel update(Draft draft) {
 		dominos = new ArrayList<DraftDomino>();
 		this.removeAll();
 		this.setBackground(Color.WHITE);
@@ -50,6 +50,7 @@ public class DraftPanel extends JPanel{
 			this.add(d);
 		}
 		this.setVisible(true);
+		return this;
 	}
 	
 	public void updateEmpty() {

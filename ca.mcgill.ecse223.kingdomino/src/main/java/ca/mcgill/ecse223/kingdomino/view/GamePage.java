@@ -28,9 +28,14 @@ public class GamePage extends JPanel {
 
 	private ArrayList<KingdomGrid> grids;
 	private DraftPanel [] drafts;
+	private JButton selectButton;
+	private JButton discardButton;
+	private JButton placeButton;
+	private boolean movementEnabled;
 	Game game;
 
 	public GamePage(Game game) {
+		movementEnabled = false;
 		drafts = new DraftPanel[2];
 		grids = new ArrayList<KingdomGrid>();
 		this.game = game;
@@ -68,6 +73,7 @@ public class GamePage extends JPanel {
 
 			part.add(label);
 			KingdomGrid grid = new KingdomGrid(game.getPlayer(i));
+			grids.add(grid);
 			part.add(grid);
 
 			left.add(part);
@@ -106,11 +112,12 @@ public class GamePage extends JPanel {
 		Font saveFont = new Font("Arial", Font.BOLD, 20);
 		saveBtn.setFont(saveFont);
 		saveBtn.setPreferredSize(new Dimension(150, 75));
-		saveBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// TODO When the save and quit button is pressed
-			}
-		});
+		saveBtn.setFocusable(false);
+//		saveBtn.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				// TODO When the save and quit button is pressed
+//			}
+//		});
 
 		JPanel savePanel = new JPanel();
 		savePanel.setBackground(Color.WHITE);
@@ -190,14 +197,15 @@ public class GamePage extends JPanel {
 			e.printStackTrace();
 		}
 		Image newImage = uppic.getScaledInstance(50, 50, Image.SCALE_DEFAULT);
-		JLabel picLabel = new JLabel(new ImageIcon(newImage));
+		
+		JButton picLabel = new JButton(new ImageIcon(newImage));
+		picLabel.setFocusable(false);
 		picLabel.setName("up");
-		picLabel.addMouseListener(new MouseAdapter() {
+		picLabel.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-//				ActionEvent ae = new ActionEvent(e.getSource(), e.getID(), e.getComponent().getName());
-//				actionPerformed(ae);
-				// TODO When Click Up
+			public void actionPerformed(ActionEvent e) {
+				movement("up");
+				
 			}
 		});
 
@@ -214,14 +222,13 @@ public class GamePage extends JPanel {
 			e.printStackTrace();
 		}
 		newImage = leftPic.getScaledInstance(50, 50, Image.SCALE_DEFAULT);
-		picLabel = new JLabel(new ImageIcon(newImage));
+		picLabel = new JButton(new ImageIcon(newImage));
 		picLabel.setName("left");
-		picLabel.addMouseListener(new MouseAdapter() {
+		picLabel.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-//				ActionEvent ae = new ActionEvent(e.getSource(), e.getID(), e.getComponent().getName());
-//				actionPerformed(ae);
-				// TODO 
+			public void actionPerformed(ActionEvent e) {
+				movement("left");
+				
 			}
 		});
 
@@ -238,14 +245,13 @@ public class GamePage extends JPanel {
 			e.printStackTrace();
 		}
 		newImage = rightPic.getScaledInstance(50, 50, Image.SCALE_DEFAULT);
-		picLabel = new JLabel(new ImageIcon(newImage));
+		picLabel = new JButton(new ImageIcon(newImage));
 		picLabel.setName("right");
-		picLabel.addMouseListener(new MouseAdapter() {
+		picLabel.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-//				ActionEvent ae = new ActionEvent(e.getSource(), e.getID(), e.getComponent().getName());
-//				actionPerformed(ae);
-				// TODO
+			public void actionPerformed(ActionEvent e) {
+				movement("right");
+				
 			}
 		});
 
@@ -262,14 +268,13 @@ public class GamePage extends JPanel {
 			e.printStackTrace();
 		}
 		newImage = downPic.getScaledInstance(50, 50, Image.SCALE_DEFAULT);
-		picLabel = new JLabel(new ImageIcon(newImage));
+		picLabel = new JButton(new ImageIcon(newImage));
 		picLabel.setName("down");
-		picLabel.addMouseListener(new MouseAdapter() {
+		picLabel.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-//				ActionEvent ae = new ActionEvent(e.getSource(), e.getID(), e.getComponent().getName());
-//				actionPerformed(ae);
-				// TODO
+			public void actionPerformed(ActionEvent e) {
+				movement("down");
+				
 			}
 		});
 
@@ -286,14 +291,13 @@ public class GamePage extends JPanel {
 			e.printStackTrace();
 		}
 		newImage = counterPic.getScaledInstance(50, 50, Image.SCALE_DEFAULT);
-		picLabel = new JLabel(new ImageIcon(newImage));
+		picLabel = new JButton(new ImageIcon(newImage));
 		picLabel.setName("counter");
-		picLabel.addMouseListener(new MouseAdapter() {
+		picLabel.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-//				ActionEvent ae = new ActionEvent(e.getSource(), e.getID(), e.getComponent().getName());
-//				actionPerformed(ae);
-				// TODO
+			public void actionPerformed(ActionEvent e) {
+				movement("counter");
+				
 			}
 		});
 
@@ -310,17 +314,15 @@ public class GamePage extends JPanel {
 			e.printStackTrace();
 		}
 		newImage = clockPic.getScaledInstance(50, 50, Image.SCALE_DEFAULT);
-		picLabel = new JLabel(new ImageIcon(newImage));
+		picLabel = new JButton(new ImageIcon(newImage));
 		picLabel.setName("clockwise");
-		picLabel.addMouseListener(new MouseAdapter() {
+		picLabel.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-//				ActionEvent ae = new ActionEvent(e.getSource(), e.getID(), e.getComponent().getName());
-//				actionPerformed(ae);
-				// TODO
+			public void actionPerformed(ActionEvent e) {
+				movement("clockwise");
+				
 			}
 		});
-
 		c.gridx = 2;
 		c.gridy = 3;
 		c.gridheight = 1;
@@ -332,55 +334,58 @@ public class GamePage extends JPanel {
 		selectPanel.setLayout(new GridLayout(3, 0));
 		selectPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-		String[] selectButtons = { "Place", "Discard", "Select" };
-		
-		
-		JButton placeBtn = new JButton("Place");
+		placeButton = new JButton("Place");
+		placeButton.setFocusable(false);
 		Font placeFont = new Font("Arial", Font.BOLD, 20);
-		placeBtn.setFont(placeFont);
-		placeBtn.setPreferredSize(new Dimension(125, 65));
-		placeBtn.addActionListener(new ActionListener() {
+		placeButton.setFont(placeFont);
+		placeButton.setPreferredSize(new Dimension(125, 65));
+		placeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				KingdominoController.placing();
 			}
 		});
-
+		placeButton.setEnabled(false);
+		
 		JPanel placePanel = new JPanel();
 		placePanel.setBackground(Color.WHITE);
 		placePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		placePanel.add(placeBtn);
+		placePanel.add(placeButton);
 
 		selectPanel.add(placePanel);
 		
-		JButton placeBtn2 = new JButton("Discard");
-		placeBtn2.setFont(placeFont);
-		placeBtn2.setPreferredSize(new Dimension(125, 65));
-		placeBtn2.addActionListener(new ActionListener() {
+		discardButton = new JButton("Discard");
+		discardButton.setFocusable(false);
+		discardButton.setFont(placeFont);
+		discardButton.setPreferredSize(new Dimension(125, 65));
+		discardButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				KingdominoController.placing();
 			}
 		});
+		discardButton.setEnabled(false);
 
 		JPanel placePanel2 = new JPanel();
 		placePanel2.setBackground(Color.WHITE);
 		placePanel2.setBorder(new EmptyBorder(10, 10, 10, 10));
-		placePanel2.add(placeBtn2);
+		placePanel2.add(discardButton);
 
 		selectPanel.add(placePanel2);
 		
-		JButton placeBtn3 = new JButton("Select");
-		placeBtn3.setFont(placeFont);
-		placeBtn3.setPreferredSize(new Dimension(125, 65));
-		placeBtn3.addActionListener(new ActionListener() {
+		selectButton= new JButton("Select");
+		selectButton.setFont(placeFont);
+		selectButton.setFocusable(false);
+		selectButton.setPreferredSize(new Dimension(125, 65));
+		selectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				KingdominoController.selectionComplete();
 			}
 		});
+		selectButton.setEnabled(true);
 
 		JPanel placePanel3 = new JPanel();
 		placePanel3.setBackground(Color.WHITE);
 		placePanel3.setBorder(new EmptyBorder(10, 10, 10, 10));
-		placePanel3.add(placeBtn3);
+		placePanel3.add(selectButton);
 
 		selectPanel.add(placePanel3);
 
@@ -414,14 +419,12 @@ public class GamePage extends JPanel {
 
 			part.add(label);
 			KingdomGrid grid = new KingdomGrid(game.getPlayer(i));
+			grids.add(grid);
 			part.add(grid);
 
 			right.add(part);
 		}
 		this.add(right);
-
-
-
 	}
 
 	public void updateDrafts(Draft current, Draft next) {
@@ -429,12 +432,13 @@ public class GamePage extends JPanel {
 			//System.out.println(drafts[0]);
 			drafts[0].updateEmpty();
 		} else {
-			drafts[0].update(current);
+			drafts[0] = drafts[0].update(current);
+			//drafts[0] = current;
 		}
 		if (next == null) {
 			drafts[1].updateEmpty();
 		} else {
-			drafts[1].update(next);
+			drafts[1] = drafts[1].update(next);
 		}
 		
 	}
@@ -447,5 +451,51 @@ public class GamePage extends JPanel {
 	
 	public void changeButtonColor(PlayerColor color, int id) {
 		drafts[1].changeButtonColor(color, id);
+	}
+	
+	public void setSelectionEnabled(boolean enabled) {
+		selectButton.setEnabled(enabled);
+	}
+	
+	public void setPlacementEnabled(boolean enabled) {
+		placeButton.setEnabled(enabled);
+		discardButton.setEnabled(enabled);
+	}
+	
+	public void updateGrid() {
+		for(KingdomGrid g: grids) {
+			g.updateGrid();
+			
+		}
+	}
+	
+	private void movement(String m) {
+		System.out.println(m);
+		if(movementEnabled) {
+			switch(m) {
+			case "up":
+				KingdominoController.moveDomino("up");
+				break;
+			case "down":
+				KingdominoController.moveDomino("down");
+				break;
+			case "right":
+				KingdominoController.moveDomino("right");
+				break;
+			case "left":
+				KingdominoController.moveDomino("left");
+				break;
+			case "clockwise":
+				KingdominoController.rotateDomino("clockwise");
+				break;
+			case "counter":
+				KingdominoController.rotateDomino("counter");
+				break;
+			}
+		}
+	}
+	
+	public void setMovementEnabled(boolean enabled) {
+		this.movementEnabled = enabled;
 	}
 }

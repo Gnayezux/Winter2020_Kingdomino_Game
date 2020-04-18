@@ -13,11 +13,12 @@ class Gameplay {
             }
             SelectingFirstDomino {
             	selectionComplete [isSelectionValid()] -> /{nextPlayer();} Initializing.SelectingFirstDomino;
-            	endOfTurn [isCurrentPlayerTheLastInTurn() && isSelectionValid()] -> /{setNextDraft(); orderNextDraft(); revealNextDraft(); generatePlayerOrder();} Playing.PlacingDomino;
+            	endOfTurn [isCurrentPlayerTheLastInTurn() && isSelectionValid()] -> /{setNextDraft(); orderNextDraft(); generatePlayerOrder();} Playing.PlacingDomino;
             }
         }
         Playing {
         	PlacingDomino {
+        		entry/{revealNextDraft();}
         		readyToPlace [isDominoCorrectlyPreplaced() && !isCurrentTurnTheLastInGame()] -> /{placeDomino(); updateScore();} Playing.SelectingDomino;
         		discard [isImpossibleToPlace() && !isCurrentTurnTheLastInGame()] -> /{discardDomino(); updateScore(); } Playing.SelectingDomino;
         		placeLast [isDominoCorrectlyPreplaced() && isCurrentTurnTheLastInGame()] -> /{placeDomino(); updateScore(); nextPlayer();} Playing.PlacingDomino;

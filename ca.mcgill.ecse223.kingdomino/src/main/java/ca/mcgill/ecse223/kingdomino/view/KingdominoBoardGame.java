@@ -101,6 +101,23 @@ public class KingdominoBoardGame extends JFrame {
 	public void changeButtonColor(PlayerColor color, int id) {
 		gamePage.changeButtonColor(color, id);
 	}
+	
+	public void setPlacementEnabled(boolean enabled) {
+		gamePage.setPlacementEnabled(enabled);
+	}
+	
+	public void setSelectionEnabled(boolean enabled) {
+		gamePage.setSelectionEnabled(enabled);
+	}
+	
+	public void updateGrid() {
+		gamePage.updateGrid();
+		this.invalidate();
+		this.validate();
+	}
+	public void setMovementEnabled(boolean enabled) {
+		gamePage.setMovementEnabled(enabled);
+	}
 //	
 //	public void loadGame() {
 //

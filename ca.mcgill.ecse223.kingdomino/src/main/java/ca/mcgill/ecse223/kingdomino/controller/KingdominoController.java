@@ -235,9 +235,9 @@ public class KingdominoController {
 		// and the new draft becomes the next draft
 		game.setCurrentDraft(game.getNextDraft());
 		game.setNextDraft(draft);
-		if (boardGame != null) {
-			boardGame.updateDrafts(game.getCurrentDraft(), game.getNextDraft());
-		}
+//		if (boardGame != null) {
+//			boardGame.updateDrafts(game.getCurrentDraft(), game.getNextDraft());
+//		}
 
 	}
 
@@ -249,10 +249,22 @@ public class KingdominoController {
 		// Setting the status to FaceUp
 		Draft draft = KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft();
 		draft.setDraftStatus(Draft.DraftStatus.FaceUp);
-		System.out.println("before");
+		// System.out.println("before");
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		if (boardGame != null) {
 			boardGame.updateDrafts(game.getCurrentDraft(), game.getNextDraft());
+			// System.out.println(KingdominoApplication.getGameplay().getGamestatusFullName());
+			switch (KingdominoApplication.getGameplay().getGamestatusFullName()) {
+			case ("Initializing.SelectingFirstDomino"):
+				boardGame.setDominoSelectionEnabled(true);
+				break;
+			case ("Playing.PlacingDomino"):
+				boardGame.setDominoSelectionEnabled(false);
+				boardGame.setMovementEnabled(true);
+				break;
+			}
+			boardGame.updateGrid();
+
 		}
 	}
 
@@ -311,7 +323,11 @@ public class KingdominoController {
 			}
 		}
 		if (boardGame != null) {
-			boardGame.setDominoSelectionEnabled(false);
+			switch (KingdominoApplication.getGameplay().getGamestatusFullName()) {
+			case ("Initializing.SelectingFirstDomino"):
+				boardGame.setDominoSelectionEnabled(false);
+				break;
+			}
 		}
 	}
 
@@ -340,7 +356,12 @@ public class KingdominoController {
 			}
 		}
 		if (boardGame != null) {
-			boardGame.setDominoSelectionEnabled(true);
+			switch (KingdominoApplication.getGameplay().getGamestatusFullName()) {
+			case ("Initializing.SelectingFirstDomino"):
+				boardGame.setDominoSelectionEnabled(true);
+				break;
+			}
+
 		}
 		KingdominoApplication.getGameplay().endOfTurn();
 		KingdominoApplication.getGameplay().selectionComplete();
@@ -387,7 +408,18 @@ public class KingdominoController {
 				return false;
 			}
 		}
-		// TODO end of the turn
+		if (boardGame != null) {
+			switch (KingdominoApplication.getGameplay().getGamestatusFullName()) {
+			case ("Initializing.SelectingFirstDomino"):
+				boardGame.setPlacementEnabled(true);
+				boardGame.setDominoSelectionEnabled(false);
+				boardGame.setSelectionEnabled(false);
+				boardGame.sendMessage(
+						"Place your domino in your kingdom with the controls. \nTo confirm your placement, click <place>. \nIf it is impossible to place, click <discard>.");
+
+				break;
+			}
+		}
 		return true;
 	}
 
@@ -401,12 +433,29 @@ public class KingdominoController {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		Draft draft = game.getCurrentDraft();
 		ArrayList<DominoSelection> selections = new ArrayList<DominoSelection>(draft.getSelections());
+		Collections.sort(selections, (a, b) -> a.getDomino().getId() - b.getDomino().getId());
+		for (int i = 0; i < selections.size(); i++) {
+			draft.addOrMoveSelectionAt(selections.get(i), i);
+		}
+
 		int i = 0;
 		for (DominoSelection selection : selections) {
 			game.addOrMovePlayerAt(selection.getPlayer(), i);
+			System.out.println(selection.getPlayer().getColor());
 			i++;
 		}
 		game.setNextPlayer(game.getPlayer(0));
+		if (boardGame != null) {
+			boardGame.notifyCurrentPlayer(game.getNextPlayer());
+			removeKing();
+			System.out.println(KingdominoApplication.getGameplay().getGamestatusFullName());
+			switch (KingdominoApplication.getGameplay().getGamestatusFullName()) {
+			case ("Initializing.SelectingFirstDomino"):
+
+				break;
+			}
+		}
+
 	}
 
 	/**
@@ -473,23 +522,23 @@ public class KingdominoController {
 	}
 
 	/**
-
-	 * Let's us get a user and set it to a player within a kingdomino game.
-
 	 * 
-
+	 * Let's us get a user and set it to a player within a kingdomino game.
+	 * 
+	 * 
+	 * 
 	 * @param user       Selected use that will set to a player.
-
+	 * 
 	 * @param num        Number of a player that will be set User user.
-
+	 * 
 	 * @param kingdomino The kingdomino application we wish to analyze.
-
+	 * 
 	 * @return void
-
+	 * 
 	 * @author Abdallah Shapsough
-
+	 * 
 	 * @gherkin SetGameOptions.feature
-
+	 * 
 	 */
 
 	public static boolean selectUser(User user, String color) {
@@ -526,21 +575,21 @@ public class KingdominoController {
 	}
 
 	/**
-
-	 * Let's us create a new user that can be used for multiple kingdomino games.
-
 	 * 
-
+	 * Let's us create a new user that can be used for multiple kingdomino games.
+	 * 
+	 * 
+	 * 
 	 * @param userName
-
+	 * 
 	 * @param kingdomino
-
+	 * 
 	 * @return boolean
-
+	 * 
 	 * @author Abdallah Shapsough
-
+	 * 
 	 * @gherkin ProvideUserProfile.feature
-
+	 * 
 	 */
 	public static boolean createNewUser(String userName) {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
@@ -571,21 +620,21 @@ public class KingdominoController {
 	}
 
 	/**
-
-	 * Let's us browse all users in a sorted manner.
-
 	 * 
-
+	 * Let's us browse all users in a sorted manner.
+	 * 
+	 * 
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
-
+	 * 
 	 * @return List<User> A sorted list of users from a kingdomno instance is
-
+	 * 
 	 *         returned.
-
+	 * 
 	 * @author Abdallah Shapsough
-
+	 * 
 	 * @gherkin ProvideUserProfile.feature
-
+	 * 
 	 */
 	public static void clearUsers() {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
@@ -595,21 +644,21 @@ public class KingdominoController {
 	}
 
 	/**
-
-	 * Let's us view the amount of games won by a specific user.
-
 	 * 
-
+	 * Let's us view the amount of games won by a specific user.
+	 * 
+	 * 
+	 * 
 	 * @param userName   Specific user we wish to view.
-
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
-
+	 * 
 	 * @return int A number of games won by a specific user.
-
+	 * 
 	 * @author Abdallah Shapsough
-
+	 * 
 	 * @gherkin ProvideUserProfile.feature
-
+	 * 
 	 */
 	public static List<User> browseAllUsers() {
 		Kingdomino kingdomino = KingdominoApplication.getKingdomino();
@@ -619,21 +668,21 @@ public class KingdominoController {
 	}
 
 	/**
-
-	 * Let's us view the amount of games played by a specific user.
-
 	 * 
-
+	 * Let's us view the amount of games played by a specific user.
+	 * 
+	 * 
+	 * 
 	 * @param userName   Specific user we wish to view.
-
+	 * 
 	 * @param kingdomino The kingdomino instance that is used.
-
+	 * 
 	 * @return int A number of played games by a specific user is returned.
-
+	 * 
 	 * @author Abdallah Shapsough
-
+	 * 
 	 * @gherkin ProvideUserProfile.feature
-
+	 * 
 	 */
 	public static int getUserGamesWon(String userName) {
 		return User.getWithName(userName).getWonGames();
@@ -695,6 +744,7 @@ public class KingdominoController {
 		Domino dom = player.getDominoSelection().getDomino();
 		dom.setStatus(DominoStatus.ErroneouslyPreplaced);
 		new DominoInKingdom(0, 0, player.getKingdom(), dom); // Placing domino in kingdom
+
 	}
 
 	/**
@@ -774,6 +824,9 @@ public class KingdominoController {
 		} else {
 			// System.out.println("here");
 			dom.getDomino().setStatus(DominoStatus.ErroneouslyPreplaced);
+		}
+		if (boardGame != null) {
+			boardGame.updateGrid();
 		}
 	}
 
@@ -877,6 +930,7 @@ public class KingdominoController {
 
 	/**
 	 * This method checks if the domino is correctly preplaced
+	 * 
 	 * @return true or false depending on the status of the domino
 	 * @author team
 	 */
@@ -893,6 +947,7 @@ public class KingdominoController {
 
 	/**
 	 * This method is called when the action of placing a domino is occuring
+	 * 
 	 * @author team
 	 */
 	public static void placing() {
@@ -901,25 +956,24 @@ public class KingdominoController {
 		KingdominoApplication.getGameplay().endGame();
 	}
 
-
 	/**
-
-	 * Verifies if a domino is placed next to a casle
-
 	 * 
-
+	 * Verifies if a domino is placed next to a casle
+	 * 
+	 * 
+	 * 
 	 * @param x
-
+	 * 
 	 * @param y
-
+	 * 
 	 * @param aDirection
-
+	 * 
 	 * @return
-
+	 * 
 	 * @author Zeyang Xu
-
+	 * 
 	 * @gherkin VerifyCastleAdjacency.feature
-
+	 * 
 	 */
 
 	public static boolean verifyCastleAdjacency(int x, int y, DirectionKind aDirection) {
@@ -963,31 +1017,30 @@ public class KingdominoController {
 	}
 
 	/**
-
-	 * Verifies if a domino is adjacent to its neighbor to make sure a domino can be
-
-	 * placed on that location on the grid
-
 	 * 
-
+	 * Verifies if a domino is adjacent to its neighbor to make sure a domino can be
+	 * 
+	 * placed on that location on the grid
+	 * 
+	 * 
+	 * 
 	 * @param aKingdom
-
+	 * 
 	 * @param aDomino
-
+	 * 
 	 * @param x
-
+	 * 
 	 * @param y
-
+	 * 
 	 * @param aDirection
-
+	 * 
 	 * @return
-
+	 * 
 	 * @author Zeyang Xu
-
+	 * 
 	 * @gherkin VerifyNeightborAdjacency.feature
-
+	 * 
 	 */
-
 
 	public static boolean verifyNeighborAdjacency(Kingdom aKingdom, Domino aDomino, int x, int y,
 			DirectionKind aDirection) {
@@ -1068,29 +1121,29 @@ public class KingdominoController {
 	}
 
 	/**
-
-	 * Verifies that when a domino is on the board, the domino does not overlap
-
-	 * another domino or castle
-
 	 * 
-
+	 * Verifies that when a domino is on the board, the domino does not overlap
+	 * 
+	 * another domino or castle
+	 * 
+	 * 
+	 * 
 	 * @param aDomino
-
+	 * 
 	 * @param aKingdom
-
+	 * 
 	 * @param x
-
+	 * 
 	 * @param y
-
+	 * 
 	 * @param aDirection
-
+	 * 
 	 * @return
-
+	 * 
 	 * @author Zeyang Xu
-
+	 * 
 	 * @gherkin VerifyNoOverlapping.feature
-
+	 * 
 	 */
 
 	public static boolean verifyNoOverlapping(Domino aDomino, Kingdom aKingdom, int x, int y,
@@ -1158,21 +1211,21 @@ public class KingdominoController {
 	}
 
 	/**
-
-	 * Verifies that the domino placed is within the size of the grid where the
-
-	 * dominos on the territory can form of up to 5x5 grid size
-
 	 * 
-
+	 * Verifies that the domino placed is within the size of the grid where the
+	 * 
+	 * dominos on the territory can form of up to 5x5 grid size
+	 * 
+	 * 
+	 * 
 	 * @param aKingdom
-
+	 * 
 	 * @return
-
+	 * 
 	 * @author Zeyang Xu
-
+	 * 
 	 * @gherkin VerifyGridSize.feature
-
+	 * 
 	 */
 
 	public static boolean verifyGridSize(Kingdom aKingdom) {
@@ -1255,25 +1308,25 @@ public class KingdominoController {
 	}
 
 	/**
-
-	 * If a player can't place a domino in a his own domino in any maner possible,
-
-	 * that domino gets discarded from the game.
-
 	 * 
-
+	 * If a player can't place a domino in a his own domino in any maner possible,
+	 * 
+	 * that domino gets discarded from the game.
+	 * 
+	 * 
+	 * 
 	 * @param kingdomino The kingdomino application from which we get our current
-
+	 * 
 	 *                   game to analyze.
-
+	 * 
 	 * @return boolean A boolean value which indicates whether the domino has been
-
+	 * 
 	 *         successfully discarded (true) from a kingdom or not (false).
-
+	 * 
 	 * @author Mathieu-Joseph Magri
-
+	 * 
 	 * @gherkin DiscardDomino.feature
-
+	 * 
 	 */
 
 	public static void discardDomino() {
@@ -1286,7 +1339,9 @@ public class KingdominoController {
 	}
 
 	/**
-	 * This method is called when the action of discarding a domino is being executed
+	 * This method is called when the action of discarding a domino is being
+	 * executed
+	 * 
 	 * @author team
 	 */
 	public static void discarding() {
@@ -1296,25 +1351,24 @@ public class KingdominoController {
 	}
 
 	/**
-
-	 * Verifies whether or not a domino can still be placed in a player's kingdom.
-
 	 * 
-
+	 * Verifies whether or not a domino can still be placed in a player's kingdom.
+	 * 
+	 * 
+	 * 
 	 * @param kingdom The kingdomino application from which we get our current game
-
+	 * 
 	 *                to analyze.
-
+	 * 
 	 * @return boolean A boolean value which indicates whether the domino can still
-
+	 * 
 	 *         be placed within a player's kingdom or not.
-
+	 * 
 	 * @author Mathieu-Joseph Magri
-
+	 * 
 	 * @gherkin DiscardDomino.feature
-
+	 * 
 	 */
-
 
 	public static boolean isPossibleToPlace() {
 		Kingdom kingdom = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer().getKingdom();
@@ -1352,6 +1406,7 @@ public class KingdominoController {
 
 	/**
 	 * This method is checking if we have reached the end of the game
+	 * 
 	 * @return true or false depending on the state of the game
 	 * 
 	 * @author team
@@ -1367,10 +1422,10 @@ public class KingdominoController {
 
 	/**
 	 * This method is used to update the score the player in question
+	 * 
 	 * @author team
 	 */
 	public static void updateScore() {
-		System.out.println("updating");
 		KingdominoController.identifyProperties();
 		KingdominoController.calculatePropertyAttributes();
 		KingdominoController.calculateBonusScore();
@@ -1378,15 +1433,15 @@ public class KingdominoController {
 	}
 
 	/**
-
+	 * 
 	 * @gherkin IdentifyProperties.feature
-
+	 * 
 	 * @author kaichengwu
-
+	 * 
 	 * @param kingdomino
-
+	 * 
 	 * @return void this method identifies the kingdom properties
-
+	 * 
 	 */
 	public static void identifyProperties() {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
@@ -1400,7 +1455,7 @@ public class KingdominoController {
 			if (territories.get(i) instanceof DominoInKingdom) {
 				// Working with the DominoInKingdom
 				DominoInKingdom ter = (DominoInKingdom) territories.get(i);
-				System.out.println(ter.getDomino().getStatus());
+				// System.out.println(ter.getDomino().getStatus());
 				if (ter.getDomino().getStatus() != DominoStatus.Discarded) {
 					isMatchL = false;
 					// Looking at the left tile
@@ -1466,7 +1521,7 @@ public class KingdominoController {
 		}
 	}
 
-	//Helper method
+	// Helper method
 	private static void checkForConnected(List<Property> properties, Kingdom k) {
 		ArrayList<Property> propsOfType = new ArrayList<Property>();
 		for (TerrainType type : TerrainType.values()) {
@@ -1484,7 +1539,7 @@ public class KingdominoController {
 		}
 	}
 
-	//Helper method
+	// Helper method
 	private static void handleDuplicates(ArrayList<Property> propsOfType, Kingdom k) {
 		HashMap<Integer, Integer> map = new HashMap<>();
 		ArrayList<Integer> indexes = new ArrayList<>();
@@ -1533,7 +1588,7 @@ public class KingdominoController {
 
 	}
 
-	//Helper method
+	// Helper method
 	private static boolean propertyContains(DominoInKingdom dom, Property prop) {
 		for (Domino domInProperty : prop.getIncludedDominos()) {
 			if (dom.getDomino() == domInProperty) {
@@ -1543,7 +1598,7 @@ public class KingdominoController {
 		return false;
 	}
 
-	//Helper method
+	// Helper method
 	private static boolean isLeftMatch(DominoInKingdom dom, Property prop, Kingdom kingdom) {
 		boolean isMatch = false;
 		// Comparing with all of the dominos in the property
@@ -1586,7 +1641,7 @@ public class KingdominoController {
 		return isMatch;
 	}
 
-	//Helper method
+	// Helper method
 	private static boolean isRightMatch(DominoInKingdom dom, Property prop, Kingdom kingdom) {
 		boolean isMatch = false;
 		// Comparing with all of the dominos in the property
@@ -1644,21 +1699,21 @@ public class KingdominoController {
 	}
 
 	/**
-
-	 * this methods calculate the attributes of each property (num of crowns & size
-
-	 * of property), and sets them up for furthur use
-
 	 * 
-
+	 * this methods calculate the attributes of each property (num of crowns & size
+	 * 
+	 * of property), and sets them up for furthur use
+	 * 
+	 * 
+	 * 
 	 * @author kaichengwu
-
+	 * 
 	 * @gherkin CalculatePropertyAttributes.feature
-
+	 * 
 	 * @param kingdomino
-
+	 * 
 	 * @return void
-
+	 * 
 	 */
 	public static void calculatePropertyAttributes() {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
@@ -1681,21 +1736,21 @@ public class KingdominoController {
 	}
 
 	/**
-
-	 * this feature calculates the bonus score of the player if the bonus feature
-
-	 * harmony/middle kingdom were selected at the beginning of the game
-
 	 * 
-
+	 * this feature calculates the bonus score of the player if the bonus feature
+	 * 
+	 * harmony/middle kingdom were selected at the beginning of the game
+	 * 
+	 * 
+	 * 
 	 * @param kingdomino
-
+	 * 
 	 * @return void
-
+	 * 
 	 * @author kaichengwu
-
+	 * 
 	 * @gherkin CalculateBonusScores.feature
-
+	 * 
 	 */
 
 	public static void calculateBonusScore() {
@@ -1809,22 +1864,22 @@ public class KingdominoController {
 	}
 
 	/**
-
+	 * 
 	 * @author kaichengwu
-
+	 * 
 	 * @param kingdomino
-
+	 * 
 	 * @return void this features calculate the total score of the player by summing
-
+	 * 
 	 *         up the score of each individual property =======
-
+	 * 
 	 * @return void
-
+	 * 
 	 * @gherkin CalculatePlayerScore.feature this features calculate the total score
-
+	 * 
 	 *          of the player by summing up the score of each individual property
-
-	 *       
+	 * 
+	 * 
 	 */
 	public static void calculatePlayerScore() {
 		Player player = KingdominoApplication.getKingdomino().getCurrentGame().getNextPlayer();
@@ -1832,10 +1887,10 @@ public class KingdominoController {
 		List<Property> myprop = player.getKingdom().getProperties();
 		for (int i = 0; i < myprop.size(); i++) {
 			propscore += myprop.get(i).getScore();
-			System.out.println(myprop.get(i).getCrowns());
-			System.out.println(myprop.get(i).getSize());
-			System.out.println(myprop.get(i).getScore());
-			System.out.println(propscore);
+//			System.out.println(myprop.get(i).getCrowns());
+//			System.out.println(myprop.get(i).getSize());
+//			System.out.println(myprop.get(i).getScore());
+//			System.out.println(propscore);
 		}
 
 		player.setPropertyScore(propscore);
@@ -1843,13 +1898,13 @@ public class KingdominoController {
 	}
 
 	/**
-
+	 * 
 	 * Calculating the ranking of the players in the kingdomino game
-
+	 * 
 	 * @param kingdomino
-
+	 * 
 	 * @author Victoria Iannotti
-
+	 * 
 	 */
 	public static void calculateRanking() {
 		ArrayList<Player> players = new ArrayList<Player>(
@@ -1918,15 +1973,15 @@ public class KingdominoController {
 	}
 
 	/**
-
+	 * 
 	 * Method for resolving ties between players
-
+	 * 
 	 * @param p1 first player
-
+	 * 
 	 * @param p2 second player
-
+	 * 
 	 * @return int depending on the outcome of the resolution
-
+	 * 
 	 */
 	private static int resolveTiebreak(Player p1, Player p2) {
 		if (getLargestPropertySize(p1.getKingdom().getProperties()) > getLargestPropertySize(
@@ -1945,7 +2000,7 @@ public class KingdominoController {
 		return 0;
 	}
 
-	//Helper method
+	// Helper method
 	private static int getLargestPropertySize(List<Property> properties) {
 		int largestSize = 0;
 		if (properties == null) {
@@ -1959,7 +2014,7 @@ public class KingdominoController {
 		return largestSize;
 	}
 
-	//Helper method
+	// Helper method
 	private static int getNumberCrowns(List<Property> properties) {
 		int numCrowns = 0;
 		for (Property property : properties) {
@@ -1970,6 +2025,7 @@ public class KingdominoController {
 
 	/**
 	 * This method is used for loading the game
+	 * 
 	 * @param kingdomino
 	 * @param string
 	 */
@@ -1978,7 +2034,7 @@ public class KingdominoController {
 		try {
 			Scanner reader = new Scanner(file);
 			String data = reader.nextLine();
-			System.out.print(data);
+			// System.out.print(data);
 
 			Game game = new Game(48, kingdomino);
 			kingdomino.setCurrentGame(game);
@@ -2040,7 +2096,7 @@ public class KingdominoController {
 			}
 			game.setNextDraft(draft);
 			game.setCurrentDraft(draft);
-			System.out.println(draft.getIdSortedDominos());
+			// System.out.println(draft.getIdSortedDominos());
 			int playerCounter = 0;
 			while (reader.hasNextLine()) {
 				data = reader.nextLine();
@@ -2066,12 +2122,12 @@ public class KingdominoController {
 		return (kingdomino.getCurrentGame() != null);
 	}
 
-	//Helper method
+	// Helper method
 	public static boolean isValidGame(Kingdomino kingdomino) {
 		return false;
 	}
 
-	//Helper method
+	// Helper method
 	private static void addLoadDomino(String element, Player player, Kingdomino kingdomino) {
 		String[] sections = element.split("@");
 		Domino domino = KingdominoApplication.getKingdomino().getCurrentGame()
@@ -2107,6 +2163,7 @@ public class KingdominoController {
 
 	/**
 	 * Helper method for getting a domino with a particular id
+	 * 
 	 * @param id the id of the domino we want
 	 * @return the domino in question
 	 */
@@ -2120,7 +2177,7 @@ public class KingdominoController {
 		return allDominos.get(id - 1);
 	}
 
-	//Helper method
+	// Helper method
 	private static void createAllDominosLoading() {
 		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
 		try {
@@ -2148,6 +2205,7 @@ public class KingdominoController {
 
 	/**
 	 * This method is used for saving the game
+	 * 
 	 * @param kingdomino
 	 * @param string
 	 */
