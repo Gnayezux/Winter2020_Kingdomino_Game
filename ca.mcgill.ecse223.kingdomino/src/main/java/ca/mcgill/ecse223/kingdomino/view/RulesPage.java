@@ -15,6 +15,12 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+/**
+ * This Panel displays the rules of the game
+ * 
+ * @author Maxime Rieuf
+ *
+ */
 public class RulesPage extends JPanel {
 
 	KingdominoBoardGame frame;

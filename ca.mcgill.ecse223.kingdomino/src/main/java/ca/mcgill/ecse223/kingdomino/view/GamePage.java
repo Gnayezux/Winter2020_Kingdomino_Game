@@ -24,6 +24,12 @@ import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
+/**
+ * This is the GUI for the Gameplay that the user will interact with
+ * Interaction with the controller
+ * @author Abdallah Shapsough and Victoria Iannotti
+ *
+ */
 public class GamePage extends JPanel {
 
 	private ArrayList<KingdomGrid> grids;
@@ -432,6 +438,12 @@ public class GamePage extends JPanel {
 		this.add(right);
 	}
 
+	/**
+	 * These methods update the board and buttons (enabling/disabling) 
+	 * Dynamically adapting to the state
+	 */
+	
+	
 	public void updateDrafts(Draft current, Draft next) {
 		if(current == null) {
 			//System.out.println(drafts[0]);

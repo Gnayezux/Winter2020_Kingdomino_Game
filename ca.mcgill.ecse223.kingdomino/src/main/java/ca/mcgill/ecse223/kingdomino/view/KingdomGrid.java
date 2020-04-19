@@ -19,6 +19,12 @@ import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
+/**
+ * The Kingdom Grid where the dominos are placed throughout the game
+ * The grids are updated dynamically
+ * @author Abdallah Shapshough
+ *
+ */
 public class KingdomGrid extends JPanel {
 
 	private static final int CLUSTER = 3;

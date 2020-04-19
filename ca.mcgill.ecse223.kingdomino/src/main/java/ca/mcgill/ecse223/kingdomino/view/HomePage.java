@@ -23,6 +23,10 @@ import javax.swing.border.EmptyBorder;
 
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 
+/**
+ * This is the homepage, the first panel that the user interacts with 
+ * @author Mathieu-Joseph Magri
+ */
 public class HomePage extends JPanel {
 
 	private KingdominoBoardGame frame;

@@ -18,7 +18,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
+/**
+ * This is a JPanel that the Main frame will set as its contents 
+ *
+ *@author Zeyang
+ */
 public class BrowseDominosPage extends JPanel{
 
 	KingdominoBoardGame frame;

@@ -16,6 +16,11 @@ import javax.swing.border.EmptyBorder;
 
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 
+/**
+ * Panel for the setup of users for a new game
+ * @author Zeyang Xu
+ *
+ */
 public class NewGamePage extends JPanel {
 
 	ArrayList<JTextField> playerInput = new ArrayList<>();

@@ -25,6 +25,12 @@ import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Domino.DominoStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
+/**
+ * This class contains the JPanel that is a domino in the draft
+ * 4 DraftDominos for each draft
+ * 
+ * @author Victoria Iannotti
+ */
 public class DraftDomino extends JPanel{
 	
 	private List<Domino> dominos;

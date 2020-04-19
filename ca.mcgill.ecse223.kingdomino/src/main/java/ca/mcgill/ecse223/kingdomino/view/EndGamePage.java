@@ -9,6 +9,11 @@ import javax.swing.border.EmptyBorder;
 import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.*;
 
+/**
+ * This Panel is used to display the Ranking and scores at the end of the game
+ * @author Kaicheng Wu
+ *
+ */
 public class EndGamePage extends JPanel{
 
 	public EndGamePage(Game game) {

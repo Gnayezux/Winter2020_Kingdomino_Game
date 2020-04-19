@@ -15,6 +15,12 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * The main JFrame for the game 
+ * Created by the controller
+ * @author Victoria Iannotti
+ *
+ */
 public class KingdominoBoardGame extends JFrame {
 
 	private String page = "homepage";

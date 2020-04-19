@@ -9,6 +9,12 @@ import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Draft.DraftStatus;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
 
+/**
+ * A Draft Panel contains the draftdominos
+ * They are updated differently depending whether it is the "current" draft or the "next" draft 
+ * @author victoria_iannotti
+ *
+ */
 public class DraftPanel extends JPanel{
 
 	private boolean isCurrent;
