@@ -1,5 +1,6 @@
 package ca.mcgill.ecse223.kingdomino.view;
 
+import ca.mcgill.ecse223.kingdomino.KingdominoApplication;
 import ca.mcgill.ecse223.kingdomino.controller.*;
 import ca.mcgill.ecse223.kingdomino.model.*;
 import ca.mcgill.ecse223.kingdomino.model.Player.PlayerColor;
@@ -18,15 +19,16 @@ public class KingdominoBoardGame extends JFrame {
 
 	private String page = "homepage";
 	private boolean isGridCreated = false;
-	private String[] usernames = {"v", "m", "a", "k"};
+	private String[] usernames = { "v", "m", "a", "k" };
 	private static final int CLUSTER = 3;
 	private static final int MAX_ROWS = 9;
 	private static final int GAP = 3;
 	private static final Color BG = Color.BLACK;
 	public static final int TIMER_DELAY = 2 * 1000;
 	private ArrayList<JPanel> grids = new ArrayList<>();
-	
+
 	GamePage gamePage;
+
 	public KingdominoBoardGame() {
 		initComponents();
 	}
@@ -38,91 +40,106 @@ public class KingdominoBoardGame extends JFrame {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		homePage();
 	}
-	
+
 	public void startGame(Game game) {
+		String message = "Do you want to play with the Harmony Bonus feature?";
+		int answer = JOptionPane.showConfirmDialog(null, message, "Bonus Option",
+		        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if (answer == JOptionPane.YES_OPTION) {
+			KingdominoController.setBonusOption("Harmony", true);
+		} else if (answer == JOptionPane.NO_OPTION) {
+			KingdominoController.setBonusOption("Harmony", false);
+		}
+		
+		message = "Do you want to play with the Middle Castle Bonus feature?";
+		answer = JOptionPane.showConfirmDialog(null, message, "Bonus Option",
+		        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if (answer == JOptionPane.YES_OPTION) {
+			KingdominoController.setBonusOption("MiddleKingdom", true);
+		} else if (answer == JOptionPane.NO_OPTION) {
+			KingdominoController.setBonusOption("MiddleKingdom", false);
+		}
 		gamePage = new GamePage(game);
 		this.setContentPane(gamePage);
 		this.invalidate();
 		this.validate();
 	}
-	
+
 	public void homePage() {
-		HomePage p = new HomePage();
+		HomePage p = new HomePage(this);
 		this.setContentPane(p);
 		this.invalidate();
 		this.validate();
 	}
-	
+
 	public void newGamePage() {
-		NewGamePage p = new NewGamePage();
+		JOptionPane.showMessageDialog(this, "4 Player mode is currently suppported.", "Message",
+				JOptionPane.PLAIN_MESSAGE);
+		NewGamePage p = new NewGamePage(this);
 		this.setContentPane(p);
 		this.invalidate();
 		this.validate();
 	}
-	
+
 	public void rulesPage() {
-		RulesPage p = new RulesPage();
+		RulesPage p = new RulesPage(this);
 		this.setContentPane(p);
 		this.invalidate();
 		this.validate();
 	}
-	
+
 	public void browseDominos() {
-		BrowseDominosPage p = new BrowseDominosPage();
+		BrowseDominosPage p = new BrowseDominosPage(this);
 		this.setContentPane(p);
 		this.invalidate();
 		this.validate();
 	}
-	
+
 	public void updateDrafts(Draft current, Draft next) {
 		gamePage.updateDrafts(current, next);
 		this.invalidate();
 		this.validate();
 	}
-	
+
 	public void notifyCurrentPlayer(Player player) {
-		JOptionPane.showMessageDialog(this,
-			    "The current player is " + player.getColor() + ".",
-			    "Message",
-			    JOptionPane.PLAIN_MESSAGE);
+		JOptionPane.showMessageDialog(this, "The current player is " + player.getColor() + ".", "Message",
+				JOptionPane.PLAIN_MESSAGE);
 	}
-	
+
 	public void sendMessage(String s) {
-		JOptionPane.showMessageDialog(this,
-			    s ,
-			    "Message",
-			    JOptionPane.PLAIN_MESSAGE);
+		JOptionPane.showMessageDialog(this, s, "Message", JOptionPane.PLAIN_MESSAGE);
 	}
-	
+
 	public void setDominoSelectionEnabled(boolean enabled) {
 		gamePage.setDominoSelectionEnabled(enabled);
 	}
-	
+
 	public void changeButtonColor(PlayerColor color, int id) {
 		gamePage.changeButtonColor(color, id);
 	}
-	
+
 	public void setPlacementEnabled(boolean enabled) {
 		gamePage.setPlacementEnabled(enabled);
 	}
-	
+
 	public void setDiscardEnabled(boolean enabled) {
 		gamePage.setDiscardEnabled(enabled);
 	}
-	
+
 	public void setSelectionEnabled(boolean enabled) {
 		gamePage.setSelectionEnabled(enabled);
 	}
-	
+
 	public void updateGrid() {
 		gamePage.updateGrid();
 		this.invalidate();
 		this.validate();
 	}
+
 	public void setMovementEnabled(boolean enabled) {
 		gamePage.setMovementEnabled(enabled);
 	}
-	
+
 	public void endingGame(Game game) {
 		EndGamePage p = new EndGamePage(game);
 		this.setContentPane(p);

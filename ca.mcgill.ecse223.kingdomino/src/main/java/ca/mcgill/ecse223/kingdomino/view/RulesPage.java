@@ -17,7 +17,9 @@ import javax.swing.*;
 
 public class RulesPage extends JPanel {
 
-	public RulesPage() {
+	KingdominoBoardGame frame;
+	public RulesPage(KingdominoBoardGame frame) {
+		this.frame = frame;
 		initComponents();
 	}
 
@@ -46,7 +48,7 @@ public class RulesPage extends JPanel {
 		btn.setPreferredSize(new Dimension(200, 75));
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("press");
+				frame.homePage();
 			}
 		});
 		Font font = new Font("Arial", Font.BOLD, 25);

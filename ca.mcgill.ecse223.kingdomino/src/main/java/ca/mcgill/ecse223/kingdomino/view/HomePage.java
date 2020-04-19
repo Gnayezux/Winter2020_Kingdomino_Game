@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -24,7 +25,9 @@ import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 
 public class HomePage extends JPanel {
 
-	public HomePage() {
+	private KingdominoBoardGame frame;
+	public HomePage(KingdominoBoardGame frame) {
+		this.frame = frame;
 		initComponents();
 	}
 
@@ -63,6 +66,7 @@ public class HomePage extends JPanel {
 		
 		JButton btn2 = new JButton("Load Game");
 		btn2.setPreferredSize(new Dimension(200, 75));
+		btn2.setEnabled(false);
 		btn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO
@@ -78,7 +82,7 @@ public class HomePage extends JPanel {
 		btn3.setPreferredSize(new Dimension(200, 75));
 		btn3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				frame.rulesPage();
 			}
 		});
 		btn3.setFont(font);

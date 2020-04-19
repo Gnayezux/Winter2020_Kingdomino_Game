@@ -437,6 +437,7 @@ public class GamePage extends JPanel {
 			//System.out.println(drafts[0]);
 			drafts[0].updateEmpty();
 		} else {
+			//System.out.println(drafts[0]);
 			drafts[0] = drafts[0].update(current);
 			//drafts[0] = current;
 		}

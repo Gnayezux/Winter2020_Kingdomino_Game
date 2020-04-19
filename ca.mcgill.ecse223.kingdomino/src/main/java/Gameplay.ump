@@ -27,7 +27,7 @@ class Gameplay {
         	}
         	SelectingDomino {
         		selectionComplete [isSelectionValid()] -> /{nextPlayer();} Playing.PlacingDomino;
-        		endOfTurn [isCurrentPlayerTheLastInTurn() && isSelectionValid()] -> /{setNextDraft(); generatePlayerOrder();} Playing.CreatingDraft;
+        		endOfTurn [isCurrentPlayerTheLastInTurn() && isSelectionValid()] ->  Playing.CreatingDraft;
         	}
         	CreatingDraft {
         		entry/{setNextDraft(); orderNextDraft();}

@@ -19,8 +19,9 @@ import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 public class NewGamePage extends JPanel {
 
 	ArrayList<JTextField> playerInput = new ArrayList<>();
-
-	public NewGamePage() {
+	KingdominoBoardGame frame;
+	public NewGamePage(KingdominoBoardGame frame) {
+		this.frame = frame;
 		initComponents();
 	}
 
@@ -32,7 +33,7 @@ public class NewGamePage extends JPanel {
 		btn.setPreferredSize(new Dimension(200, 75));
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				frame.newGamePage();
 			}
 		});
 		Font font = new Font("Arial", Font.BOLD, 25);
@@ -109,7 +110,7 @@ public class NewGamePage extends JPanel {
 		browseDominoBtn.setPreferredSize(new Dimension(200, 75));
 		browseDominoBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				frame.browseDominos();
 			}
 		});
 		Font browseDominoFont = new Font("Arial", Font.BOLD, 25);

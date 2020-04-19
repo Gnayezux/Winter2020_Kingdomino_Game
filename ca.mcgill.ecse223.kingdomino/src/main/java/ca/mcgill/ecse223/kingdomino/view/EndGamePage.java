@@ -6,13 +6,16 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import ca.mcgill.ecse223.kingdomino.controller.KingdominoController;
 import ca.mcgill.ecse223.kingdomino.model.*;
 
 public class EndGamePage extends JPanel{
 
 	public EndGamePage(Game game) {
 		int [] scores = new int [4];
-		ArrayList<Player> players = (ArrayList<Player>) game.getPlayers();
+		KingdominoController.startGameSetup();
+		KingdominoController.setNumberOfPlayers(4);
+		KingdominoController.createPlayersAndKingdoms();
 		this.setBackground(Color.WHITE);
 		this.setLayout(new GridLayout(3, 0));
 
@@ -25,11 +28,11 @@ public class EndGamePage extends JPanel{
 				winnerIndex = i;
 			}
 		}
-		for (int i = 0; i < players.size(); i++) {
+		for (int i = 0; i < game.getPlayers().size(); i++) {
 
 			JLabel inputLabel = new JLabel();
 			Font inputFont = new Font("Arial", Font.BOLD, 30);
-			inputLabel.setText(players.get(i).getUser().getName());
+			inputLabel.setText(game.getPlayer(i).getUser().getName());
 			inputLabel.setFont(inputFont);
 			JPanel inputPanel = new JPanel();
 			inputPanel.setBackground(Color.WHITE);
@@ -56,7 +59,7 @@ public class EndGamePage extends JPanel{
 		for (int i = 0; i < scores.length; i++) {
 			JLabel inputLabel = new JLabel();
 			Font inputFont = new Font("Arial", Font.BOLD, 30);
-			inputLabel.setText("Score:" + String.valueOf(scores[i]));
+			inputLabel.setText("Score: " + String.valueOf(scores[i]));
 			inputLabel.setFont(inputFont);
 			JPanel inputPanel = new JPanel();
 			inputPanel.setBackground(Color.WHITE);

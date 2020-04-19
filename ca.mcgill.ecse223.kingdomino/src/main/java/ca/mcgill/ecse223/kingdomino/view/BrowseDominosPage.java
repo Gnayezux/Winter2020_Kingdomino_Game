@@ -21,19 +21,22 @@ import javax.swing.border.EmptyBorder;
 
 public class BrowseDominosPage extends JPanel{
 
-	public BrowseDominosPage() {
+	KingdominoBoardGame frame;
+	
+	public BrowseDominosPage(KingdominoBoardGame frame) {
+		this.frame = frame;
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 
 		BufferedImage myPicture = null;
 		try {
-			myPicture = ImageIO.read(new File("src/main/resources/images/dominos.png"));
+			myPicture = ImageIO.read(new File("src/main/resources/images/AllDominos.jpg"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Image newImage = myPicture.getScaledInstance(800, 600, Image.SCALE_DEFAULT);
+		Image newImage = myPicture.getScaledInstance(1100, 600, Image.SCALE_DEFAULT);
 		JLabel picLabel = new JLabel(new ImageIcon(newImage));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.0;
@@ -46,7 +49,7 @@ public class BrowseDominosPage extends JPanel{
 		btn.setPreferredSize(new Dimension(200, 75));
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("press");
+				frame.newGamePage();
 			}
 		});
 		Font font = new Font("Arial", Font.BOLD, 25);

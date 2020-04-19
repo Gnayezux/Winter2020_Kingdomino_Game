@@ -182,8 +182,6 @@ public class Gameplay
         if (isCurrentPlayerTheLastInTurn()&&isSelectionValid())
         {
           exitGamestatusPlaying();
-        // line 30 "../../../../../Gameplay.ump"
-          setNextDraft(); generatePlayerOrder();
           setGamestatusPlaying(GamestatusPlaying.CreatingDraft);
           wasEventProcessed = true;
           break;
